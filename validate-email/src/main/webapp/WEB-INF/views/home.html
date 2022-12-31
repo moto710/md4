@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+<h1>Email Validate</h1>
+<h3 style="color:red">${message}</h3>
+<form action="/validate" method="post">
+  <input type="text" name="email"><br>
+  <input type="submit" value="validate">
+</form>
+</body>
+</html>
