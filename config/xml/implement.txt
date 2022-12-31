@@ -1,0 +1,25 @@
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+build.gradle ===> dependencies
+implementation group: 'jstl', name: 'jstl', version: '1.2'
+
+// https://mvnrepository.com/artifact/org.springframework/spring-webmvc
+    implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.3.18'
+
+
+
+
+
+<script>
+        let message = '<c:out value="${requestScope.message}" />';
+        Swal.fire({
+            title: message,
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp'
+            }
+        })
+    </script>

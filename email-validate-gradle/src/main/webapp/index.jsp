@@ -2,9 +2,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Greeting</title>
+    <title>Spring Gradle</title>
 </head>
 <body>
-    <h1>Hello: ${name}</h1>
+Hello Spring Gradle
 </body>
 </html>

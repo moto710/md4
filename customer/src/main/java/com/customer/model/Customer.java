@@ -4,16 +4,16 @@ public class Customer {
     private int id;
     private String name;
     private String email;
-    private int idCountry;
+    private Country country;
 
     public Customer() {
     }
 
-    public Customer(int id, String name, String email, int idCountry) {
+    public Customer(int id, String name, String email, Country country) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.idCountry = idCountry;
+        this.country = country;
     }
 
     public int getId() {
@@ -40,11 +40,11 @@ public class Customer {
         this.email = email;
     }
 
-    public int getIdCountry() {
-        return idCountry;
+    public Country getCountry() {
+        return country;
     }
 
-    public void setIdCountry(int idCountry) {
-        this.idCountry = idCountry;
+    public void setCountry(Country country) {
+        this.country = country;
     }
 }

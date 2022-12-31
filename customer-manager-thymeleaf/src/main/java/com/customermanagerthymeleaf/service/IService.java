@@ -4,14 +4,14 @@ import com.customermanagerthymeleaf.model.Customer;
 
 import java.util.List;
 
-public interface ICustomerService {
-    List<Customer> findAll();
+public interface IService<T> {
+    List<T> findAll();
 
-    void save(Customer customer);
+    void save(T t);
 
-    Customer findById(int id);
+    T findById(int id);
 
-    void update(int id, Customer customer);
+    void update(int id, T t);
 
     void remove(int id);
 }

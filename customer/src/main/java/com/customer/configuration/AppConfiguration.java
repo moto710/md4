@@ -1,6 +1,9 @@
 package com.customer.configuration;
 
+import com.customer.model.Country;
+import com.customer.model.Customer;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +22,16 @@ import org.thymeleaf.templatemode.TemplateMode;
 public class AppConfiguration implements WebMvcConfigurer, ApplicationContextAware {
     private ApplicationContext applicationContext;
 
+    @Bean
+    public Country country() {
+        return new Country(1, "VN");
+    }
+    @Bean
+    @Autowired
+    public Customer customer(Country country) {
+        return new Customer(1, "test", "test@abc.vn", country);
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
@@ -29,7 +42,7 @@ public class AppConfiguration implements WebMvcConfigurer, ApplicationContextAwa
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
         templateResolver.setApplicationContext(applicationContext);
         templateResolver.setPrefix("/WEB-INF/views");
-        templateResolver.setSuffix(".html");
+        templateResolver.setSuffix(".jsp");
         templateResolver.setTemplateMode(TemplateMode.HTML);
         templateResolver.setCharacterEncoding("UTF-8");
         return templateResolver;

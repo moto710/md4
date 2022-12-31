@@ -1,5 +1,6 @@
 package com.customer.service;
 
+import com.customer.model.Country;
 import com.customer.model.Customer;
 
 import java.sql.ResultSet;
@@ -24,7 +25,7 @@ public class CustomerDAO extends RootDAO implements IDAO<Customer> {
             preparedStatement.setInt(1, customer.getId());
             preparedStatement.setString(2, customer.getName());
             preparedStatement.setString(3, customer.getEmail());
-            preparedStatement.setInt(4, customer.getIdCountry());
+            preparedStatement.setObject(4, customer.getCountry());
             preparedStatement.executeUpdate();
             System.out.println(this.getClass() + " insert: " + preparedStatement);
             closeConnect();
@@ -44,7 +45,7 @@ public class CustomerDAO extends RootDAO implements IDAO<Customer> {
                 customer.setId(id);
                 customer.setName(rs.getString("name"));
                 customer.setEmail(rs.getString("email"));
-                customer.setIdCountry(rs.getInt("idCountry"));
+                customer.setCountry((Country) rs.getObject("Country"));
             }
             System.out.println(this.getClass() + " select: " + preparedStatement);
             closeConnect();
@@ -74,8 +75,8 @@ public class CustomerDAO extends RootDAO implements IDAO<Customer> {
         int id = rs.getInt("id");
         String name = rs.getString("name");
         String email = rs.getString("email");
-        int idCountry = rs.getInt("idCountry");
-        return new Customer(id, name, email, idCountry);
+        Country country = (Country) rs.getObject("country");
+        return new Customer(id, name, email, country);
     }
 
     @Override
@@ -100,7 +101,7 @@ public class CustomerDAO extends RootDAO implements IDAO<Customer> {
             preparedStatement = startConnect(UPDATE_CUSTOMER);
             preparedStatement.setString(1, customer.getName());
             preparedStatement.setString(2, customer.getEmail());
-            preparedStatement.setInt(3, customer.getIdCountry());
+            preparedStatement.setObject(3, customer.getCountry());
             preparedStatement.setInt(4, customer.getId());
             rowUpdated = preparedStatement.executeUpdate() > 0;
             System.out.println(this.getClass() + " update: " + preparedStatement);
