@@ -1,23 +1,30 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="/layout :: head">
+<head>
     <title>Product List</title>
+    <div th:replace="/layout :: head"></div>
 </head>
 <body>
-
+<div th:if="${success}">
+    <p th:text="${success}"></p>
+</div>
 <div class="container-fluid table-responsive mt-3">
     <table class="table">
         <thead>
         <tr class="bg-primary text-white">
             <th colspan="4">
-                <button type="button" class="btn btn-primary text-light"><i class="fa-solid fa-list-ul"></i>
-                    List Of Product
-                </button>
+                <a th:href="@{/product}">
+                    <button type="button" class="btn btn-primary text-light"><i class="fa-solid fa-list-ul"></i>
+                        List Of Product
+                    </button>
+                </a>
             </th>
             <th colspan="2">
-                <button type="button" class="btn btn-primary text-light"><i class="fa-solid fa-square-plus"></i> Add new
-                    Product
-                </button>
+                <a th:href="@{/product/create}">
+                    <button type="button" class="btn btn-primary text-light"><i class="fa-solid fa-square-plus"></i>
+                        Add new Product
+                    </button>
+                </a>
             </th>
         </tr>
         <tr class="bg-success text-white text-center">
@@ -29,70 +36,29 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="row,rowStat : ${productList}">
-            <td th:text="${row.getId()}"></td>
-            <td th:text="${row.getName()}"></td>
-            <td th:text="${row.getPrice()}"></td>
-            <td th:text="${row.getQuantity()}"></td>
+        <tr th:each="customer,cusStat : ${productList}">
+            <td th:text="${customer.getId()}"></td>
+            <td th:text="${customer.getName()}"></td>
+            <td th:text="${customer.getPrice()}"></td>
+            <td th:text="${customer.getQuantity()}"></td>
             <td>
-                <button type="button" class="btn btn-outline-secondary"><i
-                        class="fa-regular fa-pen-to-square"></i></button>
+                <a th:href="@{/product/{id}/edit(id=${customer.getId()})}">
+                    <button type="button" class="btn btn-outline-secondary">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </button>
+                </a>
             </td>
             <td>
-                <button type="button" class="btn btn-outline-danger"><i class="fa-solid fa-ban"></i></button>
+                <a th:href="@{/product/{id}/remove(id=${customer.getId()})}">
+                    <button type="button" class="btn btn-outline-danger">
+                        <i class="fa-solid fa-ban"></i>
+                    </button>
+                </a>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
-
-<!--<h3>Product List</h3>-->
-<!--<p>-->
-<!--    <a th:href="@{/customer/create}">-->
-<!--        Add new customer-->
-<!--    </a>-->
-<!--</p>-->
-<!--<div class="notify">-->
-<!--    <div th:if="${success}">-->
-<!--        <span th:text="${success}"></span>-->
-<!--    </div>-->
-<!--</div>-->
-<!--<table id="customers">-->
-<!--    <thead>-->
-<!--    <tr>-->
-<!--        <th>ID</th>-->
-<!--        <th>Name</th>-->
-<!--        <th>Price</th>-->
-<!--        <th>Quantity</th>-->
-<!--        <th colspan="5">Action</th>-->
-<!--    </tr>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    <tr th:each="row,rowStat : ${productList}">-->
-<!--        <td th:text="${row.getId()}"></td>-->
-<!--        <td th:text="${row.getName()}"></td>-->
-<!--        <td th:text="${row.getPrice()}"></td>-->
-<!--        <td th:text="${row.getQuantity()}"></td>-->
-<!--        <td>-->
-<!--            <button type="button" class="btn btn-outline-secondary"><i-->
-<!--                    class="fa-regular fa-pen-to-square"></i></button>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <button type="button" class="btn btn-outline-success"><i class="fa-solid fa-plus"></i></button>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <button type="button" class="btn btn-outline-warning"><i class="fa-solid fa-minus"></i></button>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <button type="button" class="btn btn-outline-primary"><i-->
-<!--                    class="fa-solid fa-right-left"></i></button>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--            <button type="button" class="btn btn-outline-danger"><i class="fa-solid fa-ban"></i></button>-->
-<!--        </td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--</table>-->
 <footer th:replace="/layout :: footer"></footer>
 </body>
 </html>

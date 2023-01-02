@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class ProductService implements IService<Product> {
     private static final Map<Integer, Product> productList;
+    private List<Product> products;
 
     static {
 
@@ -22,13 +23,19 @@ public class ProductService implements IService<Product> {
     }
 
     @Override
+    public int findMaxId() {
+        products = findAll();
+        return products.get(products.size() - 1).getId();
+    }
+
+    @Override
     public List<Product> findAll() {
         return new ArrayList<>(productList.values());
     }
 
     @Override
-    public void save(Product customer) {
-        productList.put(customer.getId(), customer);
+    public void save(Product product) {
+        productList.put(product.getId(), product);
     }
 
     @Override
@@ -37,8 +44,8 @@ public class ProductService implements IService<Product> {
     }
 
     @Override
-    public void update(int id, Product customer) {
-        productList.put(id, customer);
+    public void update(int id, Product product) {
+        productList.put(id, product);
 
     }
 
