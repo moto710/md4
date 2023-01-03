@@ -1,6 +1,5 @@
 package com.bankingtransaction.model;
 
-import java.util.Date;
 
 public class Customer {
     private int id;
@@ -9,13 +8,13 @@ public class Customer {
     private String email;
     private String address;
     private String phone;
-    private Date createdAt;
-    private Date updatedAt;
+    private String createdAt;
+    private String updatedAt;
 
     public Customer() {
     }
 
-    public Customer(int id, String name, float balance, String email, String address, String phone, Date createdAt, Date updatedAt) {
+    public Customer(int id, String name, float balance, String email, String address, String phone, String createdAt, String updatedAt) {
         this.id = id;
         this.name = name;
         this.balance = balance;
@@ -24,6 +23,14 @@ public class Customer {
         this.phone = phone;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+    public Customer(int id, String name, String email, String address, String phone, String createdAt) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.phone = phone;
+        this.createdAt = createdAt;
     }
 
     public int getId() {
@@ -74,19 +81,19 @@ public class Customer {
         this.phone = phone;
     }
 
-    public Date getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public String getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

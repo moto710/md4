@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerService extends RootDAO implements IService<Customer> {
-    private static final String FIND_MAX_ID = "SELECT MAX(`id`) FROM `customer`";
+    private static final String FIND_MAX_ID = "SELECT IFNULL(MAX(`id`), 0) FROM `customer`;";
     private static final String DELETE_CUSTOMER_BY_ID = "DELETE FROM `customer` WHERE `id` = ?;";
     private static final String UPDATE_CUSTOMER = "UPDATE `customer` SET `name` = ?, balance = ?, email = ?, address = ?, phone = ?, created_at = ?, updated_at = ? WHERE `id` = ?;";
-    private static final String INSERT_CUSTOMER = "INSERT INTO `customer` VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+    private static final String INSERT_CUSTOMER = "INSERT INTO `customer` (`id`, `name`, `email`, `address`, `phone`, `created_at`) VALUES (?, ?, ?, ?, ?, ?);";
     private static final String FIND_BY_ID = "SELECT * FROM `customer` WHERE id = ?;";
     private static final String SELECT_ALL_CUSTOMER = "SELECT * FROM `customer`;";
     private Customer customer;
@@ -30,8 +30,8 @@ public class CustomerService extends RootDAO implements IService<Customer> {
                 String email = rs.getString("email");
                 String address = rs.getString("address");
                 String phone = rs.getString("phone");
-                Date createdAt = rs.getDate("created_at");
-                Date updatedAt = rs.getDate("updated_at");
+                String createdAt = rs.getString("created_at");
+                String updatedAt = rs.getString("updated_at");
                 customerList.add(new Customer(id, name, balance, email, address, phone, createdAt, updatedAt));
             }
             System.out.println(this.getClass() + " findAll: " + preparedStatement);
@@ -54,8 +54,8 @@ public class CustomerService extends RootDAO implements IService<Customer> {
                 String email = rs.getString("email");
                 String address = rs.getString("address");
                 String phone = rs.getString("phone");
-                Date createdAt = rs.getDate("created_at");
-                Date updatedAt = rs.getDate("updated_at");
+                String createdAt = rs.getString("created_at");
+                String updatedAt = rs.getString("updated_at");
                 customer = new Customer(id, name, balance, email, address, phone, createdAt, updatedAt);
             }
             System.out.println(this.getClass() + " findById: " + preparedStatement);
@@ -72,12 +72,10 @@ public class CustomerService extends RootDAO implements IService<Customer> {
             preparedStatement = startConnect(INSERT_CUSTOMER);
             preparedStatement.setInt(1, customer.getId());
             preparedStatement.setString(2, customer.getName());
-            preparedStatement.setFloat(3, customer.getBalance());
-            preparedStatement.setString(4, customer.getEmail());
-            preparedStatement.setString(5, customer.getAddress());
-            preparedStatement.setString(6, customer.getPhone());
-            preparedStatement.setDate(7, (Date) customer.getCreatedAt());
-            preparedStatement.setDate(8, (Date) customer.getUpdatedAt());
+            preparedStatement.setString(3, customer.getEmail());
+            preparedStatement.setString(4, customer.getAddress());
+            preparedStatement.setString(5, customer.getPhone());
+            preparedStatement.setString(6, customer.getCreatedAt());
             preparedStatement.executeUpdate();
             System.out.println(this.getClass() + " add: " + preparedStatement);
             closeConnect();
@@ -95,8 +93,8 @@ public class CustomerService extends RootDAO implements IService<Customer> {
             preparedStatement.setString(3, customer.getEmail());
             preparedStatement.setString(4, customer.getAddress());
             preparedStatement.setString(5, customer.getPhone());
-            preparedStatement.setDate(6, (Date) customer.getCreatedAt());
-            preparedStatement.setDate(7, (Date) customer.getUpdatedAt());
+            preparedStatement.setString(6, customer.getCreatedAt());
+            preparedStatement.setString(7, customer.getUpdatedAt());
             preparedStatement.setInt(8, customer.getId());
             System.out.println(this.getClass() + " update: " + preparedStatement);
             closeConnect();
@@ -123,7 +121,7 @@ public class CustomerService extends RootDAO implements IService<Customer> {
             preparedStatement = startConnect(FIND_MAX_ID);
             rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                return rs.getInt("id");
+                return rs.getInt(1);
             }
             System.out.println(this.getClass() + " findMaxId: " + preparedStatement);
             closeConnect();
