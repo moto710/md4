@@ -1,20 +1,32 @@
 package com.bankingtransaction.model;
 
+import org.springframework.beans.factory.annotation.Value;
 
+import javax.persistence.*;
+import java.math.BigDecimal;
+
+@Entity
+@Table(name = "customers")
 public class Customer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "full_name")
     private String name;
-    private float balance;
+    @Column(name="balance", columnDefinition="Decimal(12,0) default 0")
+    private BigDecimal balance;
     private String email;
     private String address;
     private String phone;
+    @Column(name = "created_at")
     private String createdAt;
+    @Column(name = "updated_at")
     private String updatedAt;
 
     public Customer() {
     }
 
-    public Customer(int id, String name, float balance, String email, String address, String phone, String createdAt, String updatedAt) {
+    public Customer(int id, String name, BigDecimal balance, String email, String address, String phone, String createdAt, String updatedAt) {
         this.id = id;
         this.name = name;
         this.balance = balance;
@@ -49,11 +61,11 @@ public class Customer {
         this.name = name;
     }
 
-    public float getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(float balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 

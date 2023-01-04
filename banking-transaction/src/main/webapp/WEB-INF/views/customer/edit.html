@@ -2,15 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <title>Delete Customers</title>
-  <div th:replace="/template :: head"></div>
+  <title>Edit Customers</title>
+  <th:block th:replace="/template :: head"></th:block>
 </head>
 
 <body>
 <div class="container mt-3">
   <div class="bg-primary d-flex justify-content-between p-3 text-white row">
     <div>
-      <h2>Delete Customer</h2>
+      <h2>Edit Customer</h2>
     </div>
     <div>
       <button type="submit" class="btn btn-primary">
@@ -19,14 +19,14 @@
     </div>
   </div>
 
-  <form class="form" th:action="@{/delete}" th:object="${customer}" method="post">
+  <form class="form mt-2" th:object="${customer}" method="post">
     <input type="hidden" th:field="*{id}">
     <div class="row">
       <label for="fullName" class="mb-2 mr-sm-2 col">Full Name:</label>
       <label for="balance" class="mb-2 mr-sm-2 col">Balance:</label>
     </div>
     <div class="row">
-      <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="fullName" th:field="*{name}">
+      <input type="text" class="form-control mb-2 mr-sm-2 col" id="fullName" th:field="*{name}">
       <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="balance" th:field="*{balance}">
     </div>
     <div class="row">
@@ -34,16 +34,16 @@
       <label for="email" class="mb-2 mr-sm-2 col">Email:</label>
     </div>
     <div class="row">
-      <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="phone" th:field="*{phone}">
-      <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="email" th:field="*{email}">
+      <input type="text" class="form-control mb-2 mr-sm-2 col" id="phone" th:field="*{phone}">
+      <input type="text" class="form-control mb-2 mr-sm-2 col" id="email" th:field="*{email}">
     </div>
     <div class="row">
       <label for="address" class="mb-2 mr-sm-2 col">Address:</label>
       <label for="created" class="mb-2 mr-sm-2 col">Created At:</label>
     </div>
     <div class="row">
-      <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="address" th:field="*{address}">
-      <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="created" th:field="*{createdAt}">
+      <input type="text" class="form-control mb-2 mr-sm-2 col" id="address" th:field="*{address}">
+      <input type="text" class="form-control mb-2 mr-sm-2 col" id="created" th:field="*{createdAt}">
     </div>
     <div class="row">
       <button type="submit" class="btn btn-warning mb-2">

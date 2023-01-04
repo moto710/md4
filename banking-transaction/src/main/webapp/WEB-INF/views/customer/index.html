@@ -3,7 +3,7 @@
 
 <head>
     <title>Customers List</title>
-    <div th:replace="/template :: head"></div>
+    <th:block th:replace="/template :: head"></th:block>
 </head>
 
 <body>
@@ -42,7 +42,7 @@
         </tr>
         </thead>
         <tbody>
-        <div th:each="customer, iterStat: ${customerList}">
+        <div th:each="customer : ${customerList}">
             <tr>
                 <td th:text="${customer.getId()}"></td>
                 <td th:text="${customer.getName()}"></td>
@@ -53,11 +53,16 @@
                 <td th:text="${customer.getCreatedAt()}"></td>
                 <td th:text="${customer.getUpdatedAt()}"></td>
                 <td>
-                    <button type="button" class="btn btn-outline-secondary"><i
-                            class="fa-regular fa-pen-to-square"></i></button>
+                    <a th:href="@{/customer/{id}/edit(id=${customer.getId()})}">
+                        <button type="button" class="btn btn-outline-secondary">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                        </button>
+                    </a>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-outline-success"><i class="fa-solid fa-plus"></i></button>
+                    <a th:href="@{/deposit/{id}/deposit=${customer.getId()}}">
+                        <button type="button" class="btn btn-outline-success"><i class="fa-solid fa-plus"></i></button>
+                    </a>
                 </td>
                 <td>
                     <button type="button" class="btn btn-outline-warning"><i class="fa-solid fa-minus"></i></button>
