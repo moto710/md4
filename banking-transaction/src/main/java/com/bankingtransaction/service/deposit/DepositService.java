@@ -5,9 +5,16 @@ import com.bankingtransaction.repository.IDepositRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceContext;
+import javax.persistence.StoredProcedureQuery;
+import java.math.BigDecimal;
 import java.util.Optional;
 @Service
-public class DepositServiceService implements IDepositService {
+public class DepositService implements IDepositService {
+    @PersistenceContext
+    private EntityManager entityManager;
     @Autowired
     private IDepositRepository depositRepository;
     @Override
@@ -33,5 +40,16 @@ public class DepositServiceService implements IDepositService {
     @Override
     public void remove(Deposit deposit) {
         depositRepository.delete(deposit);
+    }
+
+    @Override
+    public void deposits(int id, BigDecimal money) {
+        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("sp_deposit");
+        query.registerStoredProcedureParameter(1, Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(2, BigDecimal.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(3, String.class, ParameterMode.OUT);
+        query.setParameter(1,id);
+        query.setParameter(2, money);
+        query.execute();
     }
 }

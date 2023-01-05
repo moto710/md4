@@ -1,6 +1,5 @@
 package com.bankingtransaction.model;
 
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -13,7 +12,7 @@ public class Customer {
     private int id;
     @Column(name = "full_name")
     private String name;
-    @Column(name="balance", columnDefinition="Decimal(12,0) default 0")
+    @Column(name="balance",nullable = false)
     private BigDecimal balance;
     private String email;
     private String address;

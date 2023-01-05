@@ -7,42 +7,47 @@
 </head>
 
 <body>
-    <div class="container-fluid mt-3">
-        <div class="bg-primary d-flex justify-content-between p-3 text-white row">
-            <div>
-                <h2>Deposit Money into Customer's Account</h2>
-            </div>
-            <div>
+<div class="container-fluid mt-3">
+    <div class="bg-primary d-flex justify-content-between p-3 text-white row">
+        <div>
+            <h2>Deposit Money into Customer's Account</h2>
+        </div>
+        <div>
+            <a th:href="@{/}">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fa-solid fa-list-ul"></i> Customer List</button>
-            </div>
+                    <i class="fa-solid fa-list-ul"></i> Customer List
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <form class="form mt-2" th:object="${customer}" method="post">
+
+        <div class="row">
+            <label for="id" class="mb-2 mr-sm-2 col">Customer ID:</label>
+            <label for="name" class="mb-2 mr-sm-2 col">Full Name:</label>
+        </div>
+        <div class="row">
+            <input class="form-control mb-2 mr-sm-2 col" id="id" th:field="*{id}" disabled>
+            <input class="form-control mb-2 mr-sm-2 col" id="name" th:field="*{name}" disabled>
+        </div>
+        <div class="row">
+            <label for="balance" class="mb-2 mr-sm-2 col">Current balance ($):</label>
+            <label for="deposit" class="mb-2 mr-sm-2 col">Deposit Amount ($):</label>
+        </div>
+        <div class="row">
+            <input class="form-control mb-2 mr-sm-2 col" id="balance" th:field="*{balance}" disabled>
+            <input type="text" class="form-control mb-2 mr-sm-2 col" name="deposit" id="deposit">
         </div>
 
-        <form class="form" th:object="${customer}" method="post">
+        <div class="row">
+            <button type="submit" class="btn btn-primary mb-2">
+                <i class="fa-solid fa-plus"></i>Deposit
+            </button>
+        </div>
 
-            <div class="row">
-                <label for="id" class="mb-2 mr-sm-2 col">Customer ID:</label>
-                <label for="name" class="mb-2 mr-sm-2 col">Full Name:</label>
-            </div>
-            <div class="row">
-                <input class="form-control mb-2 mr-sm-2 col" id="id" th:text="${customer.getId()}" disabled>
-                <input class="form-control mb-2 mr-sm-2 col" id="name" th:text="${customer.getName()}" disabled>
-            </div>
-            <div class="row">
-                <label for="balance" class="mb-2 mr-sm-2 col">Current balance ($):</label>
-                <label for="deposit" class="mb-2 mr-sm-2 col">Deposit Amount ($):</label>
-            </div>
-            <div class="row">
-                <input class="form-control mb-2 mr-sm-2 col" id="balance" th:text="${customer.getBalance()}" disabled>
-                <input type="text" class="form-control mb-2 mr-sm-2 col" id="deposit" >
-            </div>
-
-            <div class="row">
-                <button type="submit" class="btn btn-primary mb-2"><i class="fa-solid fa-plus"></i> Deposit</button>
-            </div>
-
-        </form>
-    </div>
+    </form>
+</div>
 </body>
 
 </html>
