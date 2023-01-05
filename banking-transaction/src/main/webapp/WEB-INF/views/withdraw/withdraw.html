@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Deposit Money</title>
+    <th:block th:replace="/template :: head"></th:block>
+</head>
+
+<body>
+<div class="container mt-3">
+    <div class="bg-primary d-flex justify-content-between p-3 text-white row">
+        <div>
+            <h2>Withdraw Money from Customer's Account</h2>
+        </div>
+        <div>
+            <a th:href="@{/}">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-list-ul"></i>
+                    Customer List
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <form class="form mt-2" th:object="${customer}" method="post">
+
+        <div class="row">
+            <label class="mb-2 mr-sm-2 col">Customer ID:</label>
+            <label class="mb-2 mr-sm-2 col">Full Name:</label>
+        </div>
+        <div class="row">
+            <input class="form-control mb-2 mr-sm-2 col" th:field="*{id}" readonly>
+            <input class="form-control mb-2 mr-sm-2 col" th:field="*{name}" readonly>
+        </div>
+        <div class="row">
+            <label class="mb-2 mr-sm-2 col">Current balance ($):</label>
+            <label class="mb-2 mr-sm-2 col" for="withdraw">Withdraw Amount ($):</label>
+        </div>
+        <div class="row">
+            <input class="form-control mb-2 mr-sm-2 col" th:field="*{balance}" readonly>
+            <input type="text" class="form-control mb-2 mr-sm-2 col" id="withdraw" th:field="${withdraw.transactionAmount}">
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary mb-2">
+                <i class="fas fa-minus"></i>
+                Withdraw
+            </button>
+        </div>
+
+    </form>
+</div>
+<footer>
+    <div class="container">
+        <th:block th:if="${!error}">
+            <div>
+                <h5>Withdraw success!</h5>
+            </div>
+        </th:block>
+        <th:block th:if="${error}">
+            <div>
+                <h5>Error messages:</h5>
+            </div>
+            <div>
+                <ul>
+                    <li th:text="${error}"></li>
+                </ul>
+            </div>
+        </th:block>
+    </div>
+</footer>
+</body>
+
+</html>

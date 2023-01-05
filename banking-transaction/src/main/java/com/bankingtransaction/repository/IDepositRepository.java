@@ -11,5 +11,5 @@ import java.math.BigDecimal;
 @Repository
 public interface IDepositRepository extends JpaRepository<Deposit, Integer> {
     @Query(value = "CALL sp_deposit(:customer_id, :money)", nativeQuery = true)
-    void deposit(@Param("customer_id") Integer id, @Param("money") BigDecimal money);
+    String deposit(@Param("customer_id") Integer id, @Param("money") BigDecimal money);
 }

@@ -18,7 +18,6 @@ import java.time.Instant;
 import java.util.List;
 
 @Controller
-@EnableWebMvc
 @RequestMapping({"/", "/customer"})
 public class CustomerController {
     @Autowired
@@ -27,15 +26,15 @@ public class CustomerController {
     private ModelAndView modelAndView;
     private Customer customer;
 
-    @GetMapping("/{id}/deposit")
-    private ModelAndView redirectDeposit(@PathVariable int id) {
-        modelAndView = new ModelAndView("redirect:/deposit");
-        if (customerService.findById(id).isPresent()) {
-            customer = customerService.findById(id).get();
-        }
-        modelAndView.addObject("customer", customerService.findById(id).get());
-        return modelAndView;
-    }
+//    @GetMapping("/{id}/deposit")
+//    private ModelAndView redirectDeposit(@PathVariable int id) {
+//        modelAndView = new ModelAndView("redirect:/deposit");
+//        if (customerService.findById(id).isPresent()) {
+//            customer = customerService.findById(id).get();
+//        }
+//        modelAndView.addObject("customer", customerService.findById(id).get());
+//        return modelAndView;
+//    }
     @GetMapping("/{id}/edit")
     private ModelAndView showEdit(@PathVariable int id) {
         modelAndView = new ModelAndView("/customer/edit");
@@ -64,7 +63,7 @@ public class CustomerController {
     }
 
     @GetMapping("/")
-    private ModelAndView index(Model model) {
+    private ModelAndView index() {
         customerList = (List<Customer>) customerService.findAll();
         modelAndView = new ModelAndView("/customer/index");
         modelAndView.addObject("customerList", customerList);
@@ -86,7 +85,7 @@ public class CustomerController {
     @PostMapping("/save")
     private ModelAndView save(Customer customer) {
         customer.setCreatedAt(InstantUtils.instantToString(Instant.now()));
-        customer.setBalance(new BigDecimal(0));
+        customer.setBalance(BigDecimal.ZERO);
         customerService.save(customer);
         return new ModelAndView("redirect:/");
     }

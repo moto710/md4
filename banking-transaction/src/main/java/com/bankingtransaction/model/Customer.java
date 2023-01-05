@@ -10,10 +10,11 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "full_name")
+    @Column(name = "full_name", nullable = false)
     private String name;
-    @Column(name="balance",nullable = false)
+    @Column(precision = 12, scale = 0, nullable = false, updatable = false)
     private BigDecimal balance;
+    @Column(nullable = false, unique = true)
     private String email;
     private String address;
     private String phone;

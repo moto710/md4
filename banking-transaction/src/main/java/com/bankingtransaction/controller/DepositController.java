@@ -13,7 +13,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import java.math.BigDecimal;
 
 @Controller
-@EnableWebMvc
 @RequestMapping("/deposit")
 public class DepositController {
     @Autowired
@@ -35,9 +34,9 @@ public class DepositController {
         return modelAndView;
     }
     @PostMapping("/{id}/deposit")
-    private ModelAndView deposit(@PathVariable int id, @RequestParam double deposit) {
-        BigDecimal money = new BigDecimal(deposit);
-        depositService.deposits(id, money);
+    private ModelAndView deposit(@PathVariable int id, @RequestParam BigDecimal deposit) {
+        String message = depositService.deposits(id, deposit);
+        System.out.println(message);
         modelAndView = new ModelAndView("redirect:/");
         return modelAndView;
     }

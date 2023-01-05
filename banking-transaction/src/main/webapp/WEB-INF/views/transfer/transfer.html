@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Transfer Money</title>
+    <th:block th:replace="/template :: head"></th:block>
+</head>
+
+<body>
+<div class="container">
+    <header>
+        <div class="bg-primary d-flex justify-content-between p-3 text-white row">
+            <div>
+                <h2>Transfer money information</h2>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-list-ul"></i>
+                    Customer List
+                </button>
+            </div>
+        </div>
+    </header>
+    <div class="content">
+        <form class="form">
+
+            <div class="row">
+                <label for="senderId" class="mb-2 mr-sm-2 col">Sender ID:</label>
+                <label for="senderName" class="mb-2 mr-sm-2 col">Sender Name:</label>
+                <label for="email" class="mb-2 mr-sm-2 col">Email:</label>
+                <label for="balance" class="mb-2 mr-sm-2 col">Sender Balance:</label>
+            </div>
+            <div class="row">
+                <input type="text" class="form-control mb-2 mr-sm-2 col" id="senderId" placeholder="Enter Sender ID"
+                       name="senderId">
+                <input type="text" class="form-control mb-2 mr-sm-2 col" id="senderName" placeholder="Sender Name"
+                       name="senderName">
+                <input type="email" class="form-control mb-2 mr-sm-2 col" id="email" placeholder="Sender's Email"
+                       name="email">
+                <input type="text" class="form-control mb-2 mr-sm-2 col" id="balance" placeholder="Sender Balance"
+                       name="balance">
+            </div>
+            <div class="row">
+                <label for="recipientName" class="mb-2 mr-sm-2 col">Recipient Name:</label>
+                <label for="transferAmount" class="mb-2 mr-sm-2 col">Transfer Amount ($):</label>
+                <label for="fees" class="mb-2 mr-sm-2 col">Fees (%):</label>
+                <label for="total" class="mb-2 mr-sm-2 col">Total Amount of Transaction ($):</label>
+            </div>
+            <div class="row">
+                <input type="text" class="form-control mb-2 mr-sm-2 col" id="recipientName" placeholder="Recipient Name"
+                       name="recipientName">
+                <input type="text" class="form-control mb-2 mr-sm-2 col" id="transferAmount"
+                       placeholder="Transfer Amount ($)" name="transferAmount">
+                <input type="text" class="form-control mb-2 mr-sm-2 col" id="fees" placeholder="Fees" name="fees">
+                <input type="text" class="form-control mb-2 mr-sm-2 col" id="total"
+                       placeholder="Total Amount of Transaction ($)" name="total">
+            </div>
+
+            <div class="row">
+                <button type="button" class="btn btn-outline-primary mb-2">
+                    <i class="fas fa-exchange-alt"></i>
+                    Transfer
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+
+</div>
+<footer>
+
+</footer>
+</body>
+
+</html>

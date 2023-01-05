@@ -10,5 +10,6 @@ public interface IGeneral<T> {
     void save(T t);
 
     void remove(int id);
+
     void remove(T t);
 }

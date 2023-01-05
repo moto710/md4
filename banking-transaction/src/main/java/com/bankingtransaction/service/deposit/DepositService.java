@@ -4,6 +4,7 @@ import com.bankingtransaction.model.Deposit;
 import com.bankingtransaction.repository.IDepositRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
@@ -12,6 +13,7 @@ import javax.persistence.StoredProcedureQuery;
 import java.math.BigDecimal;
 import java.util.Optional;
 @Service
+@Transactional
 public class DepositService implements IDepositService {
     @PersistenceContext
     private EntityManager entityManager;
@@ -43,7 +45,7 @@ public class DepositService implements IDepositService {
     }
 
     @Override
-    public void deposits(int id, BigDecimal money) {
+    public String deposits(int id, BigDecimal money) {
         StoredProcedureQuery query = entityManager.createStoredProcedureQuery("sp_deposit");
         query.registerStoredProcedureParameter(1, Integer.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(2, BigDecimal.class, ParameterMode.IN);
@@ -51,5 +53,6 @@ public class DepositService implements IDepositService {
         query.setParameter(1,id);
         query.setParameter(2, money);
         query.execute();
+        return (String) query.getOutputParameterValue(3);
     }
 }
