@@ -15,7 +15,7 @@ public class Transfer {
     private String createAt;
 
     @Column(name = "fees", nullable = false)
-    private float fee;
+    private BigDecimal fee;
 
     @Column(name = "fees_amount", precision = 12, scale = 0, nullable = false)
     private BigDecimal feeAmount;
@@ -37,7 +37,7 @@ public class Transfer {
     public Transfer() {
     }
 
-    public Transfer(int id, String createAt, float fee, BigDecimal feeAmount, BigDecimal transactionAmount,
+    public Transfer(int id, String createAt, BigDecimal fee, BigDecimal feeAmount, BigDecimal transactionAmount,
                     BigDecimal transferAmount, Customer recipient, Customer sender) {
         this.id = id;
         this.createAt = createAt;
@@ -65,11 +65,11 @@ public class Transfer {
         this.createAt = createAt;
     }
 
-    public float getFee() {
+    public BigDecimal getFee() {
         return fee;
     }
 
-    public void setFee(float fee) {
+    public void setFee(BigDecimal fee) {
         this.fee = fee;
     }
 

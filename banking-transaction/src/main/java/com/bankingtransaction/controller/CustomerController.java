@@ -5,17 +5,16 @@ import com.bankingtransaction.service.customer.ICustomerService;
 import com.bankingtransaction.utils.InstantUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping({"/", "/customer"})
@@ -25,38 +24,40 @@ public class CustomerController {
     private List<Customer> customerList;
     private ModelAndView modelAndView;
     private Customer customer;
+    private Optional<Customer> customerOptional;
 
-//    @GetMapping("/{id}/deposit")
-//    private ModelAndView redirectDeposit(@PathVariable int id) {
-//        modelAndView = new ModelAndView("redirect:/deposit");
-//        if (customerService.findById(id).isPresent()) {
-//            customer = customerService.findById(id).get();
-//        }
-//        modelAndView.addObject("customer", customerService.findById(id).get());
-//        return modelAndView;
-//    }
-    @GetMapping("/{id}/edit")
+    @GetMapping("/edit/{id}")
     private ModelAndView showEdit(@PathVariable int id) {
         modelAndView = new ModelAndView("/customer/edit");
-        if (customerService.findById(id).isPresent()) {
-            customer = customerService.findById(id).get();
+        customerOptional = customerService.findById(id);
+        if (customerOptional.isPresent()) {
+            customer = customerOptional.get();
+            modelAndView.addObject("error", null);
+            modelAndView.addObject("customer", customer);
+        } else {
+            modelAndView.addObject("error", true);
+            modelAndView.addObject("message", "Customer ID invalid");
         }
-        modelAndView.addObject("customer", customerService.findById(id).get());
         return modelAndView;
     }
-    @GetMapping("/{id}/delete")
+    @GetMapping("/delete/{id}")
     private ModelAndView showDelete(@PathVariable int id) {
         modelAndView = new ModelAndView("/customer/delete");
-        if (customerService.findById(id).isPresent()) {
-            customer = customerService.findById(id).get();
+        customerOptional = customerService.findById(id);
+        if (customerOptional.isPresent()) {
+            customer = customerOptional.get();
+            modelAndView.addObject("error", false);
+            modelAndView.addObject("customer", customer);
+        } else {
+            modelAndView.addObject("error", true);
+            modelAndView.addObject("message", "Customer ID invalid");
         }
-        modelAndView.addObject("customer", customer);
         return modelAndView;
     }
 
 
     @GetMapping("/create")
-    private ModelAndView create(Model model) {
+    private ModelAndView create() {
         modelAndView = new ModelAndView("/customer/create");
         modelAndView.addObject("customer", new Customer());
         return modelAndView;
@@ -69,7 +70,7 @@ public class CustomerController {
         modelAndView.addObject("customerList", customerList);
         return modelAndView;
     }
-    @PostMapping("/{id}/edit")
+    @PostMapping("/edit/{id}")
     private ModelAndView edit(Customer customer) {
         modelAndView = new ModelAndView("redirect:/");
         customer.setUpdatedAt(InstantUtils.instantToString(Instant.now()));
@@ -82,7 +83,7 @@ public class CustomerController {
         customerService.remove(id);
         return modelAndView;
     }
-    @PostMapping("/save")
+    @PostMapping("/create")
     private ModelAndView save(Customer customer) {
         customer.setCreatedAt(InstantUtils.instantToString(Instant.now()));
         customer.setBalance(BigDecimal.ZERO);

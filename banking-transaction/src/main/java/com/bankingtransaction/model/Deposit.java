@@ -13,17 +13,17 @@ public class Deposit {
     private String createAt;
     @ManyToOne(targetEntity = Customer.class)
     @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
-    private int idCustomer;
+    private Customer customer;
     @Column(name = "transaction_amount", precision = 12, scale = 0, nullable = false)
     private BigDecimal transactionAmount;
 
     public Deposit() {
     }
 
-    public Deposit(int id, String createAt, int idCustomer, BigDecimal transactionAmount) {
+    public Deposit(int id, String createAt, Customer customer, BigDecimal transactionAmount) {
         this.id = id;
         this.createAt = createAt;
-        this.idCustomer = idCustomer;
+        this.customer = customer;
         this.transactionAmount = transactionAmount;
     }
 
@@ -43,12 +43,12 @@ public class Deposit {
         this.createAt = createAt;
     }
 
-    public int getIdCustomer() {
-        return idCustomer;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setIdCustomer(int idCustomer) {
-        this.idCustomer = idCustomer;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public BigDecimal getTransactionAmount() {

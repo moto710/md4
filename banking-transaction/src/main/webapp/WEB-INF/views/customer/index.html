@@ -61,14 +61,14 @@
                         <td th:text="${customer.getCreatedAt()}"></td>
                         <td th:text="${customer.getUpdatedAt()}"></td>
                         <td>
-                            <a th:href="@{/customer/{id}/edit(id=${customer.getId()})}">
+                            <a th:href="@{/customer/edit/__${customer.getId()}__}">
                                 <button type="button" class="btn btn-outline-secondary">
                                     <i class="fas fa-edit"></i>
                                 </button>
                             </a>
                         </td>
                         <td>
-                            <a th:href="@{/deposit/{id}/deposit(id=${customer.getId()})}">
+                            <a th:href="@{/deposit/__${customer.getId()}__}">
                                 <button type="button" class="btn btn-outline-success">
                                     <i class="fas fa-plus"></i>
                                 </button>
@@ -89,7 +89,7 @@
                             </a>
                         </td>
                         <td>
-                            <a th:href="@{/customer/{id}/delete(id=${customer.getId()})}">
+                            <a th:href="@{/customer/delete/__${customer.getId()}__}">
                                 <button type="button" class="btn btn-outline-danger">
                                     <i class="fas fa-ban"></i>
                                 </button>

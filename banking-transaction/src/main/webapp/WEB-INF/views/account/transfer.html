@@ -22,59 +22,77 @@
         </div>
     </header>
     <div class="content container">
-        <form class="form mt-2" method="post" th:object="${sender}">
-
-            <th:block >
-                <div class="row">
-                    <label for="senderId" class="mb-2 mr-sm-2 col">Sender ID:</label>
-                    <label for="senderName" class="mb-2 mr-sm-2 col">Sender Name:</label>
-                    <label for="email" class="mb-2 mr-sm-2 col">Email:</label>
-                    <label for="balance" class="mb-2 mr-sm-2 col">Sender Balance:</label>
-                </div>
-                <div class="row">
-                    <input class="form-control mb-2 mr-sm-2 col" id="senderId" readonly th:field="*{id}">
-                    <input class="form-control mb-2 mr-sm-2 col" id="senderName" readonly
-                           th:field="*{name}">
-                    <input class="form-control mb-2 mr-sm-2 col" id="email" readonly
-                           th:field="*{email}">
-                    <input class="form-control mb-2 mr-sm-2 col" id="balance" readonly
-                           th:field="*{balance}">
-                </div>
-                <div class="row">
-                    <label for="Recipient" class="mb-2 mr-sm-2 col">Recipient Name:</label>
-                    <label for="transferAmount" class="mb-2 mr-sm-2 col">Transfer Amount ($):</label>
-                    <label for="fees" class="mb-2 mr-sm-2 col">Fees (%):</label>
-                    <label for="total" class="mb-2 mr-sm-2 col">Total Amount of Transaction ($):</label>
-                </div>
-
-                <div class="row">
-                    <select id="Recipient" th:field="*{name}">
-                        <option th:each="customer : ${customerList}" th:value="${customer}" th:text="${customer.getName()}"></option>
+        <form class="form mt-2" method="post" th:object="${transfer}">
+            <div class="row">
+                <label for="senderId" class="mb-2 mr-sm-2 col">Sender ID:</label>
+                <label for="senderName" class="mb-2 mr-sm-2 col">Sender Name:</label>
+                <label for="email" class="mb-2 mr-sm-2 col">Email:</label>
+                <label for="balance" class="mb-2 mr-sm-2 col">Sender Balance:</label>
+            </div>
+            <div class="row d-flex justify-content-between">
+                <input id="senderId" class="form-control mb-2 mr-sm-2 col" readonly
+                       th:field="*{sender.id}">
+                <input id="senderName" class="form-control mb-2 mr-sm-2 col" readonly
+                       th:field="*{sender.name}">
+                <input id="email" class="form-control mb-2 mr-sm-2 col" readonly
+                       th:field="*{sender.email}">
+                <input id="balance" class="form-control mb-2 mr-sm-2 col" readonly
+                       th:field="*{sender.balance}">
+            </div>
+            <div class="row">
+                <label for="Recipient" class="mb-2 mr-sm-2 col">Recipient Name:</label>
+                <label for="transferAmount" class="mb-2 mr-sm-2 col">Transfer Amount ($):</label>
+                <label for="fees" class="mb-2 mr-sm-2 col">Fees (%):</label>
+                <label for="total" class="mb-2 mr-sm-2 col">Total Amount of Transaction ($):</label>
+            </div>
+            <div class="row">
+                <div class="mb-2 my-0 col">
+                    <select id="Recipient" class="form-select my-0">
+                        <th:block th:each="item : ${recipientList}" th:field="*{recipient}">
+                            <option th:value="${item}" th:text="${item.name}"></option>
+                        </th:block>
                     </select>
-
-                    <input type="text" class="form-control mb-2 mr-sm-2 col" id="transferAmount"
-                           placeholder="Transfer Amount ($)" name="transferAmount">
-                    <input type="text" class="form-control mb-2 mr-sm-2 col" id="fees" placeholder="Fees" name="fees">
-                    <input type="text" class="form-control mb-2 mr-sm-2 col" id="total"
-                           placeholder="Total Amount of Transaction ($)" name="total">
                 </div>
+                <input type="text" class="form-control mb-2 mr-sm-2 col" id="transferAmount"
+                       th:field="*{transferAmount}">
+                <input type="text" class="form-control mb-2 mr-sm-2 col" id="fees"
+                       th:field="*{fee}">
+                <input type="text" class="form-control mb-2 mr-sm-2 col" id="total"
+                       th:field="*{transactionAmount}">
+            </div>
 
-            </th:block>
 
-            <div>
-                <button type="button" class="btn btn-outline-primary mb-2">
-                    <i class="fas fa-exchange-alt"></i>
-                    Transfer
-                </button>
+            <div class="row mt-2">
+                <div class="col-lg-12 ps-0">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="fas fa-exchange-alt"></i>
+                        Transfer
+                    </button>
+                </div>
             </div>
 
         </form>
     </div>
-
-
 </div>
-<footer>
+<footer th:class="${error != null ? (error ? 'footer-error' : 'footer-success') : '' }">
+    <div class="container">
+        <th:block th:if="${error == false}">
+            <div>
+                <h5>Successful deposit transaction</h5>
+            </div>
+        </th:block>
 
+        <th:block th:if="${error == true}">
+            <div>
+                <h5>Error messages:</h5>
+            </div>
+            <div>
+                <ul>
+                    <li th:text="${message}"></li>
+                </ul>
+            </div>
+        </th:block>
+    </div>
 </footer>
 </body>
 

@@ -3,6 +3,7 @@ package com.bankingtransaction.controller;
 import com.bankingtransaction.model.Customer;
 import com.bankingtransaction.model.Withdraw;
 import com.bankingtransaction.service.customer.ICustomerService;
+import com.bankingtransaction.utils.InstantUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Optional;
 
 @Controller
@@ -20,43 +22,57 @@ public class WithdrawController {
     @Autowired
     private ICustomerService customerService;
     private ModelAndView modelAndView;
-    private Customer customer;
     private Optional<Customer> customerOptional;
+    private Customer customer;
 
-    @GetMapping("/{idCustomer}")
-    private ModelAndView showWithdraw(@PathVariable int idCustomer) {
+    @GetMapping("/{id}")
+    private ModelAndView showWithdraw(@PathVariable int id) {
         modelAndView = new ModelAndView("/account/withdraw");
-        customerOptional = customerService.findById(idCustomer);
-        if (customerOptional.isPresent()) {
-            modelAndView.addObject("withdraw", new Withdraw());
-            modelAndView.addObject("customer", customerOptional.get());
-            modelAndView.addObject("error", null);
-        } else {
+        Withdraw withdraw = new Withdraw();
+        customerOptional = customerService.findById(id);
+        if (!customerOptional.isPresent()) {
             modelAndView.addObject("error", true);
             modelAndView.addObject("message", "Customer ID invalid");
+
+        } else {
+            customer = customerOptional.get();
+            withdraw.setCustomer(customer);
+            modelAndView.addObject("withdraw", withdraw);
+            modelAndView.addObject("error", null);
         }
         return modelAndView;
     }
 
-    @PostMapping("/{idCustomer}")
-    private ModelAndView withdraw(@PathVariable int idCustomer, Withdraw withdraw) {
-        modelAndView = new ModelAndView("redirect:/");
-        customerOptional = customerService.findById(idCustomer);
-        if (customerOptional.isPresent()) {
+    @PostMapping("/{id}")
+    private ModelAndView withdraw(@PathVariable int id, Withdraw withdraw) {
+        modelAndView = new ModelAndView("/account/withdraw");
+        customerOptional = customerService.findById(id);
+        if (!customerOptional.isPresent()) {
+            modelAndView.addObject("error", true);
+            modelAndView.addObject("message", "Customer ID invalid");
+
+        } else {
             customer = customerOptional.get();
             BigDecimal currentBalance = customer.getBalance();
             BigDecimal withdrawAmount = withdraw.getTransactionAmount();
-            BigDecimal newBalance = currentBalance.add(withdrawAmount);
+            BigDecimal newBalance = currentBalance.subtract(withdrawAmount);
 
+            if (withdrawAmount.compareTo(currentBalance) > 0) {
+                modelAndView.addObject("error", true);
+                modelAndView.addObject("message", "Your balance is less than withdraw amount!");
+                return modelAndView;
+            }
+            if (withdrawAmount.compareTo(BigDecimal.ZERO) <= 0) {
+                modelAndView.addObject("error", true);
+                modelAndView.addObject("message", "Withdraw amount must be greater than 0");
+                return modelAndView;
+            }
+            customer.setUpdatedAt(InstantUtils.instantToString(Instant.now()));
             customer.setBalance(newBalance);
             customerService.withdraw(customer, withdraw);
 
             modelAndView.addObject("withdraw", new Withdraw());
-            modelAndView.addObject("customer", customer);
             modelAndView.addObject("error", false);
-        } else {
-            modelAndView.addObject("error", true);
-            modelAndView.addObject("message", "Customer ID invalid");
         }
         return modelAndView;
     }

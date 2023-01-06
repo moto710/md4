@@ -4,13 +4,15 @@ import com.bankingtransaction.model.Customer;
 import com.bankingtransaction.model.Deposit;
 import com.bankingtransaction.service.customer.ICustomerService;
 import com.bankingtransaction.service.deposit.IDepositService;
+import com.bankingtransaction.utils.InstantUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/deposit")
@@ -20,27 +22,51 @@ public class DepositController {
     @Autowired
     private ICustomerService customerService;
     private Customer customer;
-    private Deposit deposit;
     private ModelAndView modelAndView;
+    private Optional<Customer> customerOptional;
 
 
-    @GetMapping("/{id}/deposit")
+    @GetMapping("/{id}")
     private ModelAndView showDeposit(@PathVariable int id) {
         modelAndView = new ModelAndView("/account/deposit");
-        if (customerService.findById(id).isPresent()) {
-            customer = customerService.findById(id).get();
-            modelAndView.addObject("error", null);
-        } else {
+        customerOptional = customerService.findById(id);
+        Deposit deposit = new Deposit();
+        if (!customerOptional.isPresent()) {
             modelAndView.addObject("error", true);
             modelAndView.addObject("message", "Customer ID invalid");
+        } else {
+            customer = customerOptional.get();
+            deposit.setCustomer(customer);
+            modelAndView.addObject("error", null);
+            modelAndView.addObject("deposit", deposit);
         }
-        modelAndView.addObject("customer", customer);
         return modelAndView;
     }
-    @PostMapping("/{id}/deposit")
-    private ModelAndView deposit(@PathVariable int id, @RequestParam BigDecimal deposit) {
-        String message = depositService.deposits(id, deposit);
-        modelAndView = new ModelAndView("redirect:/");
+
+    @PostMapping("/{id}")
+    private ModelAndView deposit(@PathVariable int id, Deposit deposit) {
+        modelAndView = new ModelAndView("/account/deposit");
+        customerOptional = customerService.findById(id);
+        BigDecimal transactionAmount = deposit.getTransactionAmount();
+        if (transactionAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            modelAndView.addObject("error", true);
+            modelAndView.addObject("message", "Deposit amount must be greater than 0");
+        } else if (!customerOptional.isPresent()) {
+            modelAndView.addObject("error", true);
+            modelAndView.addObject("message", "Customer ID invalid");
+        } else {
+            customer = customerOptional.get();
+
+            BigDecimal currentBalance = customer.getBalance();
+            BigDecimal newBalance = currentBalance.add(transactionAmount);
+            customer.setBalance(newBalance);
+            customer.setUpdatedAt(InstantUtils.instantToString(Instant.now()));
+
+            customerService.deposit(customer, deposit);
+            modelAndView.addObject("error", false);
+            modelAndView.addObject("customer", customer);
+            modelAndView.addObject("deposit", deposit);
+        }
         return modelAndView;
     }
 }
