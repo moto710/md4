@@ -26,9 +26,13 @@ public class DepositController {
 
     @GetMapping("/{id}/deposit")
     private ModelAndView showDeposit(@PathVariable int id) {
-        modelAndView = new ModelAndView("/deposit/deposit");
+        modelAndView = new ModelAndView("/account/deposit");
         if (customerService.findById(id).isPresent()) {
             customer = customerService.findById(id).get();
+            modelAndView.addObject("error", null);
+        } else {
+            modelAndView.addObject("error", true);
+            modelAndView.addObject("message", "Customer ID invalid");
         }
         modelAndView.addObject("customer", customer);
         return modelAndView;
@@ -36,7 +40,6 @@ public class DepositController {
     @PostMapping("/{id}/deposit")
     private ModelAndView deposit(@PathVariable int id, @RequestParam BigDecimal deposit) {
         String message = depositService.deposits(id, deposit);
-        System.out.println(message);
         modelAndView = new ModelAndView("redirect:/");
         return modelAndView;
     }

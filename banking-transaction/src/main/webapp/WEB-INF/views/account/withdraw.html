@@ -7,21 +7,21 @@
 </head>
 
 <body>
-<div class="container mt-3">
-    <div class="bg-primary d-flex justify-content-between p-3 text-white row">
-        <div>
-            <h2>Withdraw Money from Customer's Account</h2>
+<div class="container">
+    <header class="col-12 d-flex justify-content-between bg-primary text-white p-2">
+        <div class="col-6">
+            <h2>Withdraw Money</h2>
         </div>
-        <div>
+        <div class="col-6 d-flex justify-content-end">
             <a th:href="@{/}">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fa-solid fa-list-ul"></i>
+                    <i class="fas fa-list-ul"></i>
                     Customer List
                 </button>
             </a>
         </div>
-    </div>
-
+    </header>
+<div class="content container">
     <form class="form mt-2" th:object="${customer}" method="post">
 
         <div class="row">
@@ -50,20 +50,24 @@
 
     </form>
 </div>
-<footer>
+
+
+</div>
+<footer th:class="${error != null ? (error ? 'footer-error' : 'footer-success') : '' }">
     <div class="container">
-        <th:block th:if="${!error}">
+        <th:block th:if="${error == false}">
             <div>
-                <h5>Withdraw success!</h5>
+                <h5>Successful withdraw transaction</h5>
             </div>
         </th:block>
-        <th:block th:if="${error}">
+
+        <th:block th:if="${error == true}">
             <div>
                 <h5>Error messages:</h5>
             </div>
             <div>
                 <ul>
-                    <li th:text="${error}"></li>
+                    <li th:text="${message}"></li>
                 </ul>
             </div>
         </th:block>

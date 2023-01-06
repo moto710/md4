@@ -25,13 +25,15 @@ public class WithdrawController {
 
     @GetMapping("/{idCustomer}")
     private ModelAndView showWithdraw(@PathVariable int idCustomer) {
-        modelAndView = new ModelAndView("/withdraw/withdraw");
+        modelAndView = new ModelAndView("/account/withdraw");
         customerOptional = customerService.findById(idCustomer);
         if (customerOptional.isPresent()) {
             modelAndView.addObject("withdraw", new Withdraw());
             modelAndView.addObject("customer", customerOptional.get());
+            modelAndView.addObject("error", null);
         } else {
-            modelAndView.addObject("error", "Customer does not exist!");
+            modelAndView.addObject("error", true);
+            modelAndView.addObject("message", "Customer ID invalid");
         }
         return modelAndView;
     }
@@ -51,8 +53,10 @@ public class WithdrawController {
 
             modelAndView.addObject("withdraw", new Withdraw());
             modelAndView.addObject("customer", customer);
+            modelAndView.addObject("error", false);
         } else {
-            modelAndView.addObject("error", "Customer does not exist!");
+            modelAndView.addObject("error", true);
+            modelAndView.addObject("message", "Customer ID invalid");
         }
         return modelAndView;
     }

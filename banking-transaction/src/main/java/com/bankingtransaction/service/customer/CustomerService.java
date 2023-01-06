@@ -48,6 +48,6 @@ public class CustomerService implements ICustomerService{
         BigDecimal transactionAmount = withdraw.getTransactionAmount();
         withdraw.setCustomer(customer);
         withdrawRepository.save(withdraw);
-        customerRepository.increaseBalance(idCustomer, transactionAmount);
+        customerRepository.decreaseBalance(idCustomer, transactionAmount);
     }
 }

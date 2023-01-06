@@ -8,11 +8,11 @@
 
 <body>
 <div class="container">
-    <header class="col-12 d-flex justify-content-between bg-primary text-white">
+    <header class="col-12 d-flex justify-content-between bg-primary text-white p-2">
         <div class="col-6">
             <a th:href="@{/}">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fa-solid fa-list-ul"></i>
+                    <i class="fas fa-list-ul"></i>
                     Customer List
                 </button>
             </a>
@@ -37,66 +37,66 @@
     <div class="content">
         <table class="table">
             <thead>
-            <tr class="bg-success text-white text-center">
-                <th>#</th>
-                <th>Full Name</th>
-                <th>Balance</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Address</th>
-                <th>Created At</th>
-                <th>Updated At</th>
-                <th colspan="5">Action</th>
-            </tr>
+                <tr class="bg-success text-white text-center">
+                    <th>#</th>
+                    <th>Full Name</th>
+                    <th>Balance</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Created At</th>
+                    <th>Updated At</th>
+                    <th colspan="5">Action</th>
+                </tr>
             </thead>
             <tbody>
-            <div th:each="customer : ${customerList}">
-                <tr>
-                    <td th:text="${customer.getId()}"></td>
-                    <td th:text="${customer.getName()}"></td>
-                    <td th:text="${customer.getBalance()}"></td>
-                    <td th:text="${customer.getEmail()}"></td>
-                    <td th:text="${customer.getPhone()}"></td>
-                    <td th:text="${customer.getAddress()}"></td>
-                    <td th:text="${customer.getCreatedAt()}"></td>
-                    <td th:text="${customer.getUpdatedAt()}"></td>
-                    <td>
-                        <a th:href="@{/customer/{id}/edit(id=${customer.getId()})}">
-                            <button type="button" class="btn btn-outline-secondary">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        </a>
-                    </td>
-                    <td>
-                        <a th:href="@{/deposit/{id}/deposit(id=${customer.getId()})}">
-                            <button type="button" class="btn btn-outline-success">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </a>
-                    </td>
-                    <td>
-                        <a th:href="@{/withdraw/__${customer.getId()}__}">
-                            <button type="button" class="btn btn-outline-warning">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </a>
-                    </td>
-                    <td>
-                        <a th:href="@{/transfer/__${customer.getId()}__}">
-                            <button type="button" class="btn btn-outline-primary">
-                                <i class="fas fa-exchange-alt"></i>
-                            </button>
-                        </a>
-                    </td>
-                    <td>
-                        <a th:href="@{/customer/{id}/delete(id=${customer.getId()})}">
-                            <button type="button" class="btn btn-outline-danger">
-                                <i class="fas fa-ban"></i>
-                            </button>
-                        </a>
-                    </td>
-                </tr>
-            </div>
+                <div th:each="customer : ${customerList}">
+                    <tr>
+                        <td th:text="${customer.getId()}"></td>
+                        <td th:text="${customer.getName()}"></td>
+                        <td th:text="${customer.getBalance()}"></td>
+                        <td th:text="${customer.getEmail()}"></td>
+                        <td th:text="${customer.getPhone()}"></td>
+                        <td th:text="${customer.getAddress()}"></td>
+                        <td th:text="${customer.getCreatedAt()}"></td>
+                        <td th:text="${customer.getUpdatedAt()}"></td>
+                        <td>
+                            <a th:href="@{/customer/{id}/edit(id=${customer.getId()})}">
+                                <button type="button" class="btn btn-outline-secondary">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </a>
+                        </td>
+                        <td>
+                            <a th:href="@{/deposit/{id}/deposit(id=${customer.getId()})}">
+                                <button type="button" class="btn btn-outline-success">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </a>
+                        </td>
+                        <td>
+                            <a th:href="@{/withdraw/__${customer.getId()}__}">
+                                <button type="button" class="btn btn-outline-warning">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </a>
+                        </td>
+                        <td>
+                            <a th:href="@{/transfer/__${customer.getId()}__}">
+                                <button type="button" class="btn btn-outline-primary">
+                                    <i class="fas fa-exchange-alt"></i>
+                                </button>
+                            </a>
+                        </td>
+                        <td>
+                            <a th:href="@{/customer/{id}/delete(id=${customer.getId()})}">
+                                <button type="button" class="btn btn-outline-danger">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+                            </a>
+                        </td>
+                    </tr>
+                </div>
             </tbody>
         </table>
     </div>

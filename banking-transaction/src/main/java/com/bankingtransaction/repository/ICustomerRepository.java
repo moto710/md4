@@ -13,6 +13,6 @@ import java.math.BigDecimal;
 public interface ICustomerRepository extends JpaRepository<Customer, Integer> {
 
     @Modifying
-    @Query("UPDATE Customer AS c SET c.balance = c.balance + :transactrionAmount WHERE c.id = :idCustomer")
-    void increaseBalance(@Param("idCustomer") int idCustomer, @Param("transactionAmount") BigDecimal transactionAmount);
+    @Query("UPDATE Customer AS c SET c.balance = c.balance - :transactionAmount WHERE c.id = :idCustomer")
+    void decreaseBalance(@Param("idCustomer") int idCustomer, @Param("transactionAmount") BigDecimal transactionAmount);
 }
