@@ -79,21 +79,22 @@ public class CustomerService implements ICustomerService{
     }
 
     @Override
-    public void transfer(Customer sender, Customer recipient, Transfer transfer) {
-        int idSender = sender.getId();
-        int idRecipient = recipient.getId();
-        BigDecimal fee = transfer.getFee();
+    public void transfer(Transfer transfer) {
+        int idSender = transfer.getSender().getId();
+        int idRecipient = transfer.getRecipient().getId();
+        BigDecimal fee = new BigDecimal(10);
         BigDecimal transferAmount = transfer.getTransferAmount();
         BigDecimal feeAmount = transferAmount.multiply(fee.divide(BigDecimal.valueOf(100)));
         BigDecimal transactionAmount = feeAmount.add(transferAmount);
 
         transfer.setCreateAt(InstantUtils.instantToString(Instant.now()));
-        transfer.setSender(sender);
-        transfer.setRecipient(recipient);
         transfer.setFeeAmount(feeAmount);
         transfer.setFee(fee);
         transfer.setTransactionAmount(transactionAmount);
         transfer.setTransferAmount(transferAmount);
+
+        transfer.getSender().setUpdatedAt(InstantUtils.instantToString(Instant.now()));
+        transfer.getRecipient().setUpdatedAt(InstantUtils.instantToString(Instant.now()));
 
         transferRepository.save(transfer);
         customerRepository.decreaseBalance(idSender, transactionAmount);

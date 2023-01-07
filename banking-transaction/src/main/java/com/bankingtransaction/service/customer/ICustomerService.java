@@ -15,6 +15,6 @@ public interface ICustomerService extends IGeneral<Customer> {
     List<Customer> findAllByIdNot(int id);
     void deposit(Customer customer, Deposit deposit);
     void withdraw(Customer customer, Withdraw withdraw);
-    void transfer(Customer sender, Customer recipient, Transfer transfer);
+    void transfer(Transfer transfer);
 
 }

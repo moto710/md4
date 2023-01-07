@@ -33,11 +33,12 @@ public class DepositController {
         Deposit deposit = new Deposit();
         if (!customerOptional.isPresent()) {
             modelAndView.addObject("error", true);
+            modelAndView.addObject("notFound", true);
             modelAndView.addObject("message", "Customer ID invalid");
         } else {
             customer = customerOptional.get();
             deposit.setCustomer(customer);
-            modelAndView.addObject("error", null);
+//            modelAndView.addObject("error", null);
             modelAndView.addObject("deposit", deposit);
         }
         return modelAndView;

@@ -32,13 +32,14 @@ public class WithdrawController {
         customerOptional = customerService.findById(id);
         if (!customerOptional.isPresent()) {
             modelAndView.addObject("error", true);
+            modelAndView.addObject("notFound", true);
             modelAndView.addObject("message", "Customer ID invalid");
 
         } else {
             customer = customerOptional.get();
             withdraw.setCustomer(customer);
             modelAndView.addObject("withdraw", withdraw);
-            modelAndView.addObject("error", null);
+//            modelAndView.addObject("error", null);
         }
         return modelAndView;
     }
@@ -60,19 +61,18 @@ public class WithdrawController {
             if (withdrawAmount.compareTo(currentBalance) > 0) {
                 modelAndView.addObject("error", true);
                 modelAndView.addObject("message", "Your balance is less than withdraw amount!");
-                return modelAndView;
-            }
-            if (withdrawAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            } else if (withdrawAmount.compareTo(BigDecimal.ZERO) <= 0) {
                 modelAndView.addObject("error", true);
                 modelAndView.addObject("message", "Withdraw amount must be greater than 0");
-                return modelAndView;
-            }
-            customer.setUpdatedAt(InstantUtils.instantToString(Instant.now()));
-            customer.setBalance(newBalance);
-            customerService.withdraw(customer, withdraw);
+            } else {
+                customer.setUpdatedAt(InstantUtils.instantToString(Instant.now()));
+                customer.setBalance(newBalance);
+                withdraw.setCustomer(customer);
+                customerService.withdraw(customer, withdraw);
 
-            modelAndView.addObject("withdraw", new Withdraw());
-            modelAndView.addObject("error", false);
+                modelAndView.addObject("withdraw", new Withdraw());
+                modelAndView.addObject("error", false);
+            }
         }
         return modelAndView;
     }

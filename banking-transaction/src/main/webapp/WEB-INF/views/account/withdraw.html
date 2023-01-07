@@ -22,25 +22,25 @@
         </div>
     </header>
     <div class="content container">
-        <th:block th:if="${error != true}">
+        <th:block th:if="${notFound != true}">
             <form class="form mt-2" th:object="${withdraw}" method="post">
 
                 <div class="row">
-                    <label class="mb-2 mr-sm-2 col">Customer ID:</label>
-                    <label class="mb-2 mr-sm-2 col">Full Name:</label>
+                    <label class="mb-2 mr-sm-2 col" for="id">Customer ID:</label>
+                    <label class="mb-2 mr-sm-2 col" for="name">Full Name:</label>
                 </div>
                 <div class="row">
-                    <input class="form-control mb-2 mr-sm-2 col" readonly
+                    <input class="form-control mb-2 mr-sm-2 col" id="id" readonly
                            th:field="*{customer.id}" >
-                    <input class="form-control mb-2 mr-sm-2 col" readonly
+                    <input class="form-control mb-2 mr-sm-2 col" id="name" readonly
                            th:field="*{customer.name}" >
                 </div>
                 <div class="row">
-                    <label class="mb-2 mr-sm-2 col">Current balance ($):</label>
+                    <label class="mb-2 mr-sm-2 col" for="balance">Current balance ($):</label>
                     <label class="mb-2 mr-sm-2 col" for="withdraw">Withdraw Amount ($):</label>
                 </div>
                 <div class="row">
-                    <input class="form-control mb-2 mr-sm-2 col" readonly
+                    <input class="form-control mb-2 mr-sm-2 col" id="balance" readonly
                            th:field="*{customer.balance}" >
                     <input type="text" class="form-control mb-2 mr-sm-2 col" id="withdraw"
                            th:field="*{transactionAmount}">

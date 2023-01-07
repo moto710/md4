@@ -22,46 +22,83 @@ public class TransferController {
     private ICustomerService customerService;
     private ModelAndView modelAndView;
     private Optional<Customer> customerOptional;
+
     @GetMapping("/{idSender}")
     private ModelAndView showTransfer(@PathVariable int idSender) {
         modelAndView = new ModelAndView("/account/transfer");
         Transfer transfer = new Transfer();
-        Customer recipient = new Customer();
         Customer sender;
         customerOptional = customerService.findById(idSender);
         if (!customerOptional.isPresent()) {
             modelAndView.addObject("error", true);
-            modelAndView.addObject("error", "Invalid sender");
-        } else{
+            modelAndView.addObject("notFound", true);
+            modelAndView.addObject("message", "Invalid sender");
+        } else {
             List<Customer> recipientList = customerService.findAllByIdNot(idSender);
             sender = customerOptional.get();
-            transfer.setSender(sender);
-            transfer.setRecipient(recipient);
 
             modelAndView.addObject("recipientList", recipientList);
             modelAndView.addObject("transfer", transfer);
+            modelAndView.addObject("sender", sender);
         }
         return modelAndView;
     }
 
     @PostMapping("/{idSender}")
-    private ModelAndView transfer(@PathVariable int idSender, Customer recipient, Transfer transfer) {
+    private ModelAndView transfer(@PathVariable int idSender, Transfer transfer) {
         modelAndView = new ModelAndView("/account/transfer");
-        Customer sender;
+        Customer sender = null;
         customerOptional = customerService.findById(idSender);
-        if (customerOptional.isPresent()) {
+        if (!customerOptional.isPresent()) {
+            modelAndView.addObject("error", true);
+            modelAndView.addObject("message", "Sender ID invalid");
+        } else {
             sender = customerOptional.get();
+            int idRecipient = transfer.getRecipient().getId();
 
-//            BigDecimal currentSenderBalance = sender.getBalance();
-//            BigDecimal fee = transfer.getFee();
-//            BigDecimal transferAmount = transfer.getTransferAmount();
-//            BigDecimal feeAmount = transferAmount.multiply(fee.divide(BigDecimal.valueOf(100)));
-//            BigDecimal transactionAmount = feeAmount.add(transferAmount);
-            customerService.transfer(sender, recipient, transfer);
-            modelAndView.addObject("sender", sender);
-            modelAndView.addObject("recipient", recipient);
-            modelAndView.addObject("transfer", transfer);
+            if (idRecipient == idSender) {
+                modelAndView.addObject("error", true);
+                modelAndView.addObject("message", "Can not transfer for yourself!");
+            } else {
+                Optional<Customer> recipientOptional = customerService.findById(idRecipient);
+
+                if (!recipientOptional.isPresent()) {
+                    modelAndView.addObject("error", true);
+                    modelAndView.addObject("message", "Recipient ID invalid");
+                } else {
+                    BigDecimal currentSenderBalance = sender.getBalance();
+                    BigDecimal transferAmount = transfer.getTransferAmount();
+                    BigDecimal fee = new BigDecimal(10);
+                    BigDecimal feeAmount = transferAmount.multiply(fee.divide(BigDecimal.valueOf(100L)));
+                    BigDecimal transactionAmount = feeAmount.add(transferAmount);
+                    System.out.println("fee: " + fee);
+                    System.out.println("transfer amount: " + transferAmount);
+                    System.out.println("fee amount: " + feeAmount);
+
+                    if (transactionAmount.compareTo(BigDecimal.ZERO) <= 0) {
+                        modelAndView.addObject("error", true);
+                        modelAndView.addObject("message", "Transfer amount must be bigger than 0");
+                    } else if (currentSenderBalance.compareTo(transferAmount) < 0) {
+                        modelAndView.addObject("error", true);
+                        modelAndView.addObject("message", "Sender balance is not enough to transfer");
+                    }  else {
+                        Customer recipient = recipientOptional.get();
+
+                        transfer.setSender(sender);
+                        transfer.setRecipient(recipient);
+                        transfer.setTransactionAmount(transactionAmount);
+                        customerService.transfer(transfer);
+
+                        modelAndView.addObject("error", false);
+                        sender.setBalance(sender.getBalance().subtract(transactionAmount));
+                    }
+                }
+            }
         }
+        List<Customer> recipientList = customerService.findAllByIdNot(idSender);
+        modelAndView.addObject("sender", sender);
+        modelAndView.addObject("recipientList", recipientList);
+        modelAndView.addObject("transfer", new Transfer());
         return modelAndView;
     }
 }

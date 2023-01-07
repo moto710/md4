@@ -22,7 +22,7 @@
         </div>
     </header>
     <div class="content container">
-        <th:block th:if="${error != true}">
+        <th:block th:if="${notFound != true}">
             <form class="form mt-2" th:object="${deposit}" method="post">
 
                 <div class="row">
@@ -42,7 +42,7 @@
                 <div class="row">
                     <input class="form-control mb-2 mr-sm-2 col" id="balance" readonly
                            th:field="*{customer.balance}">
-                    <input type="text" class="form-control mb-2 mr-sm-2 col" id="deposit" readonly
+                    <input type="text" class="form-control mb-2 mr-sm-2 col" id="deposit"
                            th:field="*{transactionAmount}">
                 </div>
 
