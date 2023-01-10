@@ -3,7 +3,7 @@ package com.bankingtransaction.controller;
 import com.bankingtransaction.model.Customer;
 import com.bankingtransaction.model.Withdraw;
 import com.bankingtransaction.service.customer.ICustomerService;
-import com.bankingtransaction.utils.InstantUtils;
+import com.bankingtransaction.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
 
 @Controller
@@ -65,7 +66,7 @@ public class WithdrawController {
                 modelAndView.addObject("error", true);
                 modelAndView.addObject("message", "Withdraw amount must be greater than 0");
             } else {
-                customer.setUpdatedAt(InstantUtils.instantToString(Instant.now()));
+                customer.setUpdatedAt(new Date());
                 customer.setBalance(newBalance);
                 withdraw.setCustomer(customer);
                 customerService.withdraw(customer, withdraw);

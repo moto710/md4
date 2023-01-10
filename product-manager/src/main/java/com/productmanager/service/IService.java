@@ -13,4 +13,5 @@ public interface IService<T> {
 
     void remove(int id);
     int findMaxId();
+    List<T> findByName(String name);
 }

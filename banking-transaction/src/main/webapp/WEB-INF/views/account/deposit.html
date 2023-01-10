@@ -54,8 +54,11 @@
                         </button>
                     </div>
                 </div>
-
+                <div th:if="${#fields.hasErrors('transactionAmount')}" th:errors="*{transactionAmount}">
+                    error
+                </div>
             </form>
+
         </th:block>
     </div>
 

@@ -13,6 +13,7 @@ import java.util.List;
 @Repository
 public interface ICustomerRepository extends JpaRepository<Customer, Integer> {
 
+    List<Customer> findAllByDeletedIsFalse();
     List<Customer> findAllByIdNot(int id);
     @Modifying
     @Query("UPDATE Customer AS c SET c.balance = c.balance - :transactionAmount WHERE c.id = :idCustomer")

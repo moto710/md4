@@ -8,18 +8,20 @@ import com.bankingtransaction.repository.ICustomerRepository;
 import com.bankingtransaction.repository.IDepositRepository;
 import com.bankingtransaction.repository.ITransferRepository;
 import com.bankingtransaction.repository.IWithdrawRepository;
-import com.bankingtransaction.utils.InstantUtils;
+import com.bankingtransaction.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
 @Service
 @Transactional
-public class CustomerService implements ICustomerService{
+public class CustomerService implements ICustomerService {
     @Autowired
     private ICustomerRepository customerRepository;
     @Autowired
@@ -28,6 +30,7 @@ public class CustomerService implements ICustomerService{
     private ITransferRepository transferRepository;
     @Autowired
     private IDepositRepository depositRepository;
+
     @Override
     public Iterable<Customer> findAll() {
         return customerRepository.findAll();
@@ -37,6 +40,17 @@ public class CustomerService implements ICustomerService{
     public Optional<Customer> findById(int id) {
         return customerRepository.findById(id);
     }
+
+    @Override
+    public List<Customer> findAllByDeletedIsFalse() {
+        return customerRepository.findAllByDeletedIsFalse();
+    }
+
+    @Override
+    public List<Customer> findAllByIdNot(int id) {
+        return customerRepository.findAllByIdNot(id);
+    }
+
 
     @Override
     public void save(Customer customer) {
@@ -54,16 +68,11 @@ public class CustomerService implements ICustomerService{
     }
 
     @Override
-    public List<Customer> findAllByIdNot(int id) {
-        return customerRepository.findAllByIdNot(id);
-    }
-
-    @Override
     public void deposit(Customer customer, Deposit deposit) {
         int idCustomer = customer.getId();
         BigDecimal transactionAmount = deposit.getTransactionAmount();
         deposit.setCustomer(customer);
-        deposit.setCreateAt(InstantUtils.instantToString(Instant.now()));
+        deposit.setCreatedAt(new Date());
         depositRepository.save(deposit);
         customerRepository.increaseBalance(idCustomer, transactionAmount);
     }
@@ -73,7 +82,7 @@ public class CustomerService implements ICustomerService{
         int idCustomer = customer.getId();
         BigDecimal transactionAmount = withdraw.getTransactionAmount();
         withdraw.setCustomer(customer);
-        withdraw.setCreatedAt(InstantUtils.instantToString(Instant.now()));
+        withdraw.setCreatedAt(new Date());
         withdrawRepository.save(withdraw);
         customerRepository.decreaseBalance(idCustomer, transactionAmount);
     }
@@ -87,14 +96,14 @@ public class CustomerService implements ICustomerService{
         BigDecimal feeAmount = transferAmount.multiply(fee.divide(BigDecimal.valueOf(100)));
         BigDecimal transactionAmount = feeAmount.add(transferAmount);
 
-        transfer.setCreateAt(InstantUtils.instantToString(Instant.now()));
+        transfer.setCreatedAt(new Date());
         transfer.setFeeAmount(feeAmount);
         transfer.setFee(fee);
         transfer.setTransactionAmount(transactionAmount);
         transfer.setTransferAmount(transferAmount);
 
-        transfer.getSender().setUpdatedAt(InstantUtils.instantToString(Instant.now()));
-        transfer.getRecipient().setUpdatedAt(InstantUtils.instantToString(Instant.now()));
+        transfer.getSender().setUpdatedAt(new Date());
+        transfer.getRecipient().setUpdatedAt(new Date());
 
         transferRepository.save(transfer);
         customerRepository.decreaseBalance(idSender, transactionAmount);

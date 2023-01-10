@@ -2,16 +2,15 @@ package com.bankingtransaction.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @Table(name = "withdraws")
-public class Withdraw {
+public class Withdraw extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
-    @Column(name = "created_at")
-    private String createdAt;
 
     @ManyToOne(targetEntity = Customer.class)
     @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
@@ -23,7 +22,7 @@ public class Withdraw {
     public Withdraw() {
     }
 
-    public Withdraw(int id, String createdAt, Customer customer, BigDecimal transactionAmount) {
+    public Withdraw(Integer id, Date createdAt, Customer customer, BigDecimal transactionAmount) {
         this.id = id;
         this.createdAt = createdAt;
         this.customer = customer;
@@ -46,20 +45,11 @@ public class Withdraw {
         this.customer = customer;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
 }

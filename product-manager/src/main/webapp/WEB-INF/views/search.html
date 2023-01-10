@@ -1,10 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Product List</title>
+  <div th:replace="/layout :: head"></div>
 </head>
 <body>
-$END$
+<div th:if="${success}">
+  <p th:text="${success}"></p>
+</div>
+<div class="container-fluid table-responsive mt-3">
+  <table class="table">
+    <thead>
+    <tr class="bg-primary text-white">
+      <th colspan="2">
+        <a th:href="@{/product}">
+          <button type="button" class="btn btn-primary text-light"><i class="fa-solid fa-list-ul"></i>
+            List Of Product
+          </button>
+        </a>
+      </th>
+      <th colspan="2">
+        <a th:href="@{/product/create}">
+          <button type="button" class="btn btn-primary text-light"><i class="fa-solid fa-square-plus"></i>
+            Add new Product
+          </button>
+        </a>
+      </th>
+      <th colspan="2">
+        <div class="search-container">
+          <form action="@{/search}">
+            <label>
+              <input type="text" placeholder="Search..." name="keyword">
+            </label>
+            <button type="submit"><i class="fa fa-search"></i></button>
+          </form>
+        </div>
+      </th>
+    </tr>
+    <tr class="bg-success text-white text-center">
+      <th>ID</th>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      <th colspan="2">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product,proStat : ${productList}">
+      <td th:text="${product.getId()}"></td>
+      <td th:text="${product.getName()}"></td>
+      <td th:text="${product.getPrice()}"></td>
+      <td th:text="${product.getQuantity()}"></td>
+      <td>
+        <a th:href="@{/product/{id}/edit(id=${product.getId()})}">
+          <button type="button" class="btn btn-outline-secondary">
+            <i class="fa-regular fa-pen-to-square"></i>
+          </button>
+        </a>
+      </td>
+      <td>
+        <a th:href="@{/product/{id}/remove(id=${product.getId()})}">
+          <button type="button" class="btn btn-outline-danger">
+            <i class="fa-solid fa-ban"></i>
+          </button>
+        </a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<footer th:replace="/layout :: footer"></footer>
 </body>
 </html>

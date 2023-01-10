@@ -12,7 +12,7 @@
     <table class="table">
         <thead>
         <tr class="bg-primary text-white">
-            <th colspan="4">
+            <th colspan="2">
                 <a th:href="@{/product}">
                     <button type="button" class="btn btn-primary text-light"><i class="fa-solid fa-list-ul"></i>
                         List Of Product
@@ -26,6 +26,16 @@
                     </button>
                 </a>
             </th>
+            <th colspan="2">
+                <div class="search-container">
+                    <form action="/search">
+                        <label>
+                            <input type="text" placeholder="Search..." name="keyword" th:value="keyword">
+                        </label>
+                        <button type="submit"><i class="fa fa-search"></i></button>
+                    </form>
+                </div>
+            </th>
         </tr>
         <tr class="bg-success text-white text-center">
             <th>ID</th>
@@ -36,20 +46,20 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="customer,cusStat : ${productList}">
-            <td th:text="${customer.getId()}"></td>
-            <td th:text="${customer.getName()}"></td>
-            <td th:text="${customer.getPrice()}"></td>
-            <td th:text="${customer.getQuantity()}"></td>
+        <tr th:each="product,proStat : ${productList}">
+            <td th:text="${product.getId()}"></td>
+            <td th:text="${product.getName()}"></td>
+            <td th:text="${product.getPrice()}"></td>
+            <td th:text="${product.getQuantity()}"></td>
             <td>
-                <a th:href="@{/product/{id}/edit(id=${customer.getId()})}">
+                <a th:href="@{/product/{id}/edit(id=${product.getId()})}">
                     <button type="button" class="btn btn-outline-secondary">
                         <i class="fa-regular fa-pen-to-square"></i>
                     </button>
                 </a>
             </td>
             <td>
-                <a th:href="@{/product/{id}/remove(id=${customer.getId()})}">
+                <a th:href="@{/product/{id}/remove(id=${product.getId()})}">
                     <button type="button" class="btn btn-outline-danger">
                         <i class="fa-solid fa-ban"></i>
                     </button>

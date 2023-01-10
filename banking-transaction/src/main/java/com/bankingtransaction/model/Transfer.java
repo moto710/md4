@@ -2,17 +2,15 @@ package com.bankingtransaction.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @Table(name = "transfers")
-public class Transfer {
+public class Transfer extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @Column(name = "created_at", nullable = false)
-    private String createAt;
+    private Integer id;
 
     @Column(name = "fees", nullable = false)
     private BigDecimal fee;
@@ -37,10 +35,10 @@ public class Transfer {
     public Transfer() {
     }
 
-    public Transfer(int id, String createAt, BigDecimal fee, BigDecimal feeAmount, BigDecimal transactionAmount,
+    public Transfer(Integer id, Date createdAt, BigDecimal fee, BigDecimal feeAmount, BigDecimal transactionAmount,
                     BigDecimal transferAmount, Customer recipient, Customer sender) {
         this.id = id;
-        this.createAt = createAt;
+        this.createdAt = createdAt;
         this.fee = fee;
         this.feeAmount = feeAmount;
         this.transactionAmount = transactionAmount;
@@ -49,20 +47,12 @@ public class Transfer {
         this.sender = sender;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(String createAt) {
-        this.createAt = createAt;
     }
 
     public BigDecimal getFee() {

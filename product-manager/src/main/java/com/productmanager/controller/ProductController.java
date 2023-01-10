@@ -64,4 +64,11 @@ public class ProductController {
         redirect.addFlashAttribute("success", "Removed customer successfully!");
         return new ModelAndView("redirect:/");
     }
+
+    @GetMapping("/search/${keyword}")
+    private ModelAndView search(@PathVariable String keyword, RedirectAttributes redirectAttributes) {
+        productList = productIService.findByName(keyword);
+        redirectAttributes.addFlashAttribute("productList", productList);
+        return new ModelAndView("/search");
+    }
 }

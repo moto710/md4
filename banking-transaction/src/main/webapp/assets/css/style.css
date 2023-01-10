@@ -15,3 +15,11 @@ footer {
     background-color: #f8d7da;
     color: #88252c;
 }
+
+.hidden {
+    display: none;
+}
+
+.show {
+    display: block;
+}

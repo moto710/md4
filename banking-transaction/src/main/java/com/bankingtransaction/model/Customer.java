@@ -1,32 +1,41 @@
 package com.bankingtransaction.model;
 
 
+import jakarta.validation.constraints.NotBlank;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
+import org.springframework.validation.Validator;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @Table(name = "customers")
-public class Customer {
+@Component
+public class Customer extends BaseEntity implements Validator {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @Column(name = "full_name", nullable = false)
     private String name;
-    @Column(precision = 12, scale = 0, nullable = false, updatable = false)
+
+    @NotBlank
+    @Column(precision = 12, nullable = false, updatable = false)
     private BigDecimal balance;
     @Column(nullable = false, unique = true)
     private String email;
     private String address;
-    private String phone;
-    @Column(name = "created_at")
-    private String createdAt;
-    @Column(name = "updated_at")
-    private String updatedAt;
 
-    public Customer() {
+    @NotBlank
+    private String phone;
+
+        public Customer() {
     }
 
-    public Customer(int id, String name, BigDecimal balance, String email, String address, String phone, String createdAt, String updatedAt) {
+    public Customer(Integer id, String name, BigDecimal balance, String email, String address, String phone,
+                    Date createdAt, Date updatedAt, Boolean deleted) {
         this.id = id;
         this.name = name;
         this.balance = balance;
@@ -35,21 +44,24 @@ public class Customer {
         this.phone = phone;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.deleted = deleted;
     }
-    public Customer(int id, String name, String email, String address, String phone, String createdAt) {
+
+    public Customer(Integer id, String name, String email, String address, String phone, Date createdAt, Boolean deleted) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.address = address;
         this.phone = phone;
         this.createdAt = createdAt;
+        this.deleted = deleted;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -93,24 +105,37 @@ public class Customer {
         this.phone = phone;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return Customer.class.isAssignableFrom(clazz);
     }
 
     @Override
-    public String toString() {
-        return name;
+    public void validate(Object target, Errors errors) {
+        Customer customer = (Customer) target;
+        String name = customer.getName();
+        String phone = customer.getPhone();
+        String email = customer.getEmail();
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "name.empty");
+
+        if (name.length() == 0) {
+            errors.rejectValue("name", "name.null");
+        } else if (name.length() < 2 || name.length() > 50) {
+            errors.rejectValue("name", "name.length");
+        }
+
+        if (phone.length() > 11 || phone.length() < 10) {
+            errors.rejectValue("number", "number.length");
+        } else if (!phone.startsWith("0")) {
+            errors.rejectValue("number", "number.startsWith");
+        } else if (!phone.matches("(^$|[0-9]*$)")) {
+            errors.rejectValue("number", "number.matches");
+        }
+
+        if (email.length() == 0) {
+            errors.rejectValue("email", "email.null");
+        } else if (!email.matches("^[\\w]+@([\\w-]+\\.)+[\\w-]{2,6}$")) {
+            errors.rejectValue("email", "email.matches");
+        }
     }
 }
