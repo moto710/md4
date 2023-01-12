@@ -42,6 +42,11 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
+    public List<Customer> findAllByDeletedIsFalseAndIdNot(Integer id) {
+        return customerRepository.findAllByDeletedIsFalseAndIdNot(id);
+    }
+
+    @Override
     public List<Customer> findAllByDeletedIsFalse() {
         return customerRepository.findAllByDeletedIsFalse();
     }

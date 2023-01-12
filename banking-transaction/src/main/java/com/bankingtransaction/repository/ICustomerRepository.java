@@ -12,9 +12,9 @@ import java.util.List;
 
 @Repository
 public interface ICustomerRepository extends JpaRepository<Customer, Integer> {
-
+    List<Customer> findAllByDeletedIsFalseAndIdNot(Integer id);
     List<Customer> findAllByDeletedIsFalse();
-    List<Customer> findAllByIdNot(int id);
+    List<Customer> findAllByIdNot(Integer id);
     @Modifying
     @Query("UPDATE Customer AS c SET c.balance = c.balance - :transactionAmount WHERE c.id = :idCustomer")
     void decreaseBalance(@Param("idCustomer") int idCustomer, @Param("transactionAmount") BigDecimal transactionAmount);

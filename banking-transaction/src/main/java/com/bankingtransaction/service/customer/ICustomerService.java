@@ -11,7 +11,7 @@ import java.util.List;
 
 
 public interface ICustomerService extends IGeneral<Customer> {
-
+    List<Customer> findAllByDeletedIsFalseAndIdNot(Integer id);
     List<Customer> findAllByDeletedIsFalse();
     List<Customer> findAllByIdNot(int id);
     void deposit(Customer customer, Deposit deposit);

@@ -22,54 +22,55 @@
         </div>
     </header>
     <div class="content container">
-        <th:block th:if="${error != true}">
-            <form class="form mt-2" th:object="${customer}" method="post">
-                <input type="hidden" th:field="*{id}">
-                <div class="row">
-                    <label for="fullName" class="mb-2 mr-sm-2 col">Full Name:</label>
-                    <label for="balance" class="mb-2 mr-sm-2 col">Balance:</label>
-                </div>
-                <div class="row">
-                    <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="fullName" th:field="*{name}">
-                    <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="balance"
-                           th:field="*{balance}">
-                </div>
-                <div class="row">
-                    <label for="phone" class="mb-2 mr-sm-2 col">Phone:</label>
-                    <label for="email" class="mb-2 mr-sm-2 col">Email:</label>
-                </div>
-                <div class="row">
-                    <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="phone" th:field="*{phone}">
-                    <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="email" th:field="*{email}">
-                </div>
-                <div class="row">
-                    <label for="address" class="mb-2 mr-sm-2 col">Address:</label>
-                    <label for="created" class="mb-2 mr-sm-2 col">Created At:</label>
-                </div>
-                <div class="row">
-                    <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="address"
-                           th:field="*{address}">
-                    <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="created"
-                           th:field="*{createdAt}">
-                </div>
-                <div class="row mt-2">
+        <form class="form mt-2" th:object="${customer}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <div class="row">
+                <label for="fullName" class="mb-2 mr-sm-2 col">Full Name:</label>
+                <label for="balance" class="mb-2 mr-sm-2 col">Balance:</label>
+            </div>
+            <div class="row">
+                <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="fullName" th:field="*{name}">
+                <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="balance"
+                       th:field="*{balance}">
+            </div>
+            <div class="row">
+                <label for="phone" class="mb-2 mr-sm-2 col">Phone:</label>
+                <label for="email" class="mb-2 mr-sm-2 col">Email:</label>
+            </div>
+            <div class="row">
+                <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="phone" th:field="*{phone}">
+                <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="email" th:field="*{email}">
+            </div>
+            <div class="row">
+                <label for="address" class="mb-2 mr-sm-2 col">Address:</label>
+                <label for="created" class="mb-2 mr-sm-2 col">Created At:</label>
+            </div>
+            <div class="row">
+                <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="address"
+                       th:field="*{address}">
+                <input type="text" class="form-control mb-2 mr-sm-2 col" disabled id="created"
+                       th:field="*{createdAt}">
+            </div>
+            <div class="row mt-2">
+                <th:block th:if="*{id != null && deleted == false}">
                     <div class="col-lg-12 ps-0">
                         <button type="submit" class="btn btn-warning">
                             <i class="far fa-trash-alt"></i>
                             Delete Customer
                         </button>
                     </div>
-                </div>
+                </th:block>
+            </div>
 
-            </form>
-        </th:block>
+        </form>
     </div>
 </div>
+
 <footer th:class="${error != null ? (error ? 'footer-error' : 'footer-success') : '' }">
     <div class="container">
         <th:block th:if="${error == false}">
             <div>
-                <h5>Successful deposit transaction</h5>
+                <h5>Delete customer success!</h5>
             </div>
         </th:block>
 

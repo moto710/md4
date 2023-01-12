@@ -34,12 +34,12 @@ public class TransferController {
             modelAndView.addObject("notFound", true);
             modelAndView.addObject("message", "Invalid sender");
         } else {
-            List<Customer> recipientList = customerService.findAllByIdNot(idSender);
+            List<Customer> recipientList = customerService.findAllByDeletedIsFalseAndIdNot(idSender);
             sender = customerOptional.get();
+            transfer.setSender(sender);
 
             modelAndView.addObject("recipientList", recipientList);
             modelAndView.addObject("transfer", transfer);
-            modelAndView.addObject("sender", sender);
         }
         return modelAndView;
     }

@@ -63,15 +63,20 @@ public class CustomerController {
         modelAndView = new ModelAndView("/customer/delete");
         customerOptional = customerService.findById(id);
 
-        if (customerOptional.isPresent()) {
-            customer = customerOptional.get();
-            modelAndView.addObject("error", false);
-            modelAndView.addObject("customer", customer);
-        } else {
+        if (!customerOptional.isPresent()) {
             modelAndView.addObject("error", true);
             modelAndView.addObject("message", "Customer ID invalid");
-        }
+            modelAndView.addObject("customer", new Customer());
+        } else {
+            customer = customerOptional.get();
 
+            if (customer.getDeleted()) {
+                modelAndView.addObject("error", true);
+                modelAndView.addObject("message", "This customer has been suspended");
+            }
+
+            modelAndView.addObject("customer", customer);
+        }
         return modelAndView;
     }
 
@@ -143,10 +148,24 @@ public class CustomerController {
 //        }
     }
 
-    @PostMapping("/{id}/delete")
+    @PostMapping("/delete/{id}")
     private ModelAndView delete(@PathVariable Integer id) {
-        modelAndView = new ModelAndView("redirect:/");
-        customerService.remove(id);
+        modelAndView = new ModelAndView("/customer/delete");
+        Optional<Customer> customerOptional = customerService.findById(id);
+
+        if (!customerOptional.isPresent()) {
+            modelAndView.addObject("error", true);
+            modelAndView.addObject("message", "Customer ID invalid");
+            modelAndView.addObject("customer", new Customer());
+        } else {
+            customer = customerOptional.get();
+            customer.setDeleted(true);
+            customerService.save(customer);
+
+            modelAndView.addObject("error", false);
+            modelAndView.addObject("customer", customer);
+        }
+
         return modelAndView;
     }
 
