@@ -229,7 +229,8 @@
                             </div>
                             <div class="col-lg-6">
                                 <label>Transaction Amount</label>
-                                <input type="text" class="form-control" id="transactionAmountWith" name="transactionAmountWith"/>
+                                <input type="text" class="form-control" id="transactionAmountWith"
+                                    name="transactionAmountWith" />
                             </div>
                         </div>
                     </form>
@@ -252,14 +253,18 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5">Transfer Money</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close close-modal" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post">
+                    <div class="modal-alert-danger hidden">
+
+                    </div>
+                    <form method="post" id="frmTransfer">
                         <div class="row">
                             <div class="col-lg-3">
                                 <label>Sender ID</label>
-                                <input type="text" class="form-control" id="idSend" readonly />
+                                <input type="text" class="form-control" id="idCustomerSend" readonly />
                             </div>
                             <div class="col-lg-3">
                                 <label>Sender Name</label>
@@ -278,12 +283,13 @@
                             <div class="col-lg-3">
                                 <label>Recipient Name</label>
                                 <select class="form-select" aria-label="Default select example" id="recipientId">
-                                    <option selected disabled>Choose recipient customer:</option>
+                                    <option selected disabled value="0">Choose recipient customer:</option>
                                 </select>
                             </div>
                             <div class="col-lg-3">
                                 <label>Transfer Amount ($)</label>
-                                <input type="text" class="form-control" id="transferAmountTran" />
+                                <input type="text" class="form-control" id="transferAmountTran"
+                                    name="transferAmountTran" />
                             </div>
                             <div class="col-lg-3">
                                 <label>Fees (%)</label>
@@ -301,7 +307,7 @@
                         <i class="fas fa-exchange-alt"></i>
                         Transfer
                     </button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary close-modal" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -316,7 +322,9 @@
     <script>
         const page = {
             urls: {
-                getAllCustomers: AppBase.API_CUSTOMER,
+                getAllCustomers: AppBase.API_CUSTOMER + "?deleted=0",
+                postNewCustomer: AppBase.API_CUSTOMER,
+                getCustomer: AppBase.API_CUSTOMER + "/",
                 doDeposit: AppBase.API_DEPOSIT,
                 doWithdraw: AppBase.API_WITHDRAW,
                 doTransfer: AppBase.API_TRANSFER
@@ -332,7 +340,7 @@
                     "content-type": "application/json"
                 },
                 type: "GET",
-                url: page.urls.getAllCustomers + "?deleted=0"
+                url: page.urls.getAllCustomers
             })
                 .done((data) => {
                     $.each(data, (i, item) => {
@@ -398,13 +406,14 @@
             })
         }
 
-        function addEventShowModelTransfer() {
+        function addEventShowModalTransfer() {
             $(".transfer").on("click", function () {
-                let senderId = $(this).data("id");
+                let senderId = +$(this).data("id");
 
                 findById(senderId).then(() => {
+                    $("#modalTransfer").modal("show");
                     if (customer !== null) {
-                        $("#idSend").val(customer.id);
+                        $("#idCustomerSend").val(customer.id);
                         $("#fullNameSend").val(customer.fullName);
                         $("#emailSend").val(customer.email);
                         $("#balanceSend").val(customer.balance);
@@ -415,25 +424,23 @@
                                 "content-type": "application/json"
                             },
                             type: "GET",
-                            url: page.urls.getAllCustomers + "?deleted=0"
+                            url: page.urls.getAllCustomers
                         })
                             .done((data) => {
                                 $.each(data, (i, item) => {
                                     if (item.id !== senderId) {
                                         let str = renderSelectOptionRecipient(item);
-                                        document.querySelector("#recipientId").insertAdjacentHTML("beforeend", str);
+                                        $("#recipientId").append("beforeend", str);
                                     }
                                 })
 
                                 countTransferTransaction();
 
-                                allAddEvent();
+                                // allAddEvent();
                             })
                             .fail((error) => {
                                 console.log(error)
                             })
-
-                        $("#modalTransfer").modal("show");
                     }
                 });
             })
@@ -531,7 +538,7 @@
                     "content-type": "application/json"
                 },
                 type: "GET",
-                url: page.urls.getAllCustomers + "/" + customerId
+                url: page.urls.getCustomer + customerId
             })
                 .done((data) => {
                     customer = data;
@@ -541,23 +548,24 @@
                 })
         }
 
-        function newFindById(customerId) {
-            $.ajax({
-                headers: {
-                    "accept": "application/json",
-                    "content-type": "application/json"
-                },
-                type: "GET",
-                url: page.urls.getAllCustomers + "/" + customerId
-            })
-                .done((data) => {
-                    console.log(data);
-                    return data;
-                })
-                .fail((error) => {
-                    console.log(error)
-                })
-        }
+        // function newFindById(customerId, customer) {
+        //     return $.ajax({
+        //         headers: {
+        //             "accept": "application/json",
+        //             "content-type": "application/json"
+        //         },
+        //         type: "GET",
+        //         url: page.urls.getCustomer + customerId
+        //     })
+        //         .done((data) => {
+        //             console.log("data");
+        //             console.log(data);
+        //             customer = data;
+        //         })
+        //         .fail((error) => {
+        //             console.log(error)
+        //         })
+        // }
 
         function countTransferTransaction() {
             document.getElementById("transferAmountTran").addEventListener("input", () => {
@@ -570,15 +578,22 @@
             })
         }
 
-        function checkBiggerThanBalance(){
-            let transactionAmount = $("#transactionAmountWith").val(),
-                balanceWith = $("#balanceWith").val();
-                return transactionAmount <= balanceWith;
+        function checkBiggerThanBalance() {
+            let transactionAmount = +$("#transactionAmountWith").val(),
+                balanceWith = +$("#balanceWith").val();
+            return transactionAmount <= balanceWith;
+        }
+
+        function checkBiggerThanBalanceWithFee() {
+            let transactionAmount = +$("#transferAmountTran").val(),
+                balance = +$("#balanceSend").val(),
+                feesAmount = transactionAmount * 10 / 100;
+            return balance >= transactionAmount + feesAmount;
         }
 
         function sweetAlertSuccess(message) {
             Swal.fire({
-                position: 'top-center',
+                position: 'center',
                 icon: 'success',
                 title: `${message} success`,
                 showConfirmButton: false,
@@ -609,7 +624,7 @@
                     "content-type": "application/json"
                 },
                 type: "POST",
-                url: page.urls.getAllCustomers,
+                url: page.urls.postNewCustomer,
                 data: JSON.stringify(customer)
             })
                 .done((data) => {
@@ -650,7 +665,7 @@
                     "content-type": "application/json"
                 },
                 type: "PATCH",
-                url: page.urls.getAllCustomers + "/" + id,
+                url: page.urls.getCustomer + id,
                 data: JSON.stringify(customer)
             })
                 .done((data) => {
@@ -705,7 +720,7 @@
                     "content-type": "application/json"
                 },
                 type: "PATCH",
-                url: page.urls.getAllCustomers + "/" + customer.id,
+                url: page.urls.getCustomer + customer.id,
                 data: JSON.stringify(customer)
             })
                 .done((data) => {
@@ -744,7 +759,7 @@
                     "content-type": "application/json"
                 },
                 type: "PATCH",
-                url: page.urls.getAllCustomers + "/" + customer.id,
+                url: page.urls.getCustomer + customer.id,
                 data: JSON.stringify(customer)
             })
                 .done((data) => {
@@ -781,6 +796,94 @@
                 })
         }
 
+        function transfer() {
+            let sender = structuredClone(customer);
+
+            let senderCurrentBalance = sender.balance,
+                transferAmount = +$("#transferAmountTran").val(),
+                fees = 10,
+                feesAmount = transferAmount * fees / 100,
+                transactionAmount = transferAmount + feesAmount,
+                senderNewBalance = senderCurrentBalance - transactionAmount;
+            sender.balance = senderNewBalance;
+
+            $.ajax({
+                headers: {
+                    "accept": "application/json",
+                    "content-type": "application/json"
+                },
+                type: "PATCH",
+                url: page.urls.getCustomer + sender.id,
+                data: JSON.stringify(sender)
+            })
+                .done((data) => {
+                    let recipientId = +$("#recipientId").find(":selected").val();
+                    findById(recipientId).then(() => {
+                        let recipient = structuredClone(customer), 
+                            recipientCurrentBalance = recipient.balance,
+                            recipientNewBalance = recipientCurrentBalance + transferAmount;
+                        recipient.balance = recipientNewBalance;
+
+                        $.ajax({
+                            headers: {
+                                "accept": "application/json",
+                                "content-type": "application/json"
+                            },
+                            type: "PATCH",
+                            url: page.urls.getCustomer + recipient.id,
+                            data: JSON.stringify(recipient)
+                        })
+                            .done((data) => {
+                                let transfer = {
+                                    fees: 10,
+                                    feesAmount: feesAmount,
+                                    transactionAmount: transactionAmount,
+                                    transferAmount: transferAmount,
+                                    senderId: sender.id,
+                                    recipientId: recipient.id
+                                }
+
+                                $.ajax({
+                                    headers: {
+                                        "accept": "application/json",
+                                        "content-type": "application/json"
+                                    },
+                                    type: "POST",
+                                    url: page.urls.doTransfer,
+                                    data: JSON.stringify(transfer)
+                                })
+                                    .done((data) => {
+
+                                        let currentSenderRow = $("#tr_" + sender.id);
+                                        newSenderRow = renderCustomer(sender);
+
+                                        currentSenderRow.replaceWith(newSenderRow);
+
+                                        let currentRecipientRow = $("#tr_" + recipient.id),
+                                            newRecipientRow = renderCustomer(recipient);
+
+                                        currentRecipientRow.replaceWith(newRecipientRow);
+
+                                        $("#modalTransfer").modal("hide");
+
+                                        sweetAlertSuccess("Transfer");
+
+                                        allAddEvent();
+                                    })
+                                    .fail((error) => {
+                                        console.log(error);
+                                    })
+                            })
+                            .fail((error) => {
+                                console.log(error);
+                            })
+                    });
+                })
+                .fail((error) => {
+                    console.error(error);
+                })
+        }
+
         $("#btnShowCreateModal").on("click", () => {
             $("#modalCreate").modal("show");
         })
@@ -802,98 +905,27 @@
         })
 
         $("#btnTransfer").on("click", () => {
-            let senderCurrentBalance = customer.balance,
-                senderId = customer.id,
-                transferAmount = +$("#transferAmountTran").val(),
-                fees = 10,
-                feesAmount = transferAmount * fees / 100,
-                transactionAmount = transferAmount + feesAmount,
-                senderNewBalance = senderCurrentBalance - transactionAmount;
-            customer.balance = senderNewBalance;
-
-            let sender = { ...customer };
-
-            $.ajax({
-                headers: {
-                    "accept": "application/json",
-                    "content-type": "application/json"
-                },
-                type: "PATCH",
-                url: page.urls.getAllCustomers + "/" + sender.id,
-                data: JSON.stringify(sender)
-            })
-                .done((data) => {
-                    let recipientId = +$("#recipientId").val();
-
-                    let recipient = newFindById(recipientId);
-
-                    let recipientCurrentBalance = customer.balance,
-                        recipientNewBalance = recipientCurrentBalance + transferAmount;
-                    customer.balance = recipientNewBalance;
-
-
-                    $.ajax({
-                        headers: {
-                            "accept": "application/json",
-                            "content-type": "application/json"
-                        },
-                        type: "PATCH",
-                        url: page.urls.getAllCustomers + "/" + recipientId,
-                        data: JSON.stringify(recipient)
-                    })
-                        .done((data) => {
-                            let transfer = {
-                                fees: 10,
-                                feesAmount: feesAmount,
-                                transactionAmount: transactionAmount,
-                                transferAmount: transferAmount,
-                                senderId: senderId,
-                                recipientId: customer.id
-                            }
-
-                            $.ajax({
-                                headers: {
-                                    "accept": "application/json",
-                                    "content-type": "application/json"
-                                },
-                                type: "POST",
-                                url: page.urls.doTransfer,
-                                data: JSON.stringify(transfer)
-                            })
-                                .done((data) => {
-
-                                    let currentSenderRow = $("#tr_" + sender.id);
-                                    newSenderRow = renderCustomer(sender);
-
-                                    currentSenderRow.replaceWith(newSenderRow);
-
-                                    let currentRecipientRow = $("#tr_" + recipient.id),
-                                        newRecipientRow = renderCustomer(recipient);
-
-                                    currentRecipientRow.replaceWith(newRecipientRow);
-
-                                    $("#modalTransfer").modal("hide");
-
-                                    sweetAlertSuccess("Transfer");
-
-                                    allAddEvent();
-                                })
-                                .fail((error) => {
-                                    console.log(error);
-                                })
-                        })
-                        .fail((error) => {
-                            console.log(error);
-                        })
-                })
-                .fail((error) => {
-                    console.error(error);
-                })
+            $("#frmTransfer").trigger("submit");
         })
 
         $("#modalCreate").on("hidden.bs.modal", () => {
             $("#frmCreateCustomer")[0].reset();
             $("#frmCreateCustomer").validate().resetForm();
+        })
+
+        $("#modalWithdraw").on("hidden.bs.modal", () => {
+            $("#frmWithdraw")[0].reset();
+            $("#frmWithdraw").validate().resetForm();
+        })
+
+        $("#modalDeposit").on("hidden.bs.modal", () => {
+            $("#frmDeposit")[0].reset();
+            $("#frmDeposit").validate().resetForm();
+        })
+
+        $("#modalTransfer").on("hidden.bs.modal", () => {
+            $("#frmTransfer")[0].reset();
+            $("#frmTransfer").validate().resetForm();
         })
 
         $("#frmCreateCustomer").validate({
@@ -992,6 +1024,7 @@
             rules: {
                 transactionAmountDep: {
                     required: true,
+                    number: true,
                     min: 10,
                     max: 1000000000
                 }
@@ -1000,7 +1033,8 @@
                 transactionAmountDep: {
                     required: "Please fill your money to deposit.",
                     min: "Minium amount to deposit is 10$",
-                    max: "Maximum amount to deposit is 1.000.000.000$"
+                    max: "Maximum amount to deposit is 1.000.000.000$",
+                    number: "Only number in this field!"
                 }
             },
             errorLabelContainer: "#modalDeposit .modal-alert-danger",
@@ -1025,6 +1059,7 @@
             rules: {
                 transactionAmountWith: {
                     required: true,
+                    number: true,
                     min: 10,
                     max: 1000000000,
                     isBiggerThanBalance: true
@@ -1032,9 +1067,10 @@
             },
             messages: {
                 transactionAmountWith: {
-                    required: "Please fill your money to deposit.",
+                    required: "Please fill your money to withdraw.",
                     min: "Minium amount to withdraw is 10$",
-                    max: "Maximum amount to withdraw is 1.000.000.000$"
+                    max: "Maximum amount to withdraw is 1.000.000.000$",
+                    number: "Only number in this field!"
                 }
             },
             errorLabelContainer: "#modalWithdraw .modal-alert-danger",
@@ -1055,6 +1091,42 @@
             }
         });
 
+        $("#frmTransfer").validate({
+            rules: {
+                transferAmountTran: {
+                    required: true,
+                    number: true,
+                    min: 10,
+                    max: 1000000000,
+                    isBiggerThanBalanceWithFee: true
+                }
+            },
+            messages: {
+                transferAmountTran: {
+                    required: "Please fill your money to transfer.",
+                    min: "Minium amount to transfer is 10$",
+                    max: "Maximum amount to transfer is 1.000.000.000$",
+                    number: "Only number in this field!"
+                }
+            },
+            errorLabelContainer: "#modalTransfer .modal-alert-danger",
+            errorPlacement: function (error, element) {
+                error.appendTo("#modalTransfer .modal-alert-danger");
+            },
+            showErrors: function (errorMap, errorList) {
+                if (this.numberOfInvalids() > 0) {
+                    $("#modalTransfer .modal-alert-danger").removeClass("hidden").addClass("show");
+                } else {
+                    $("#modalTransfer .modal-alert-danger").removeClass("show").addClass("hidden").empty();
+                    $("#frmTransfer input.error").removeClass("error");
+                }
+                this.defaultShowErrors();
+            },
+            submitHandler: () => {
+                transfer();
+            }
+        });
+
         $.validator.addMethod("isValidEmail", function (value, element) {
             return this.optional(element) || /^[\w]+@([\w-]+\.)+[\w-]{2,6}$/i.test(value);
         }, "Invalid email! Example: abc@domain.xyz");
@@ -1064,8 +1136,12 @@
         }, "Invalid phone number! Example: 909298966 or 0909298966");
 
         $.validator.addMethod("isBiggerThanBalance", function (value, element) {
-            return this.optional(element) || /checkBiggerThanBalance()/i.test(value);
+            return this.optional(element) || checkBiggerThanBalance();
         }, "Withdraw amount must be less than your balance!");
+
+        $.validator.addMethod("isBiggerThanBalanceWithFee", function (value, element) {
+            return this.optional(element) || checkBiggerThanBalanceWithFee();
+        }, "Not enough money to do transfer!");
 
         getAllCustomers();
 
@@ -1077,7 +1153,7 @@
 
             addEventShowModalWithdraw();
 
-            addEventShowModelTransfer();
+            addEventShowModalTransfer();
 
             addEventShowConfirmDelete();
         }
