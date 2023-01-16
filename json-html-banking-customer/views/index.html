@@ -20,7 +20,7 @@
                     <h1>List of customers</h1>
                 </div>
                 <div class="col-lg-6 float-start text-right">
-                    <button class="btn btn-outline-light">
+                    <button class="btn btn-outline-light" id="btnShowTransferHistoryModal">
                         <i class="fas fa-bars"></i>
                         Transfer History
                     </button>
@@ -313,6 +313,42 @@
         </div>
     </div>
 
+    <!-- Modal Transfer History-->
+    <div class="modal fade" id="modalTransferHistory" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Transfer History</h1>
+                    <button type="button" class="btn-close close-modal" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="tbTransferHistory" class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Sender ID</th>
+                                <th>Sender Name</th>
+                                <th>Recipient ID</th>
+                                <th>Recipient Name</th>
+                                <th>Transaction Amount</th>
+                                <th>Transfer Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class=" modal-footer">
+                    <button type="button" class="btn btn-secondary close-modal" data-bs-dismiss="modal">Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="./assets/jquery/v3.6.3/jquery-3.6.3.min.js"></script>
     <script src="./assets/bootstrap/v5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="./assets/sweetalert2/v11.7.0/sweetalert2.min.js"></script>
@@ -428,7 +464,7 @@
                         })
                             .done((data) => {
                                 $.each(data, (i, item) => {
-                                    if (item.id !== senderId) {
+                                    if (item.id !== customer.id) {
                                         let str = renderSelectOptionRecipient(item);
                                         $("#recipientId").append("beforeend", str);
                                     }
@@ -439,11 +475,44 @@
                                 // allAddEvent();
                             })
                             .fail((error) => {
-                                console.log(error)
+                                console.log(error);
                             })
                     }
                 });
             })
+        }
+
+        function addEventShowModalTransferHistory() {
+            console.log("test")
+            $.ajax({
+                headers: {
+                    "accept": "application/json",
+                    "content-type": "application/json"
+                },
+                type: "GET",
+                url: page.urls.doTransfer
+            })
+                .done((data) => {
+                    $.each(data, (i, transfer) => {
+                        let senderId = transfer.senderId,
+                            recipientId = transfer.recipientId,
+                            senderName = '',
+                            recipientName = '';
+
+                        findById(senderId).then(() => {
+                            senderName = customer.fullName;
+                            findById(recipientId).then(() => {
+                                recipientName = customer.fullName;
+
+                                let str = renderShowTransferHistory(transfer, senderName, recipientName);
+                                $("#tbTransferHistory tbody").append(str);
+                            })
+                        })
+                    })
+                })
+                .fail((error) => {
+                    console.log(error);
+                });
         }
 
         function addEventShowConfirmDelete() {
@@ -489,8 +558,22 @@
 
         function renderSelectOptionRecipient(item) {
             return `
-                    <option value="${item.id}">${item.fullName}</option>
-            `;
+                <option value="${item.id}">${item.fullName}</option>
+                `;
+        }
+
+        function renderShowTransferHistory(transfer, senderName, recipientName) {
+            return `
+                                <tr>
+                                    <td>${transfer.id}</td>
+                                    <td>${transfer.senderId}</td>
+                                    <td>${senderName}</td>
+                                    <td>${transfer.recipientId}</td>
+                                    <td>${recipientName}</td>
+                                    <td>${transfer.transferAmount}</td>
+                                    <td>${transfer.transactionAmount}</td>
+                                </tr>
+                                `;
         }
 
         function renderCustomer(item) {
@@ -547,25 +630,6 @@
                     console.log(error)
                 })
         }
-
-        // function newFindById(customerId, customer) {
-        //     return $.ajax({
-        //         headers: {
-        //             "accept": "application/json",
-        //             "content-type": "application/json"
-        //         },
-        //         type: "GET",
-        //         url: page.urls.getCustomer + customerId
-        //     })
-        //         .done((data) => {
-        //             console.log("data");
-        //             console.log(data);
-        //             customer = data;
-        //         })
-        //         .fail((error) => {
-        //             console.log(error)
-        //         })
-        // }
 
         function countTransferTransaction() {
             document.getElementById("transferAmountTran").addEventListener("input", () => {
@@ -819,7 +883,7 @@
                 .done((data) => {
                     let recipientId = +$("#recipientId").find(":selected").val();
                     findById(recipientId).then(() => {
-                        let recipient = structuredClone(customer), 
+                        let recipient = structuredClone(customer),
                             recipientCurrentBalance = recipient.balance,
                             recipientNewBalance = recipientCurrentBalance + transferAmount;
                         recipient.balance = recipientNewBalance;
@@ -888,6 +952,11 @@
             $("#modalCreate").modal("show");
         })
 
+        $("#btnShowTransferHistoryModal").click(() => {
+            $("#modalTransferHistory").modal("show");
+            addEventShowModalTransferHistory();
+        })
+
         $("#btnCreate").on("click", () => {
             $("#frmCreateCustomer").trigger("submit");
         })
@@ -928,6 +997,11 @@
             $("#frmTransfer").validate().resetForm();
         })
 
+        $("#modalTransferHistory").on("hidden.bs.modal", () => {
+            $("#tbTransferHistory tbody").remove();
+            // $("#frmTransfer").validate().resetForm();
+        })
+        
         $("#frmCreateCustomer").validate({
             rules: {
                 fullNameCre: {
@@ -1154,6 +1228,7 @@
             addEventShowModalWithdraw();
 
             addEventShowModalTransfer();
+
 
             addEventShowConfirmDelete();
         }
