@@ -447,12 +447,13 @@
                 let senderId = +$(this).data("id");
 
                 findById(senderId).then(() => {
-                    $("#modalTransfer").modal("show");
                     if (customer !== null) {
                         $("#idCustomerSend").val(customer.id);
                         $("#fullNameSend").val(customer.fullName);
                         $("#emailSend").val(customer.email);
                         $("#balanceSend").val(customer.balance);
+                        $("#recipientId").empty();
+                    $("#modalTransfer").modal("show");
 
                         $.ajax({
                             headers: {
@@ -998,8 +999,7 @@
         })
 
         $("#modalTransferHistory").on("hidden.bs.modal", () => {
-            $("#tbTransferHistory tbody").remove();
-            // $("#frmTransfer").validate().resetForm();
+            $("#tbTransferHistory tbody").empty();
         })
         
         $("#frmCreateCustomer").validate({
@@ -1228,7 +1228,6 @@
             addEventShowModalWithdraw();
 
             addEventShowModalTransfer();
-
 
             addEventShowConfirmDelete();
         }
