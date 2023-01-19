@@ -23,12 +23,21 @@
     <script>
         const page = {
             urls: {
-                getAllCustomers: AppBase.API_CUSTOMER + "?deleted=0",
-                postNewCustomer: AppBase.API_CUSTOMER,
+                getAllCustomers: AppBase.API_CUSTOMER,
+                getAllCustomersNotId: AppBase.API_CUSTOMER + "/recipients-list/",
                 getCustomer: AppBase.API_CUSTOMER + "/",
                 doDeposit: AppBase.API_DEPOSIT,
                 doWithdraw: AppBase.API_WITHDRAW,
-                doTransfer: AppBase.API_TRANSFER
+                doTransfer: AppBase.API_TRANSFER,
+                getAllTransfers: AppBase.API_TRANSFERS
+            }
+        }
+
+        const vApi = {
+            urls: {
+                getAllProvinces: "https://vapi.vnappmob.com/api/province/",
+                getAllDistricts: "https://vapi.vnappmob.com/api/province/district/",
+                getAllWards: "https://vapi.vnappmob.com/api/province/ward/"
             }
         }
 
@@ -56,22 +65,101 @@
                 })
         }
 
+        function getAllProvinces(){
+            $.ajax({
+                type: "GET",
+                url: vApi.urls.getAllProvinces
+            })
+                .done((data) => {
+                    $.each(data.results, (i, item) => {
+                        let pro = renderSelectOptionProvince(item);
+                        $("#provinceCre").append(pro);
+                    })
+                    addEventChangeProvince();
+                })
+                .fail((error) => {
+                    sweetAlertError("Can't find provinces list!");
+                })
+        }
+
+        function getAllDistrictsByProvinceId(id){
+            $.ajax({
+                type: "GET",
+                url: vApi.urls.getAllDistricts + id
+            })
+                .done((data) => {
+                    console.log(data)
+                    $("#districtCre").empty();
+                    $.each(data.results, (i, item) => {
+                        let dis = renderSelectOptionDistrict(item);
+                        $("#districtCre").append(dis);
+                    })
+                    addEventChangeDistrict();
+                })
+                .fail((error) => {
+                    console.log("fail")
+                    sweetAlertError("Can't find districts list!");
+                })
+        }
+
+        function getAllWardsByDistrictId(id) {
+            $.ajax({
+                type: "GET",
+                url: vApi.urls.getAllWards + id
+            })
+                .done((data) => {
+                    $("#wardCre").empty();
+                    $.each(data.results, (i, item) => {
+                        let war = renderSelectOptionWard(item);
+                        $("#wardCre").append(war);
+                        console.log("wardId: " + id)
+                    })
+                    addEventChangeWard();
+                })
+                .fail((error) => {
+                    sweetAlertError("Can't find wards list!");
+                })
+        }
+        
+        function addEventChangeProvince() {
+            $("#provinceCre").on("change", function () {
+                let provinceId = +$(this).val();
+                getAllDistrictsByProvinceId(provinceId);
+                console.log(provinceId)
+            })
+        }
+
+        function addEventChangeDistrict() {
+            $("#districtCre").on("change", function () {
+                let districtId = $(this).val();
+                getAllWardsByDistrictId(districtId);
+                console.log(districtId)
+            })
+        }
+
+        function addEventChangeWard() {
+            $("#wardCre").on("change", function () {
+                let wardId = $(this).val();
+                console.log(wardId)
+            })
+        }
+
         function addEventShowModalUpdate() {
             $(".update").on("click", function () {
                 let customerId = $(this).data("id");
 
                 findById(customerId).then(() => {
+                    $("#idUp").val(customer.id);
+                    $("#fullNameUp").val(customer.name);
+                    $("#emailUp").val(customer.email);
+                    $("#phoneUp").val(customer.phone);
+                    $("#addressUp").val(customer.address);
 
-                    if (customer !== null) {
-                        $("#idUp").val(customer.id);
-                        $("#fullNameUp").val(customer.fullName);
-                        $("#emailUp").val(customer.email);
-                        $("#phoneUp").val(customer.phone);
-                        $("#addressUp").val(customer.address);
-
-                        $("#modalUpdate").modal("show");
-                    }
-                });
+                    $("#modalUpdate").modal("show");
+                })
+                    .catch(() => {
+                        sweetAlertError("Customer not found!");
+                    });
             })
         }
 
@@ -80,14 +168,15 @@
                 let customerId = $(this).data("id");
 
                 findById(customerId).then(() => {
-                    if (customer !== null) {
-                        $("#idDep").val(customer.id);
-                        $("#fullNameDep").val(customer.fullName);
-                        $("#balanceDep").val(customer.balance);
+                    $("#idDep").val(customer.id);
+                    $("#fullNameDep").val(customer.name);
+                    $("#balanceDep").val(customer.balance);
 
-                        $("#modalDeposit").modal("show");
-                    }
-                });
+                    $("#modalDeposit").modal("show");
+                })
+                    .catch(() => {
+                        sweetAlertError("Customer not found!");
+                    });
             })
         }
 
@@ -96,14 +185,15 @@
                 let customerId = $(this).data("id");
 
                 findById(customerId).then(() => {
-                    if (customer !== null) {
-                        $("#idWith").val(customer.id);
-                        $("#fullNameWith").val(customer.fullName);
-                        $("#balanceWith").val(customer.balance);
+                    $("#idWith").val(customer.id);
+                    $("#fullNameWith").val(customer.name);
+                    $("#balanceWith").val(customer.balance);
 
-                        $("#modalWithdraw").modal("show");
-                    }
-                });
+                    $("#modalWithdraw").modal("show");
+                })
+                    .catch(() => {
+                        sweetAlertError("Customer not found!");
+                    });
             })
         }
 
@@ -112,39 +202,38 @@
                 let senderId = +$(this).data("id");
 
                 findById(senderId).then(() => {
-                    if (customer !== null) {
-                        $("#idCustomerSend").val(customer.id);
-                        $("#fullNameSend").val(customer.fullName);
-                        $("#emailSend").val(customer.email);
-                        $("#balanceSend").val(customer.balance);
-                        $("#recipientId").empty();
-                        $("#modalTransfer").modal("show");
+                    $.ajax({
+                        headers: {
+                            "accept": "application/json",
+                            "content-type": "application/json"
+                        },
+                        type: "GET",
+                        url: page.urls.getAllCustomersNotId + senderId
+                    })
+                        .done((data) => {
+                            $("#recipientId").empty();
 
-                        $.ajax({
-                            headers: {
-                                "accept": "application/json",
-                                "content-type": "application/json"
-                            },
-                            type: "GET",
-                            url: page.urls.getAllCustomers
+                            $.each(data, (i, item) => {
+                                let str = renderSelectOptionRecipient(item);
+                                $("#recipientId").append("beforeend", str);
+                            })
+                            $("#idCustomerSend").val(customer.id);
+                            $("#fullNameSend").val(customer.name);
+                            $("#emailSend").val(customer.email);
+                            $("#balanceSend").val(customer.balance);
+                            $("#modalTransfer").modal("show");
+
+                            countTransferTransaction();
+
+                            // allAddEvent();
                         })
-                            .done((data) => {
-                                $.each(data, (i, item) => {
-                                    if (item.id !== customer.id) {
-                                        let str = renderSelectOptionRecipient(item);
-                                        $("#recipientId").append("beforeend", str);
-                                    }
-                                })
-
-                                countTransferTransaction();
-
-                                // allAddEvent();
-                            })
-                            .fail((error) => {
-                                console.log(error);
-                            })
-                    }
-                });
+                        .fail((error) => {
+                            console.log(error);
+                        })
+                })
+                    .catch(() => {
+                        sweetAlertError("Customer not found!");
+                    });
             })
         }
 
@@ -156,24 +245,12 @@
                     "content-type": "application/json"
                 },
                 type: "GET",
-                url: page.urls.doTransfer
+                url: page.urls.getAllTransfers
             })
                 .done((data) => {
                     $.each(data, (i, transfer) => {
-                        let senderId = transfer.senderId,
-                            recipientId = transfer.recipientId,
-                            senderName = '',
-                            recipientName = '';
-
-                        findById(senderId).then(() => {
-                            senderName = customer.fullName;
-                            findById(recipientId).then(() => {
-                                recipientName = customer.fullName;
-
-                                let str = renderShowTransferHistory(transfer, senderName, recipientName);
-                                $("#tbTransferHistory tbody").append(str);
-                            })
-                        })
+                        let str = renderShowTransferHistory(transfer);
+                        $("#tbTransferHistory tbody").append(str);
                     })
                 })
                 .fail((error) => {
@@ -195,28 +272,30 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        findById(customerId).then(() => {
+                            customer.deleted = 1;
+                            console.log(customer);
+                            $.ajax({
+                                headers: {
+                                    "accept": "application/json",
+                                    "content-type": "application/json"
+                                },
+                                type: "PATCH",
+                                url: page.urls.getCustomer + customerId,
+                                data: JSON.stringify(customer)
+                            })
+                                .done((data) => {
+                                    $("#tr_" + customerId).remove();
 
-                        let customer = {
-                            deleted: 1
-                        }
-
-                        $.ajax({
-                            headers: {
-                                "accept": "application/json",
-                                "content-type": "application/json"
-                            },
-                            type: "PATCH",
-                            url: page.urls.getAllCustomers + "/" + customerId,
-                            data: JSON.stringify(customer)
+                                    sweetAlertSuccess("Delete customer");
+                                })
+                                .fail((error) => {
+                                    console.log(error)
+                                })
+                        }).catch(() => {
+                            sweetAlertError("Customer not found!");
                         })
-                            .done((data) => {
-                                $("#tr_" + customerId).remove();
 
-                                sweetAlertSuccess("Delete customer");
-                            })
-                            .fail((error) => {
-                                console.log(error)
-                            })
                     }
                 })
             })
@@ -224,33 +303,49 @@
 
         function renderSelectOptionRecipient(item) {
             return `
-                <option value="${item.id}">${item.fullName}</option>
+                <option value="${item.id}">${item.name}</option>
                 `;
         }
 
-        function renderShowTransferHistory(transfer, senderName, recipientName) {
+        function renderSelectOptionProvince(item) {
+            return `<option value="${item.province_id}">${item.province_name}</option>`;
+        }
+
+        function renderSelectOptionDistrict(item) {
+            return `<option value="${item.district_id}">${item.district_name}</option>`;
+        }
+
+        function renderSelectOptionWard(item) {
+            return `<option value="${item.ward_id}">${item.ward_name}</option>`;
+        }
+
+        function renderShowTransferHistory(transfer) {
             return `
-                                <tr>
-                                    <td>${transfer.id}</td>
-                                    <td>${transfer.senderId}</td>
-                                    <td>${senderName}</td>
-                                    <td>${transfer.recipientId}</td>
-                                    <td>${recipientName}</td>
-                                    <td>${transfer.transferAmount}</td>
-                                    <td>${transfer.transactionAmount}</td>
-                                </tr>
-                                `;
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Full Name</th>
+                        <th class="text-center">Email</th>
+                        <th class="text-center">Phone</th>
+                        <th class="text-center">Balance</th>
+                        <th class="text-center">Province</th>
+                        <th class="text-center">District</th>
+                        <th class="text-center">Ward</th>
+                        <th class="text-center" colspan="5">Action</th>
+                    </tr>
+                `;
         }
 
         function renderCustomer(item) {
             return `
                 <tr id="tr_${item.id}">
                     <td class="text-center">${item.id}</td>
-                    <td>${item.name}</td>
+                    <td class="text-center">${item.name}</td>
                     <td class="text-center">${item.email}</td>
                     <td class="text-center">${item.phone}</td>
                     <td class="text-end">${item.balance}</td>
-                    <td>${item.address}</td>
+                    <td class="text-center">Province</td>
+                    <td class="text-center">District</td>
+                    <td class="text-center">Ward</td>
                     <td>
                         <button type="button" class="btn btn-outline-secondary update" data-id="${item.id}">
                             <i class="fas fa-edit"></i>
@@ -331,21 +426,26 @@
             })
         }
 
+        function sweetAlertError(message) {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: `${message}`
+            })
+        }
+
         function createCustomer() {
-            let fullName = $("#fullNameCre").val(),
+            let name = $("#fullNameCre").val(),
                 email = $("#emailCre").val(),
                 phone = $("#phoneCre").val(),
-                address = $("#addressCre").val(),
-                balance = 0,
-                deleted = 0;
+                address = $("#addressCre").val();
+
 
             let customer = {
-                fullName,
+                name,
                 email,
                 phone,
-                address,
-                balance,
-                deleted
+                address
             }
 
             $.ajax({
@@ -354,7 +454,7 @@
                     "content-type": "application/json"
                 },
                 type: "POST",
-                url: page.urls.postNewCustomer,
+                url: page.urls.getAllCustomers,
                 data: JSON.stringify(customer)
             })
                 .done((data) => {
@@ -371,19 +471,20 @@
 
                 })
                 .fail((error) => {
-                    console.log(error)
+                    console.log(error);
+                    sweetAlertError("Create new customer fail!");
                 })
         }
 
         function updateCustomer() {
             let id = +$("#idUp").val(),
-                fullName = $("#fullNameUp").val(),
+                name = $("#fullNameUp").val(),
                 email = $("#emailUp").val(),
                 phone = $("#phoneUp").val(),
                 address = $("#addressUp").val();
 
             let customer = {
-                fullName,
+                name,
                 email,
                 phone,
                 address
@@ -413,19 +514,17 @@
 
                 })
                 .fail((error) => {
-                    console.log(error)
+                    console.log(error);
+                    sweetAlertError("Update fail!");
                 })
         }
 
         function deposit() {
-            let currentBalance = customer.balance;
             let transactionAmount = +$("#transactionAmountDep").val();
-            let newBalance = currentBalance + transactionAmount;
-            customer.balance = newBalance;
 
             let deposit = {
-                customerId: customer.id,
-                transactionAmount: transactionAmount
+                customer,
+                transactionAmount
             }
 
             $.ajax({
@@ -438,22 +537,7 @@
                 data: JSON.stringify(deposit)
             })
                 .done((data) => {
-
-                })
-                .fail((error) => {
-                    console.error(error);
-                })
-
-            $.ajax({
-                headers: {
-                    "accept": "application/json",
-                    "content-type": "application/json"
-                },
-                type: "PATCH",
-                url: page.urls.getCustomer + customer.id,
-                data: JSON.stringify(customer)
-            })
-                .done((data) => {
+                    console.log(data)
                     customer = data;
 
                     let currentRow = $("#tr_" + customer.id);
@@ -464,23 +548,20 @@
                     $("#modalDeposit").modal("hide");
 
                     sweetAlertSuccess("Deposit");
-
                     allAddEvent();
                 })
                 .fail((error) => {
                     console.error(error);
+                    sweetAlertError("Deposit fail!");
                 })
         }
 
         function withdraw() {
-            let currentBalance = customer.balance,
-                transactionAmount = +$("#transactionAmountWith").val(),
-                newBalance = currentBalance - transactionAmount;
-            customer.balance = newBalance;
+            let transactionAmount = +$("#transactionAmountWith").val();
 
             let withdraw = {
-                customerId: customer.id,
-                transactionAmount: transactionAmount
+                customer,
+                transactionAmount
             }
 
             $.ajax({
@@ -488,26 +569,11 @@
                     "accept": "application/json",
                     "content-type": "application/json"
                 },
-                type: "PATCH",
-                url: page.urls.getCustomer + customer.id,
-                data: JSON.stringify(customer)
+                type: "POST",
+                url: page.urls.doWithdraw,
+                data: JSON.stringify(withdraw)
             })
                 .done((data) => {
-                    $.ajax({
-                        headers: {
-                            "accept": "application/json",
-                            "content-type": "application/json"
-                        },
-                        type: "POST",
-                        url: page.urls.doWithdraw,
-                        data: JSON.stringify(withdraw)
-                    })
-                        .done((data) => {
-
-                        })
-                        .fail((error) => {
-                            console.error(error);
-                        })
                     customer = data;
 
                     let currentRow = $("#tr_" + customer.id);
@@ -523,98 +589,62 @@
                 })
                 .fail((error) => {
                     console.error(error);
+                    sweetAlertError("Withdraw fail!");
                 })
         }
 
         function transfer() {
-            let sender = structuredClone(customer);
+            let senderId = +$("#idCustomerSend").val(),
+                recipientId = +$("#recipientId").val(),
+                transferAmount = +$("#transferAmountTran").val();
 
-            let senderCurrentBalance = sender.balance,
-                transferAmount = +$("#transferAmountTran").val(),
-                fees = 10,
-                feesAmount = transferAmount * fees / 100,
-                transactionAmount = transferAmount + feesAmount,
-                senderNewBalance = senderCurrentBalance - transactionAmount;
-            sender.balance = senderNewBalance;
+            let transfer = {
+                sender: {
+                    id: senderId
+                },
+                recipient: {
+                    id: recipientId
+                },
+                transferAmount
+            }
 
             $.ajax({
                 headers: {
                     "accept": "application/json",
                     "content-type": "application/json"
                 },
-                type: "PATCH",
-                url: page.urls.getCustomer + sender.id,
-                data: JSON.stringify(sender)
+                type: "POST",
+                url: page.urls.doTransfer,
+                data: JSON.stringify(transfer)
             })
                 .done((data) => {
-                    let recipientId = +$("#recipientId").find(":selected").val();
-                    findById(recipientId).then(() => {
-                        let recipient = structuredClone(customer),
-                            recipientCurrentBalance = recipient.balance,
-                            recipientNewBalance = recipientCurrentBalance + transferAmount;
-                        recipient.balance = recipientNewBalance;
+                    let sender = data.sender,
+                        recipient = data.recipient;
 
-                        $.ajax({
-                            headers: {
-                                "accept": "application/json",
-                                "content-type": "application/json"
-                            },
-                            type: "PATCH",
-                            url: page.urls.getCustomer + recipient.id,
-                            data: JSON.stringify(recipient)
-                        })
-                            .done((data) => {
-                                let transfer = {
-                                    fees: 10,
-                                    feesAmount: feesAmount,
-                                    transactionAmount: transactionAmount,
-                                    transferAmount: transferAmount,
-                                    senderId: sender.id,
-                                    recipientId: recipient.id
-                                }
+                    let currentSenderRow = $("#tr_" + sender.id),
+                        newSenderRow = renderCustomer(sender);
 
-                                $.ajax({
-                                    headers: {
-                                        "accept": "application/json",
-                                        "content-type": "application/json"
-                                    },
-                                    type: "POST",
-                                    url: page.urls.doTransfer,
-                                    data: JSON.stringify(transfer)
-                                })
-                                    .done((data) => {
+                    currentSenderRow.replaceWith(newSenderRow);
 
-                                        let currentSenderRow = $("#tr_" + sender.id);
-                                        newSenderRow = renderCustomer(sender);
+                    let currentRecipientRow = $("#tr_" + recipient.id),
+                        newRecipientRow = renderCustomer(recipient);
 
-                                        currentSenderRow.replaceWith(newSenderRow);
+                    currentRecipientRow.replaceWith(newRecipientRow);
 
-                                        let currentRecipientRow = $("#tr_" + recipient.id),
-                                            newRecipientRow = renderCustomer(recipient);
+                    $("#modalTransfer").modal("hide");
 
-                                        currentRecipientRow.replaceWith(newRecipientRow);
+                    sweetAlertSuccess("Transfer");
 
-                                        $("#modalTransfer").modal("hide");
-
-                                        sweetAlertSuccess("Transfer");
-
-                                        allAddEvent();
-                                    })
-                                    .fail((error) => {
-                                        console.log(error);
-                                    })
-                            })
-                            .fail((error) => {
-                                console.log(error);
-                            })
-                    });
+                    allAddEvent();
                 })
                 .fail((error) => {
                     console.error(error);
+                    sweetAlertError("Transfer fail!");
                 })
         }
 
         $("#btnShowCreateModal").on("click", () => {
+            getAllProvinces();
             $("#modalCreate").modal("show");
         })
 

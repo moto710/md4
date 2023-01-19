@@ -1,9 +1,16 @@
 package com.ajaxbankingtransaction.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
-
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "transfers")
 public class Transfer extends BaseEntity{
@@ -31,21 +38,6 @@ public class Transfer extends BaseEntity{
     @OneToOne(targetEntity = Customer.class)
     @JoinColumn(name = "sender_id", referencedColumnName = "id", nullable = false)
     private Customer sender;
-
-    public Transfer() {
-    }
-
-    public Transfer(Integer id, Date createdAt, BigDecimal fee, BigDecimal feeAmount, BigDecimal transactionAmount,
-                    BigDecimal transferAmount, Customer recipient, Customer sender) {
-        this.id = id;
-        this.createdAt = createdAt;
-        this.fee = fee;
-        this.feeAmount = feeAmount;
-        this.transactionAmount = transactionAmount;
-        this.transferAmount = transferAmount;
-        this.recipient = recipient;
-        this.sender = sender;
-    }
 
     public Integer getId() {
         return id;

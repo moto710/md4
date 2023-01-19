@@ -15,19 +15,13 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class DepositCreateDTO implements Validator {
-
-    private String customerId;
+public class TransferCreateDTO implements Validator {
 
     private String transactionAmount;
 
-    public String getCustomerId() {
-        return customerId;
-    }
+    private String senderId;
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
-    }
+    private String recipientId;
 
     public String getTransactionAmount() {
         return transactionAmount;
@@ -37,17 +31,34 @@ public class DepositCreateDTO implements Validator {
         this.transactionAmount = transactionAmount;
     }
 
+    public String getSenderId() {
+        return senderId;
+    }
+
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
+    }
+
+    public String getRecipientId() {
+        return recipientId;
+    }
+
+    public void setRecipientId(String recipientId) {
+        this.recipientId = recipientId;
+    }
+
     @Override
     public boolean supports(Class<?> clazz) {
-        return DepositCreateDTO.class.isAssignableFrom(clazz);
+        return TransferCreateDTO.class.isAssignableFrom(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        DepositCreateDTO depositCreateDTO = (DepositCreateDTO) target;
+        TransferCreateDTO transferCreateDTO = (TransferCreateDTO) target;
 
-        String customerId = depositCreateDTO.getCustomerId();
-        String transactionAmount = depositCreateDTO.getTransactionAmount();
+        String senderId = transferCreateDTO.getSenderId();
+        String recipientId = transferCreateDTO.getRecipientId();
+        String transactionAmount = transferCreateDTO.getTransactionAmount();
 
         if (transactionAmount.length() == 0) {
             errors.rejectValue("transactionAmount", "transactionAmount.null", "please fill this transaction amount!");
@@ -57,10 +68,16 @@ public class DepositCreateDTO implements Validator {
             errors.rejectValue("transactionAmount", "transactionAmount.value", "Only deposit from 10 to 1.000.000.000$");
         }
 
-        if (customerId.length() == 0) {
-            errors.rejectValue("customerId", "customerId.null", "Please fill customer ID!");
-        } else if (!customerId.matches("(^$|[0-9]*$)")) {
-            errors.rejectValue("customerId", "customerId.matches", "Customer' id is only number!");
+        if (senderId.length() == 0) {
+            errors.rejectValue("senderId", "senderId.null", "Please fill sender's ID!");
+        } else if (!senderId.matches("(^$|[0-9]*$)")) {
+            errors.rejectValue("senderId", "senderId.matches", "Sender' id is only number!");
+        }
+
+        if (recipientId.length() == 0) {
+            errors.rejectValue("recipientId", "recipientId.null", "Please fill recipient's ID!");
+        } else if (!recipientId.matches("(^$|[0-9]*$)")) {
+            errors.rejectValue("recipientId", "recipientId.matches", "Recipient' id is only number!");
         }
     }
 }

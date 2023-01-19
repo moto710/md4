@@ -1,7 +1,7 @@
 package com.ajaxbankingtransaction.controller;
 
 import com.ajaxbankingtransaction.model.Customer;
-import com.ajaxbankingtransaction.model.dto.EditCustomerDTO;
+import com.ajaxbankingtransaction.model.dto.CustomerEditDTO;
 import com.ajaxbankingtransaction.service.customer.ICustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,13 +36,13 @@ public class CustomerController {
             modelAndView.addObject("customer", new Customer());
 
         } else {
-            EditCustomerDTO editCustomerDTO = new EditCustomerDTO();
+            CustomerEditDTO customerEditDTO = new CustomerEditDTO();
             customer = customerOptional.get();
 
-            editCustomerDTO.setId(customer.getId());
-            editCustomerDTO.setName(customer.getName());
-            editCustomerDTO.setEmail(customer.getEmail());
-            editCustomerDTO.setPhone(customer.getPhone());
+//            customerEditDTO.setId(customer.getId());
+            customerEditDTO.setName(customer.getName());
+            customerEditDTO.setEmail(customer.getEmail());
+            customerEditDTO.setPhone(customer.getPhone());
 
             if (customer.getDeleted()) {
                 modelAndView.addObject("error", true);
@@ -50,7 +50,7 @@ public class CustomerController {
             }
 
             modelAndView.addObject("customer", customer);
-            modelAndView.addObject("editCustomerDTO", editCustomerDTO);
+            modelAndView.addObject("editCustomerDTO", customerEditDTO);
         }
 
         return modelAndView;
@@ -96,7 +96,7 @@ public class CustomerController {
     }
 
     @PostMapping("/edit/{id}")
-    private ModelAndView edit(@PathVariable Integer id, @Valid EditCustomerDTO editCustomerDTO, BindingResult br) {
+    private ModelAndView edit(@PathVariable Integer id, @Valid CustomerEditDTO customerEditDTO, BindingResult br) {
         modelAndView = new ModelAndView("/customer/edit");
         customerOptional = customerService.findById(id);
 
@@ -105,20 +105,20 @@ public class CustomerController {
             modelAndView.addObject("message", "Customer ID invalid");
             modelAndView.addObject("customer", new Customer());
         } else {
-            new EditCustomerDTO().validate(editCustomerDTO, br);
+            new CustomerEditDTO().validate(customerEditDTO, br);
             customer = customerOptional.get();
 
             if (br.hasFieldErrors()) {
                 modelAndView.addObject("error", true);
                 modelAndView.addObject("customer", customer);
-                modelAndView.addObject("editCustomerDTO", editCustomerDTO);
+                modelAndView.addObject("editCustomerDTO", customerEditDTO);
 
                 return modelAndView;
             }
 
-            customer.setName(editCustomerDTO.getName());
-            customer.setEmail(editCustomerDTO.getEmail());
-            customer.setPhone(editCustomerDTO.getPhone());
+            customer.setName(customerEditDTO.getName());
+            customer.setEmail(customerEditDTO.getEmail());
+            customer.setPhone(customerEditDTO.getPhone());
             customer.setUpdatedAt(new Date());
 
             customerService.save(customer);
@@ -126,7 +126,7 @@ public class CustomerController {
             modelAndView.addObject("message", "Edit success!");
             modelAndView.addObject("error", false);
             modelAndView.addObject("customer", customer);
-            modelAndView.addObject("editCustomerDTO", editCustomerDTO);
+            modelAndView.addObject("editCustomerDTO", customerEditDTO);
         }
 
         return modelAndView;

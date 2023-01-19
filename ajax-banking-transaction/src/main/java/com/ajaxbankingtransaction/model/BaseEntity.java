@@ -1,5 +1,9 @@
 package com.ajaxbankingtransaction.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
@@ -9,6 +13,10 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @MappedSuperclass
 public abstract class BaseEntity {
 
@@ -30,17 +38,6 @@ public abstract class BaseEntity {
     @LastModifiedBy
     @Column(name = "updated_by")
     private Integer updatedBy;
-
-    public BaseEntity() {
-    }
-
-    public BaseEntity(Boolean deleted, Date createdAt, Integer createdBy, Date updatedAt, Integer updatedBy) {
-        this.deleted = deleted;
-        this.createdAt = createdAt;
-        this.createdBy = createdBy;
-        this.updatedAt = updatedAt;
-        this.updatedBy = updatedBy;
-    }
 
     public Boolean getDeleted() {
         return deleted;

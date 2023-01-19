@@ -1,9 +1,16 @@
 package com.ajaxbankingtransaction.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
-
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "withdraws")
 public class Withdraw extends BaseEntity{
@@ -19,22 +26,12 @@ public class Withdraw extends BaseEntity{
     @Column(name = "transaction_amount", precision = 12, scale = 0, nullable = false)
     private BigDecimal transactionAmount;
 
-    public Withdraw() {
+    public Integer getId() {
+        return id;
     }
 
-    public Withdraw(Integer id, Date createdAt, Customer customer, BigDecimal transactionAmount) {
+    public void setId(Integer id) {
         this.id = id;
-        this.createdAt = createdAt;
-        this.customer = customer;
-        this.transactionAmount = transactionAmount;
-    }
-
-    public BigDecimal getTransactionAmount() {
-        return transactionAmount;
-    }
-
-    public void setTransactionAmount(BigDecimal transactionAmount) {
-        this.transactionAmount = transactionAmount;
     }
 
     public Customer getCustomer() {
@@ -45,11 +42,11 @@ public class Withdraw extends BaseEntity{
         this.customer = customer;
     }
 
-    public Integer getId() {
-        return id;
+    public BigDecimal getTransactionAmount() {
+        return transactionAmount;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setTransactionAmount(BigDecimal transactionAmount) {
+        this.transactionAmount = transactionAmount;
     }
 }

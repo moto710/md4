@@ -10,12 +10,13 @@ import org.springframework.validation.Validator;
 
 import java.math.BigDecimal;
 
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Accessors(chain = true)
-public class DepositCreateDTO implements Validator {
+public class WithdrawCreateDTO implements Validator {
 
     private String customerId;
 
@@ -39,15 +40,15 @@ public class DepositCreateDTO implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return DepositCreateDTO.class.isAssignableFrom(clazz);
+        return WithdrawCreateDTO.class.isAssignableFrom(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        DepositCreateDTO depositCreateDTO = (DepositCreateDTO) target;
+        WithdrawCreateDTO withdrawCreateDTO = (WithdrawCreateDTO) target;
 
-        String customerId = depositCreateDTO.getCustomerId();
-        String transactionAmount = depositCreateDTO.getTransactionAmount();
+        String customerId = withdrawCreateDTO.getCustomerId();
+        String transactionAmount = withdrawCreateDTO.getTransactionAmount();
 
         if (transactionAmount.length() == 0) {
             errors.rejectValue("transactionAmount", "transactionAmount.null", "please fill this transaction amount!");
