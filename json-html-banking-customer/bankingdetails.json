@@ -2,46 +2,47 @@
   "customers": [
     {
       "id": 1,
-      "fullName": "NVA",
-      "email": "nva@abc.vn",
-      "phone": "523525",
-      "address": "VN",
-      "balance": 39900,
+      "fullName": "Lysandra Bradley",
+      "email": "moqo@mailinator.com",
+      "phone": "0354698363",
+      "address": "Ut voluptates volupt",
+      "balance": 810,
       "deleted": 0
     },
     {
-      "fullName": "NVDd",
-      "email": "nvD@abc.vn",
-      "phone": "12345",
-      "address": "VN",
-      "balance": 10000,
+      "fullName": "Cairo Mayer",
+      "email": "runa@mailinator.com",
+      "phone": "+1 (682) 804-9996",
+      "address": "Rerum excepturi qui ",
+      "balance": 538,
       "deleted": 0,
-      "id": 4
+      "id": 4,
+      "readyState": 1
     },
     {
-      "fullName": "NVZ",
-      "email": "nvb@abc.vn",
-      "phone": 123456,
-      "address": "VN",
-      "balance": 15000,
+      "fullName": "Abbot Daugherty",
+      "email": "cososaz@mailinator.com",
+      "phone": "0347985147",
+      "address": "Mollit aut proident",
+      "balance": 631,
       "deleted": 0,
       "id": 5
     },
     {
       "fullName": "NVB",
       "email": "nvb@abc.vn",
-      "phone": 1234567,
-      "address": "USA",
-      "balance": -100,
+      "phone": "1234567",
+      "address": "USB",
+      "balance": 1100,
       "deleted": 0,
       "id": 6
     },
     {
-      "fullName": "NVE",
-      "email": "nvb@abc.vn",
-      "phone": 1234567,
-      "address": "USE",
-      "balance": 0,
+      "fullName": "NVAA",
+      "email": "nva@abc.vn",
+      "phone": "523525",
+      "address": "VN",
+      "balance": 38000,
       "deleted": 0,
       "id": 7
     },
@@ -50,25 +51,25 @@
       "email": "pedab@mailinator.com",
       "phone": "+1 (589) 857-3047",
       "address": "Ipsum fugiat ullamc",
-      "balance": 0,
+      "balance": 10000,
       "deleted": 0,
       "id": 8
     },
     {
-      "fullName": "Tiger Barnes",
-      "email": "tifax@mailinator.com",
-      "phone": "+1 (919) 549-3124",
-      "address": "Nihil qui voluptatem",
-      "balance": 0,
+      "fullName": "NVAA",
+      "email": "nva@abc.vn",
+      "phone": "523525",
+      "address": "VN",
+      "balance": 29900,
       "deleted": 0,
       "id": 9
     },
     {
-      "fullName": "Tiger Barnes",
-      "email": "tifax@mailinator.com",
-      "phone": "+1 (919) 549-3124",
-      "address": "Nihil qui voluptatem",
-      "balance": 0,
+      "fullName": "NVAA",
+      "email": "nva@abc.vn",
+      "phone": "523525",
+      "address": "VN",
+      "balance": 28900,
       "deleted": 0,
       "id": 10
     },
@@ -77,7 +78,7 @@
       "email": "tifax@mailinator.com",
       "phone": "+1 (919) 549-3124",
       "address": "Nihil qui voluptatem",
-      "balance": 0,
+      "balance": 1008.8,
       "deleted": 0,
       "id": 11
     },
@@ -86,7 +87,7 @@
       "email": "qixad@mailinator.com",
       "phone": "+1 (884) 293-4379",
       "address": "Quis laboris est est",
-      "balance": 0,
+      "balance": 190,
       "deleted": 0,
       "id": 12
     },
@@ -95,7 +96,7 @@
       "email": "sofa@mailinator.com",
       "phone": "+1 (427) 472-8499",
       "address": "Dolor quia corporis ",
-      "balance": 0,
+      "balance": 992,
       "deleted": 0,
       "id": 13
     },
@@ -116,90 +117,54 @@
       "balance": 0,
       "deleted": 1,
       "id": 15
-    },
-    {
-      "fullName": "Shelby Gentry",
-      "email": "gexuc@mailinator.com",
-      "phone": "+1 (825) 948-9275",
-      "address": "Obcaecati ad similiq",
-      "balance": 0,
-      "deleted": 0,
-      "id": 16
-    },
-    {
-      "fullName": "Hayden Sanders",
-      "email": "bykijeqiz@mailinator.com",
-      "phone": "+1 (469) 655-5551",
-      "address": "Aliquam et cumque vo",
-      "balance": 0,
-      "deleted": 0,
-      "id": 17
-    },
-    {
-      "fullName": "",
-      "email": "",
-      "phone": "",
-      "address": "",
-      "balance": 0,
-      "deleted": 1,
-      "id": 18
-    },
-    {
-      "fullName": "Ria Roach",
-      "email": "hehopygi@mailinator.com",
-      "phone": "+1 (359) 196-8228",
-      "address": "Inventore voluptatib",
-      "balance": 0,
-      "deleted": 0,
-      "id": 19
-    },
-    {
-      "fullName": "Gil Fox",
-      "email": "beja@mailinator.com",
-      "phone": "+1 (651) 815-3145",
-      "address": "Autem quo ipsa reru",
-      "balance": 0,
-      "deleted": 0,
-      "id": 20
     }
   ],
-  "withdraws": [
-    {
-      "customerId": 1,
-      "transactionAmount": 100,
-      "id": 1
-    },
-    {
-      "customerId": 6,
-      "transactionAmount": 100,
-      "id": 2
-    }
-  ],
+  "withdraws": [],
   "deposits": [
     {
       "customerId": 1,
-      "transactionAmount": 10000,
+      "transactionAmount": 1000000000,
       "id": 1
     },
     {
-      "customerId": 4,
-      "transactionAmount": 10000,
+      "customerId": 1,
+      "transactionAmount": 1000000000,
       "id": 2
     },
     {
-      "customerId": 5,
-      "transactionAmount": 15000,
+      "customerId": 1,
+      "transactionAmount": 1000000000,
       "id": 3
     },
     {
       "customerId": 1,
-      "transactionAmount": 15000,
+      "transactionAmount": 1000000000,
       "id": 4
     },
     {
-      "customerId": 1,
-      "transactionAmount": 15000,
+      "customerId": 11,
+      "transactionAmount": 1000,
       "id": 5
+    },
+    {
+      "customerId": 13,
+      "transactionAmount": 1000,
+      "id": 6
+    },
+    {
+      "customerId": 1,
+      "transactionAmount": 1000000000,
+      "id": 7
+    },
+    {
+      "customerId": 1,
+      "transactionAmount": 1000000000,
+      "id": 8
+    },
+    {
+      "customerId": 1,
+      "transactionAmount": 300002000,
+      "id": 9
     }
   ],
   "transfers": [
@@ -209,7 +174,7 @@
       "transactionAmount": 110,
       "transferAmount": 100,
       "senderId": 1,
-      "recipientId": "4",
+      "recipientId": 1,
       "id": 1
     },
     {
@@ -217,8 +182,8 @@
       "feesAmount": 10,
       "transactionAmount": 110,
       "transferAmount": 100,
-      "senderId": 1,
-      "recipientId": "6",
+      "senderId": 4,
+      "recipientId": 1,
       "id": 2
     },
     {
@@ -226,27 +191,45 @@
       "feesAmount": 10,
       "transactionAmount": 110,
       "transferAmount": 100,
-      "senderId": 1,
-      "recipientId": "7",
+      "senderId": 11,
+      "recipientId": 12,
       "id": 3
     },
     {
       "fees": 10,
-      "feesAmount": 100,
-      "transactionAmount": 1100,
-      "transferAmount": 1000,
-      "senderId": 1,
-      "recipientId": 4,
+      "feesAmount": 10,
+      "transactionAmount": 110,
+      "transferAmount": 100,
+      "senderId": 11,
+      "recipientId": 12,
       "id": 4
     },
     {
       "fees": 10,
-      "feesAmount": 100,
-      "transactionAmount": 1100,
-      "transferAmount": 1000,
-      "senderId": 1,
-      "recipientId": 4,
+      "feesAmount": -0.8,
+      "transactionAmount": -8.8,
+      "transferAmount": -8,
+      "senderId": 11,
+      "recipientId": 13,
       "id": 5
+    },
+    {
+      "fees": 10,
+      "feesAmount": 1,
+      "transactionAmount": 11,
+      "transferAmount": 10,
+      "senderId": 4,
+      "recipientId": 4,
+      "id": 6
+    },
+    {
+      "fees": 10,
+      "feesAmount": 10,
+      "transactionAmount": 110,
+      "transferAmount": 100,
+      "senderId": 1,
+      "recipientId": 10,
+      "id": 7
     }
   ]
 }

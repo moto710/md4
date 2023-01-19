@@ -270,7 +270,7 @@
                             </div>
                             <div class="col-lg-3">
                                 <label>Transfer Amount ($)</label>
-                                <input type="text" class="form-control" id="transferAmount" />
+                                <input type="text" class="form-control" id="transferAmountTran" />
                             </div>
                             <div class="col-lg-3">
                                 <label>Fees (%)</label>
@@ -328,8 +328,6 @@
                 let customerId = $(this).data("id");
 
                 findById(customerId).then(() => {
-                    console.log(customer)
-
                     if (customer !== null) {
                         $("#idUp").val(customer.id);
                         $("#fullNameUp").val(customer.fullName);
@@ -479,27 +477,27 @@
                     <td class="text-end">${item.balance}</td>
                     <td>${item.address}</td>
                     <td>
-                        <button class="btn btn-outline-secondary update" data-id="${item.id}">
+                        <button type="button" class="btn btn-outline-secondary update" data-id="${item.id}">
                             <i class="fas fa-edit"></i>
                         </button>
                     </td>
                     <td>
-                        <button class="btn btn-outline-success deposit" data-id="${item.id}">
+                        <button type="button" class="btn btn-outline-success deposit" data-id="${item.id}">
                             <i class="fas fa-plus"></i>
                         </button>
                     </td>
                     <td>
-                        <button class="btn btn-outline-warning withdraw" data-id="${item.id}">
+                        <button type="button" class="btn btn-outline-warning withdraw" data-id="${item.id}">
                             <i class="fas fa-minus"></i>
                         </button>
                     </td>
                     <td>
-                        <button class="btn btn-outline-primary transfer" data-id="${item.id}">
+                        <button type="button" class="btn btn-outline-primary transfer" data-id="${item.id}">
                             <i class="fas fa-exchange-alt"></i>
                         </button>
                     </td>
                     <td>
-                        <button class="btn btn-outline-danger delete" data-id="${item.id}">
+                        <button type="button" class="btn btn-outline-danger delete" data-id="${item.id}">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
@@ -525,8 +523,8 @@
         }
 
         function countTransferTransaction() {
-            document.getElementById("transferAmount").addEventListener("input", () => {
-                let transferAmount = $("#transferAmount").val();
+            document.getElementById("transferAmountTran").addEventListener("input", () => {
+                let transferAmount = $("#transferAmountTran").val();
                 let fees = 10;
                 let feesAmount = +transferAmount * fees / 100;
                 let transactionAmount = +transferAmount + feesAmount;
@@ -751,21 +749,18 @@
 
         $("#btnTransfer").on("click", () => {
             let senderCurrentBalance = customer.balance,
-                transferAmount = +$("#transferAmount").val(),
+                transferAmount = +$("#transferAmountTran").val(),
                 fees = 10,
                 feesAmount = transferAmount * fees / 100,
                 transactionAmount = transferAmount + feesAmount,
                 senderNewBalance = senderCurrentBalance - transactionAmount;
             customer.balance = senderNewBalance;
-            console.log(customer);
 
             let recipientId = +$("#recipientId").val(),
                 recipient = findById(recipientId),
                 recipientCurrentBalance = recipient.balance
             recipientNewBalance = recipientCurrentBalance + transferAmount;
             recipient.balance = recipientNewBalance;
-            console.log(recipient);
-
             let transfer = {
                 fees: 10,
                 feesAmount: feesAmount,
@@ -780,28 +775,12 @@
                     "accept": "application/json",
                     "content-type": "application/json"
                 },
-                type: "POST",
-                url: "http://localhost:3000/transfers",
-                data: JSON.stringify(transfer)
+                type: "PATCH",
+                url: "http://localhost:3000/customers" + customer.id,
+                data: JSON.stringify(customer)
             })
                 .done((data) => {
-                    $ajax({
-                        headers: {
-                            "accept": "application/json",
-                            "content-type": "application/json"
-                        },
-                        type: "PATCH",
-                        url: "http://localhost:3000/customers" + customerId,
-                        data: JSON.stringify(customer)
-                    })
-                        .done((data) => {
-
-                        })
-                        .faild((error) => {
-                            console.log(error);
-                        })
-
-                    $ajax({
+                    $.ajax({
                         headers: {
                             "accept": "application/json",
                             "content-type": "application/json"
@@ -811,30 +790,42 @@
                         data: JSON.stringify(recipient)
                     })
                         .done((data) => {
+                            $.ajax({
+                                headers: {
+                                    "accept": "application/json",
+                                    "content-type": "application/json"
+                                },
+                                type: "POST",
+                                url: "http://localhost:3000/transfers",
+                                data: JSON.stringify(transfer)
+                            })
+                                .done((data) => {
 
+                                })
+                                .faild((error) => {
+                                    console.log(error);
+                                })
+                            let currentSenderRow = $("#tr_" + customer.id);
+                            newSenderRow = renderCustomer(customer);
+
+                            currentSenderRow.replaceWith(newSenderRow);
+
+                            let currentRecipientRow = $("#tr_" + recipientId),
+                                newRecipientRow = renderCustomer(recipient);
+
+                            currentRecipientRow.replaceWith(newRecipientRow);
+
+                            sweetAlertSuccess("Transfer");
+
+                            allAddEvent();
                         })
                         .faild((error) => {
                             console.log(error);
                         })
-
-                    let currentSenderRow = $("#tr_" + customer.id);
-                    newSenderRow = renderCustomer(customer);
-
-                    currentSenderRow.replaceWith(newSenderRow);
-
-                    let currentRecipientRow = $("#tr_" + recipientId),
-                        newRecipientRow = renderCustomer(recipient);
-
-                    currentRecipientRow.replaceWith(newRecipientRow);
-
-                    sweetAlertSuccess("Transfer");
-
-                    allAddEvent();
                 })
                 .fail((error) => {
                     console.error(error);
                 })
-
 
 
             // $.ajax({

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./assets/fontawesome/v5.15.4/css/all.min.css">
     <link rel="stylesheet" href="./assets/sweetalert2/v11.7.0/sweetalert2.min.css">
     <link rel="stylesheet" href="./assets/css/style.css">
+
 </head>
 
 <body>
@@ -40,7 +41,9 @@
                         <th class="text-center">Email</th>
                         <th class="text-center">Phone</th>
                         <th class="text-center">Balance</th>
-                        <th class="text-center">Address</th>
+                        <th class="text-center">Province</th>
+                        <th class="text-center">District</th>
+                        <th class="text-center">Ward</th>
                         <th class="text-center" colspan="5">Action</th>
                     </tr>
                 </thead>
@@ -56,7 +59,7 @@
     <!-- Modal Create -->
     <div class="modal fade" id="modalCreate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5">Create New Customer</h1>
@@ -68,21 +71,33 @@
                     </div>
                     <form method="post" id="frmCreateCustomer">
                         <div class="row mt-3">
-                            <div class="col-lg-6">
+                            <div class="col-lg-4 pe-1">
                                 <label>Full Name</label>
                                 <input type="text" class="form-control" id="fullNameCre" name="fullNameCre" />
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-lg-4 px-1">
                                 <label>Email</label>
                                 <input type="email" class="form-control" id="emailCre" name="emailCre" />
                             </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-lg-6">
+                            <div class="col-lg-4 ps-1">
                                 <label>Phone</label>
                                 <input type="tel" class="form-control" id="phoneCre" name="phoneCre" />
                             </div>
-                            <div class="col-lg-6">
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-3 pe-1">
+                                <label>Province</label>
+                                <input type="text" class="form-control" id="provinceCre" name="provinceCre" />
+                            </div>
+                            <div class="col-lg-3 px-1">
+                                <label>District</label>
+                                <input type="text" class="form-control" id="districtCre" name="districtCre" />
+                            </div>
+                            <div class="col-lg-3 px-1">
+                                <label>Ward</label>
+                                <input type="text" class="form-control" id="wardCre" name="wardCre" />
+                            </div>
+                            <div class="col-lg-3 ps-1">
                                 <label>Address</label>
                                 <input type="text" class="form-control" id="addressCre" name="addressCre" />
                             </div>
@@ -355,7 +370,9 @@
     <script src="./assets/js/appBase.js"></script>
     <script src="./assets/jquery-validate/v1.19.5/jquery.validate.min.js"></script>
 
+
     <script>
+
         const page = {
             urls: {
                 getAllCustomers: AppBase.API_CUSTOMER + "?deleted=0",
@@ -557,6 +574,10 @@
             })
         }
 
+        function renderSelectOptionProvince(item){
+            return `<option value="${item.province_id}">${item.province_name}</option>`;
+        }
+        
         function renderSelectOptionRecipient(item) {
             return `
                 <option value="${item.id}">${item.fullName}</option>
@@ -951,6 +972,22 @@
 
         $("#btnShowCreateModal").on("click", () => {
             $("#modalCreate").modal("show");
+
+            $.ajax({
+                headers: {
+                    "accept": "application/json",
+                    "content-type": "application/json"
+                },
+                type: "GET",
+                url: "https://vapi.vnappmob.com/api/province"
+            })
+                .done((data) => {
+                    console.log(data);
+                    $.each(data, (i, item) => {
+                        let pro = renderSelectOptionProvince(item);
+                        $("#provinceCre").append("beforeend", pro);
+                    })
+                })
         })
 
         $("#btnShowTransferHistoryModal").click(() => {
