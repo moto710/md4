@@ -7,7 +7,7 @@
 </head>
 
 <body>
-<div class="container">
+<div class="container-fluid">
     <header>
         <div class="col-lg-12">
             <div class="col-lg-6 float-start">
@@ -37,16 +37,15 @@
                 <th class="text-center">Province</th>
                 <th class="text-center">District</th>
                 <th class="text-center">Ward</th>
+                <th class="text-center">Address</th>
                 <th class="text-center" colspan="5">Action</th>
             </tr>
             </thead>
             <tbody>
+
             </tbody>
         </table>
     </div>
-    <footer class="hidden">
-
-    </footer>
 </div>
 
 <!-- Modal Create -->
@@ -80,19 +79,19 @@
                     <div class="row mt-3">
                         <div class="col-lg-3 pe-1">
                             <label for="provinceCre">Province</label>
-                            <select id="provinceCre" class="form-control">
+                            <select id="provinceCre" class="form-control" name="provinceCre">
 
                             </select>
                         </div>
                         <div class="col-lg-3 px-1">
                             <label for="districtCre">District</label>
-                            <select id="districtCre" class="form-control">
+                            <select id="districtCre" class="form-control" name="districtCre">
 
                             </select>
                         </div>
                         <div class="col-lg-3 px-1">
                             <label for="wardCre">Ward</label>
-                            <select id="wardCre" class="form-control">
+                            <select id="wardCre" class="form-control" name="wardCre">
 
                             </select>
                         </div>
@@ -117,7 +116,7 @@
 <!-- Modal Update -->
 <div class="modal fade" id="modalUpdate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5">Update Customer</h1>
@@ -132,22 +131,40 @@
                         <input type="hidden" class="form-control" id="idUp">
                     </div>
                     <div class="row mt-3">
-                        <div class="col-lg-6">
-                            <label>Full Name</label>
+                        <div class="col-lg-4 pe-1">
+                            <label for="fullNameCre">Full Name</label>
                             <input type="text" class="form-control" id="fullNameUp" name="fullNameUp" />
                         </div>
-                        <div class="col-lg-6">
-                            <label>Email</label>
+                        <div class="col-lg-4 px-1">
+                            <label for="emailUp">Email</label>
                             <input type="email" class="form-control" id="emailUp" name="emailUp" />
+                        </div>
+                        <div class="col-lg-4 ps-1">
+                            <label for="phoneUp">Phone</label>
+                            <input type="tel" class="form-control" id="phoneUp" name="phoneUp" />
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col-lg-6">
-                            <label>Phone</label>
-                            <input type="tel" class="form-control" id="phoneUp" name="phoneUp" />
+                        <div class="col-lg-3 pe-1">
+                            <label for="provinceUp">Province</label>
+                            <select id="provinceUp" class="form-control" name="provinceUp">
+
+                            </select>
                         </div>
-                        <div class="col-lg-6">
-                            <label>Address</label>
+                        <div class="col-lg-3 px-1">
+                            <label for="districtUp">District</label>
+                            <select id="districtUp" class="form-control" name="districtUp">
+
+                            </select>
+                        </div>
+                        <div class="col-lg-3 px-1">
+                            <label for="wardUp">Ward</label>
+                            <select id="wardUp" class="form-control" name="wardUp">
+
+                            </select>
+                        </div>
+                        <div class="col-lg-3 ps-1">
+                            <label for="addressUp">Address</label>
                             <input type="text" class="form-control" id="addressUp" name="addressUp" />
                         </div>
                     </div>

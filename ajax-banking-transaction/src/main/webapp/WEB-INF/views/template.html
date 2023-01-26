@@ -65,12 +65,13 @@
                 })
         }
 
-        function getAllProvinces(){
+        function getAllProvinces() {
             $.ajax({
                 type: "GET",
                 url: vApi.urls.getAllProvinces
             })
                 .done((data) => {
+                    $("#provinceCre").append(`<option disabled selected>--Select your province--</option>`);
                     $.each(data.results, (i, item) => {
                         let pro = renderSelectOptionProvince(item);
                         $("#provinceCre").append(pro);
@@ -82,18 +83,18 @@
                 })
         }
 
-        function getAllDistrictsByProvinceId(id){
+        function getAllDistrictsByProvinceId(id) {
             $.ajax({
                 type: "GET",
                 url: vApi.urls.getAllDistricts + id
             })
                 .done((data) => {
-                    console.log(data)
                     $("#districtCre").empty();
                     $.each(data.results, (i, item) => {
                         let dis = renderSelectOptionDistrict(item);
                         $("#districtCre").append(dis);
                     })
+                    getAllWardsByDistrictId($("#districtCre").val());
                     addEventChangeDistrict();
                 })
                 .fail((error) => {
@@ -112,7 +113,6 @@
                     $.each(data.results, (i, item) => {
                         let war = renderSelectOptionWard(item);
                         $("#wardCre").append(war);
-                        console.log("wardId: " + id)
                     })
                     addEventChangeWard();
                 })
@@ -120,27 +120,32 @@
                     sweetAlertError("Can't find wards list!");
                 })
         }
-        
+
         function addEventChangeProvince() {
-            $("#provinceCre").on("change", function () {
-                let provinceId = +$(this).val();
+            let removed = false;
+            $("#provinceCre").change(function () {
+                let provinceId = $("#provinceCre").val();
+
+                if (provinceId !== 0) {
+                    if (!removed) {
+                        $('#provinceCre option')[0].remove();
+                        removed = !removed;
+                    }
+                }
                 getAllDistrictsByProvinceId(provinceId);
-                console.log(provinceId)
             })
         }
 
         function addEventChangeDistrict() {
-            $("#districtCre").on("change", function () {
+            $("#districtCre").change(function () {
                 let districtId = $(this).val();
                 getAllWardsByDistrictId(districtId);
-                console.log(districtId)
             })
         }
 
         function addEventChangeWard() {
-            $("#wardCre").on("change", function () {
+            $("#wardCre").change(function () {
                 let wardId = $(this).val();
-                console.log(wardId)
             })
         }
 
@@ -153,14 +158,84 @@
                     $("#fullNameUp").val(customer.name);
                     $("#emailUp").val(customer.email);
                     $("#phoneUp").val(customer.phone);
-                    $("#addressUp").val(customer.address);
 
-                    $("#modalUpdate").modal("show");
+                    $.ajax({
+                        type: "GET",
+                        url: vApi.urls.getAllProvinces,
+                    })
+                        .done((data) => {
+                            $("#provinceUp").append(`<option selected value="${customer.locationRegionDTO.provinceId}">${customer.locationRegionDTO.provinceName}</option>`);
+                            $("#districtUp").append(`<option selected value="${customer.locationRegionDTO.districtId}">${customer.locationRegionDTO.districtName}</option>`);
+                            $("#wardUp").append(`<option selected value="${customer.locationRegionDTO.wardId}">${customer.locationRegionDTO.wardName}</option>`);
+
+                            $.each(data.results, (i, item) => {
+                                if (item.province_id !== customer.locationRegionDTO.provinceId) {
+                                    $("#provinceUp").append(renderSelectOptionProvince(item));
+                                }
+                            })
+                            let provinceId = $("#provinceUp").val();
+                            let districtId = $("#districtUp").val();
+
+                            $("#provinceUp").on("change", function () {
+                                $("#districtUp").empty();
+                                provinceId = $(this).val();
+
+                                $.ajax({
+                                    type: "GET",
+                                    url: vApi.urls.getAllDistricts + provinceId
+                                })
+                                    .done((data) => {
+                                        $.each(data.results, (i, item) => {
+                                            if (item.district_id !== customer.locationRegionDTO.districtId) {
+                                                let dis = renderSelectOptionDistrict(item);
+                                                $("#districtUp").append(dis);
+                                            }
+                                        })
+                                    })
+                                    .fail((error) => {
+                                        console.log("fail")
+                                        sweetAlertError("Can't find districts list!");
+                                    })
+                            })
+
+                            $("#districtUp").on("change", function () {
+                                $("#wardUp").empty();
+                                districtId = $(this).val();
+
+                                $.ajax({
+                                    type: "GET",
+                                    url: vApi.urls.getAllWards + districtId
+                                })
+                                    .done((data) => {
+                                        $.each(data.results, (i, item) => {
+                                            if (item.ward_id !== customer.locationRegionDTO.wardId) {
+                                                let war = renderSelectOptionWard(item);
+                                                $("#wardUp").append(war);
+                                            }
+                                        })
+                                    })
+                                    .fail((error) => {
+                                        sweetAlertError("Can't find wards list!");
+                                    })
+
+                        })
+
+                    //
+                    // $("#wardUp").on("change", function () {
+                    //     let wardId = $(this).val();
+                    // })
                 })
-                    .catch(() => {
-                        sweetAlertError("Customer not found!");
-                    });
+
+                $("#addressUp").val(customer.locationRegionDTO.address);
+
+                $("#modalUpdate").modal("show");
             })
+                .catch(() => {
+                    sweetAlertError("Customer not found!");
+                });
+        }
+
+        )
         }
 
         function addEventShowModalDeposit() {
@@ -224,8 +299,6 @@
                             $("#modalTransfer").modal("show");
 
                             countTransferTransaction();
-
-                            // allAddEvent();
                         })
                         .fail((error) => {
                             console.log(error);
@@ -343,9 +416,10 @@
                     <td class="text-center">${item.email}</td>
                     <td class="text-center">${item.phone}</td>
                     <td class="text-end">${item.balance}</td>
-                    <td class="text-center">Province</td>
-                    <td class="text-center">District</td>
-                    <td class="text-center">Ward</td>
+                    <td class="text-center">${item.locationRegionDTO.provinceName}</td>
+                    <td class="text-center">${item.locationRegionDTO.districtName}</td>
+                    <td class="text-center">${item.locationRegionDTO.wardName}</td>
+                    <td class="text-center">${item.locationRegionDTO.address}</td>
                     <td>
                         <button type="button" class="btn btn-outline-secondary update" data-id="${item.id}">
                             <i class="fas fa-edit"></i>
@@ -438,14 +512,29 @@
             let name = $("#fullNameCre").val(),
                 email = $("#emailCre").val(),
                 phone = $("#phoneCre").val(),
+                provinceId = $("#provinceCre").val(),
+                provinceName = $("#provinceCre").find("option:selected").text(),
+                districtId = $("#districtCre").val(),
+                districtName = $("#districtCre").find("option:selected").text(),
+                wardId = $("#wardCre").val(),
+                wardName = $("#wardCre").find("option:selected").text(),
                 address = $("#addressCre").val();
 
+            let locationRegionDTO = {
+                provinceId,
+                provinceName,
+                districtId,
+                districtName,
+                wardId,
+                wardName,
+                address
+            }
 
-            let customer = {
+            let customerCreateDTO = {
                 name,
                 email,
                 phone,
-                address
+                locationRegionDTO
             }
 
             $.ajax({
@@ -455,15 +544,15 @@
                 },
                 type: "POST",
                 url: page.urls.getAllCustomers,
-                data: JSON.stringify(customer)
+                data: JSON.stringify(customerCreateDTO)
             })
                 .done((data) => {
-                    customer = data;
+                    customerCreateDTO = data;
                     $("#modalCreate").modal("hide");
 
                     sweetAlertSuccess("Create new customer")
 
-                    let newRow = renderCustomer(customer);
+                    let newRow = renderCustomer(customerCreateDTO);
 
                     $("#tbCustomer tbody").append(newRow);
 
@@ -481,13 +570,29 @@
                 name = $("#fullNameUp").val(),
                 email = $("#emailUp").val(),
                 phone = $("#phoneUp").val(),
+                provinceId = $("#provinceUp").val(),
+                provinceName = $("#provinceUp").find("option:selected").text(),
+                districtId = $("#districtUp").val(),
+                districtName = $("#districtUp").find("option:selected").text(),
+                wardId = $("#wardUp").val(),
+                wardName = $("#wardUp").find("option:selected").text(),
                 address = $("#addressUp").val();
 
-            let customer = {
+            const locationRegionDTO = {
+                provinceId,
+                provinceName,
+                districtId,
+                districtName,
+                wardId,
+                wardName,
+                address
+            }
+
+            let customerUpdateDTO = {
                 name,
                 email,
                 phone,
-                address
+                locationRegionDTO
             }
 
             $.ajax({
@@ -497,7 +602,7 @@
                 },
                 type: "PATCH",
                 url: page.urls.getCustomer + id,
-                data: JSON.stringify(customer)
+                data: JSON.stringify(customerUpdateDTO)
             })
                 .done((data) => {
                     customer = data;
@@ -520,10 +625,11 @@
         }
 
         function deposit() {
-            let transactionAmount = +$("#transactionAmountDep").val();
+            let transactionAmount = +$("#transactionAmountDep").val(),
+                customerId = customer.id;
 
-            let deposit = {
-                customer,
+            let depositCreateDTO = {
+                customerId,
                 transactionAmount
             }
 
@@ -534,21 +640,22 @@
                 },
                 type: "POST",
                 url: page.urls.doDeposit,
-                data: JSON.stringify(deposit)
+                data: JSON.stringify(depositCreateDTO)
             })
                 .done((data) => {
-                    console.log(data)
-                    customer = data;
+                    findById(customerId).then(() => {
 
-                    let currentRow = $("#tr_" + customer.id);
-                    let newRow = renderCustomer(customer);
+                        let currentRow = $("#tr_" + customer.id);
+                        let newRow = renderCustomer(customer);
 
-                    currentRow.replaceWith(newRow);
+                        currentRow.replaceWith(newRow);
 
-                    $("#modalDeposit").modal("hide");
+                        $("#modalDeposit").modal("hide");
 
-                    sweetAlertSuccess("Deposit");
-                    allAddEvent();
+                        sweetAlertSuccess("Deposit");
+                        allAddEvent();
+                    });
+
                 })
                 .fail((error) => {
                     console.error(error);
@@ -557,10 +664,11 @@
         }
 
         function withdraw() {
-            let transactionAmount = +$("#transactionAmountWith").val();
+            let transactionAmount = +$("#transactionAmountWith").val(),
+                customerId = customer.id;
 
-            let withdraw = {
-                customer,
+            let withdrawCreateDTO = {
+                customerId,
                 transactionAmount
             }
 
@@ -571,21 +679,21 @@
                 },
                 type: "POST",
                 url: page.urls.doWithdraw,
-                data: JSON.stringify(withdraw)
+                data: JSON.stringify(withdrawCreateDTO)
             })
                 .done((data) => {
-                    customer = data;
+                    findById(customerId).then(() => {
+                        let currentRow = $("#tr_" + customer.id);
+                        let newRow = renderCustomer(customer);
 
-                    let currentRow = $("#tr_" + customer.id);
-                    let newRow = renderCustomer(customer);
+                        currentRow.replaceWith(newRow);
 
-                    currentRow.replaceWith(newRow);
+                        $("#modalWithdraw").modal("hide");
 
-                    $("#modalWithdraw").modal("hide");
+                        sweetAlertSuccess("Withdraw")
 
-                    sweetAlertSuccess("Withdraw")
-
-                    allAddEvent();
+                        allAddEvent();
+                    })
                 })
                 .fail((error) => {
                     console.error(error);
@@ -598,13 +706,9 @@
                 recipientId = +$("#recipientId").val(),
                 transferAmount = +$("#transferAmountTran").val();
 
-            let transfer = {
-                sender: {
-                    id: senderId
-                },
-                recipient: {
-                    id: recipientId
-                },
+            let transferCreateDTO = {
+                senderId,
+                recipientId,
                 transferAmount
             }
 
@@ -615,7 +719,7 @@
                 },
                 type: "POST",
                 url: page.urls.doTransfer,
-                data: JSON.stringify(transfer)
+                data: JSON.stringify(transferCreateDTO)
             })
                 .done((data) => {
                     let sender = data.sender,
@@ -676,6 +780,17 @@
         $("#modalCreate").on("hidden.bs.modal", () => {
             $("#frmCreateCustomer")[0].reset();
             $("#frmCreateCustomer").validate().resetForm();
+            $("#provinceCre").empty();
+            $("#districtCre").empty();
+            $("#wardCre").empty();
+        })
+
+        $("#modalUpdate").on("hidden.bs.modal", () => {
+            $("#frmUpdateCustomer")[0].reset();
+            $("#frmUpdateCustomer").validate().resetForm();
+            $("#provinceUp").empty();
+            $("#districtUp").empty();
+            $("#wardUp").empty();
         })
 
         $("#modalWithdraw").on("hidden.bs.modal", () => {
