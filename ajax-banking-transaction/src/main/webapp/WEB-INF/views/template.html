@@ -65,6 +65,26 @@
                 })
         }
 
+        function getAllTransferHistory() {
+            $.ajax({
+                headers: {
+                    "accept": "application/json",
+                    "content-type": "application/json"
+                },
+                type: "GET",
+                url: "http://localhost:8080/api/transfers"
+            })
+                .done((data) => {
+                    $.each(data, (i, transfer) => {
+                        let str = renderTransferHistory(transfer);
+                        $("#tbTransferHistory tbody").append(str);
+                    })
+                })
+                .fail((error) => {
+                    console.log(error);
+                });
+        }
+
         function getAllProvinces() {
             $.ajax({
                 type: "GET",
@@ -158,84 +178,130 @@
                     $("#fullNameUp").val(customer.name);
                     $("#emailUp").val(customer.email);
                     $("#phoneUp").val(customer.phone);
+                    $("#addressUp").val(customer.locationRegionDTO.address);
+
+                    let provinceId = customer.locationRegionDTO.provinceId;
+                    let districtId = customer.locationRegionDTO.districtId;
+                    let wardId = customer.locationRegionDTO.wardId;
 
                     $.ajax({
                         type: "GET",
-                        url: vApi.urls.getAllProvinces,
+                        url: vApi.urls.getAllProvinces
                     })
                         .done((data) => {
                             $("#provinceUp").append(`<option selected value="${customer.locationRegionDTO.provinceId}">${customer.locationRegionDTO.provinceName}</option>`);
-                            $("#districtUp").append(`<option selected value="${customer.locationRegionDTO.districtId}">${customer.locationRegionDTO.districtName}</option>`);
-                            $("#wardUp").append(`<option selected value="${customer.locationRegionDTO.wardId}">${customer.locationRegionDTO.wardName}</option>`);
-
                             $.each(data.results, (i, item) => {
                                 if (item.province_id !== customer.locationRegionDTO.provinceId) {
-                                    $("#provinceUp").append(renderSelectOptionProvince(item));
+                                    let pro = renderSelectOptionProvince(item);
+                                    $("#provinceUp").append(pro);
                                 }
                             })
-                            let provinceId = $("#provinceUp").val();
-                            let districtId = $("#districtUp").val();
+                        })
 
-                            $("#provinceUp").on("change", function () {
-                                $("#districtUp").empty();
-                                provinceId = $(this).val();
-
-                                $.ajax({
-                                    type: "GET",
-                                    url: vApi.urls.getAllDistricts + provinceId
-                                })
-                                    .done((data) => {
-                                        $.each(data.results, (i, item) => {
-                                            if (item.district_id !== customer.locationRegionDTO.districtId) {
-                                                let dis = renderSelectOptionDistrict(item);
-                                                $("#districtUp").append(dis);
-                                            }
-                                        })
-                                    })
-                                    .fail((error) => {
-                                        console.log("fail")
-                                        sweetAlertError("Can't find districts list!");
-                                    })
+                    $.ajax({
+                        type: "GET",
+                        url: vApi.urls.getAllDistricts + provinceId
+                    })
+                        .done((data) => {
+                            $("#districtUp").empty();
+                            $("#districtUp").append(`<option selected value="${customer.locationRegionDTO.districtId}">${customer.locationRegionDTO.districtName}</option>`);
+                            $.each(data.results, (i, item) => {
+                                if (item.district_id !== customer.locationRegionDTO.districtId) {
+                                    let dis = renderSelectOptionDistrict(item);
+                                    $("#districtUp").append(dis);
+                                }
                             })
+                        })
+                        .fail((error) => {
+                            console.log(error)
+                            sweetAlertError("Can't find districts list!");
+                        })
 
-                            $("#districtUp").on("change", function () {
-                                $("#wardUp").empty();
-                                districtId = $(this).val();
+                    $.ajax({
+                        type: "GET",
+                        url: vApi.urls.getAllWards + districtId
+                    })
+                        .done((data) => {
+                            $("#wardUp").empty();
+                            $("#wardUp").append(`<option selected value="${customer.locationRegionDTO.wardId}">${customer.locationRegionDTO.wardName}</option>`);
+                            $.each(data.results, (i, item) => {
+                                if (item.ward_id !== customer.locationRegionDTO.wardId) {
+                                    let war = renderSelectOptionWard(item);
+                                    $("#wardUp").append(war);
+                                }
+                            })
+                        })
+                        .fail((error) => {
+                            sweetAlertError("Can't find wards list!");
+                        })
+
+                    $("#provinceUp").change(function () {
+                        provinceId = $("#provinceUp").val();
+
+                        $.ajax({
+                            type: "GET",
+                            url: vApi.urls.getAllDistricts + provinceId
+                        })
+                            .done((data) => {
+                                $("#districtUp").empty();
+                                $.each(data.results, (i, item) => {
+                                    let dis = renderSelectOptionDistrict(item);
+                                    $("#districtUp").append(dis);
+                                })
 
                                 $.ajax({
                                     type: "GET",
-                                    url: vApi.urls.getAllWards + districtId
+                                    url: vApi.urls.getAllWards + $("#districtUp").val()
                                 })
                                     .done((data) => {
+                                        $("#wardUp").empty();
                                         $.each(data.results, (i, item) => {
-                                            if (item.ward_id !== customer.locationRegionDTO.wardId) {
-                                                let war = renderSelectOptionWard(item);
-                                                $("#wardUp").append(war);
-                                            }
+                                            let war = renderSelectOptionWard(item);
+                                            $("#wardUp").append(war);
+                                        })
+
+                                        $("#wardUp").change(function () {
+                                            wardId = $(this).val();
                                         })
                                     })
                                     .fail((error) => {
                                         sweetAlertError("Can't find wards list!");
                                     })
 
-                        })
+                                $("#districtUp").change(function () {
+                                    districtId = $(this).val();
 
-                    //
-                    // $("#wardUp").on("change", function () {
-                    //     let wardId = $(this).val();
-                    // })
+                                    $.ajax({
+                                        type: "GET",
+                                        url: vApi.urls.getAllWards + districtId
+                                    })
+                                        .done((data) => {
+                                            $("#wardUp").empty();
+                                            $.each(data.results, (i, item) => {
+                                                let war = renderSelectOptionWard(item);
+                                                $("#wardUp").append(war);
+                                            })
+                                            $("#wardUp").change(function () {
+                                                wardId = $(this).val();
+                                            })
+                                        })
+                                        .fail((error) => {
+                                            sweetAlertError("Can't find wards list!");
+                                        })
+                                })
+                            })
+                            .fail((error) => {
+                                console.log(error)
+                                sweetAlertError("Can't find districts list!");
+                            })
+                    })
+
+                    $("#modalUpdate").modal("show");
                 })
-
-                $("#addressUp").val(customer.locationRegionDTO.address);
-
-                $("#modalUpdate").modal("show");
+                    .catch(() => {
+                        sweetAlertError("Customer not found!");
+                    });
             })
-                .catch(() => {
-                    sweetAlertError("Customer not found!");
-                });
-        }
-
-        )
         }
 
         function addEventShowModalDeposit() {
@@ -310,27 +376,6 @@
             })
         }
 
-        function addEventShowModalTransferHistory() {
-            console.log("test")
-            $.ajax({
-                headers: {
-                    "accept": "application/json",
-                    "content-type": "application/json"
-                },
-                type: "GET",
-                url: page.urls.getAllTransfers
-            })
-                .done((data) => {
-                    $.each(data, (i, transfer) => {
-                        let str = renderShowTransferHistory(transfer);
-                        $("#tbTransferHistory tbody").append(str);
-                    })
-                })
-                .fail((error) => {
-                    console.log(error);
-                });
-        }
-
         function addEventShowConfirmDelete() {
             $(".delete").on("click", function () {
                 let customerId = $(this).data("id");
@@ -392,18 +437,16 @@
             return `<option value="${item.ward_id}">${item.ward_name}</option>`;
         }
 
-        function renderShowTransferHistory(transfer) {
+        function renderTransferHistory(transfer) {
             return `
                     <tr>
-                        <th class="text-center">#</th>
-                        <th class="text-center">Full Name</th>
-                        <th class="text-center">Email</th>
-                        <th class="text-center">Phone</th>
-                        <th class="text-center">Balance</th>
-                        <th class="text-center">Province</th>
-                        <th class="text-center">District</th>
-                        <th class="text-center">Ward</th>
-                        <th class="text-center" colspan="5">Action</th>
+                        <td>${transfer.id}</td>
+                        <td>${transfer.senderDTO.id}</td>
+                        <td>${transfer.senderDTO.name}</td>
+                        <td>${transfer.recipientDTO.id}</td>
+                        <td>${transfer.recipientDTO.name}</td>
+                        <td>${transfer.transactionAmount}</td>
+                        <td>${transfer.transferAmount}</td>
                     </tr>
                 `;
         }
@@ -576,7 +619,8 @@
                 districtName = $("#districtUp").find("option:selected").text(),
                 wardId = $("#wardUp").val(),
                 wardName = $("#wardUp").find("option:selected").text(),
-                address = $("#addressUp").val();
+                address = $("#addressUp").val(),
+                deleted = 0;
 
             const locationRegionDTO = {
                 provinceId,
@@ -588,10 +632,11 @@
                 address
             }
 
-            let customerUpdateDTO = {
+            const customerUpdateDTO = {
                 name,
                 email,
                 phone,
+                deleted,
                 locationRegionDTO
             }
 
@@ -605,11 +650,8 @@
                 data: JSON.stringify(customerUpdateDTO)
             })
                 .done((data) => {
-                    customer = data;
-                    $("#modalUpdate").modal("hide");
-
-                    let currentRow = $("#tr_" + customer.id);
-                    let newRow = renderCustomer(customer);
+                    let currentRow = $("#tr_" + data.id);
+                    let newRow = renderCustomer(data);
 
                     currentRow.replaceWith(newRow);
 
@@ -617,6 +659,7 @@
 
                     allAddEvent();
 
+                    $("#modalUpdate").modal("hide");
                 })
                 .fail((error) => {
                     console.log(error);
@@ -653,6 +696,7 @@
                         $("#modalDeposit").modal("hide");
 
                         sweetAlertSuccess("Deposit");
+
                         allAddEvent();
                     });
 
@@ -682,18 +726,16 @@
                 data: JSON.stringify(withdrawCreateDTO)
             })
                 .done((data) => {
-                    findById(customerId).then(() => {
-                        let currentRow = $("#tr_" + customer.id);
-                        let newRow = renderCustomer(customer);
+                    let currentRow = $("#tr_" + data.id);
+                    let newRow = renderCustomer(data);
 
-                        currentRow.replaceWith(newRow);
+                    currentRow.replaceWith(newRow);
 
-                        $("#modalWithdraw").modal("hide");
+                    $("#modalWithdraw").modal("hide");
 
-                        sweetAlertSuccess("Withdraw")
+                    sweetAlertSuccess("Withdraw")
 
-                        allAddEvent();
-                    })
+                    allAddEvent();
                 })
                 .fail((error) => {
                     console.error(error);
@@ -752,9 +794,9 @@
             $("#modalCreate").modal("show");
         })
 
-        $("#btnShowTransferHistoryModal").click(() => {
+        $("#btnShowTransferHistoryModal").on("click", () => {
+            getAllTransferHistory();
             $("#modalTransferHistory").modal("show");
-            addEventShowModalTransferHistory();
         })
 
         $("#btnCreate").on("click", () => {

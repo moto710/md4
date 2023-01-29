@@ -1,20 +1,18 @@
 package com.ajaxbankingtransaction.model.dto;
 
-
+import com.ajaxbankingtransaction.model.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@Accessors(chain = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class CustomerCreateDTO implements Validator {
 
     private String name;
@@ -23,28 +21,10 @@ public class CustomerCreateDTO implements Validator {
 
     private String phone;
 
-    public String getName() {
-        return name;
-    }
+    private LocationRegionDTO locationRegionDTO;
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setLocationRegionDTO(LocationRegionDTO locationRegionDTO) {
+        this.locationRegionDTO = locationRegionDTO;
     }
 
     @Override
@@ -58,6 +38,11 @@ public class CustomerCreateDTO implements Validator {
         String name = customerCreateDTO.getName();
         String email = customerCreateDTO.getEmail();
         String phone = customerCreateDTO.getPhone();
+//        String provinceId = customerCreateDTO.getProvinceId();
+//        String provinceName = customerCreateDTO.getProvinceName();
+//        String districtId = customerCreateDTO.getDistrictId();
+//        String wardId = customerCreateDTO.getWardId();
+        String address = customerCreateDTO.getLocationRegionDTO().getAddress();
 
         if (name.length() == 0) {
             errors.rejectValue("name", "name.null", "Please fill your name!");
@@ -66,11 +51,9 @@ public class CustomerCreateDTO implements Validator {
         }
 
         if (phone.length() > 11 || phone.length() < 10) {
-            errors.rejectValue("number", "number.length", "Please fill your phone number!");
-        } else if (!phone.startsWith("0") || !phone.startsWith("9")) {
-            errors.rejectValue("number", "number.startsWith", "Phone number must start with 0 or 9");
+            errors.rejectValue("phone", "phone.length", "Please fill your phone number!");
         } else if (!phone.matches("^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$")) {
-            errors.rejectValue("number", "number.matches", "Wrong phone number format, sample: 0912345678");
+            errors.rejectValue("phone", "phone.matches", "Wrong phone number format, sample: 0912345678");
         }
 
         if (email.length() == 0) {
@@ -78,5 +61,50 @@ public class CustomerCreateDTO implements Validator {
         } else if (!email.matches("^[\\w]+@([\\w-]+\\.)+[\\w-]{2,6}$")) {
             errors.rejectValue("email", "email.matches", "Wrong email format, sample: abc@domain.com");
         }
+
+//        if (provinceId.length() == 0) {
+//            errors.rejectValue("provinceId", "provinceId.null", "Can't leave blank province's ID!");
+//        } else if (!provinceId.matches("(^$|[0-9]*$)")) {
+//            errors.rejectValue("provinceId", "provinceId.matches", "Province's ID is only number!");
+//        }
+//
+//        if (provinceName.length() == 0) {
+//            errors.rejectValue("provinceName", "provinceName.null", "Can't leave blank province's name!");
+//        }
+//
+//        if (districtId.length() == 0) {
+//            errors.rejectValue("districtId", "districtId.null", "Can't leave blank district's ID!");
+//        } else if (!districtId.matches("(^$|[0-9]*$)")) {
+//            errors.rejectValue("districtId", "districtId.matches", "District's ID is only number!");
+//        }
+//
+//        if (districtName.length() == 0) {
+//            errors.rejectValue("districtName", "districtName.null", "Can't leave blank district's name!");
+//        }
+//
+//        if (wardId.length() == 0) {
+//            errors.rejectValue("wardId", "wardId.null", "Can't leave blank ward's ID!");
+//        } else if (!wardId.matches("(^$|[0-9]*$)")) {
+//            errors.rejectValue("wardId", "wardId.matches", "Ward's ID is only number!");
+//        }
+//
+//        if (wardName.length() == 0) {
+//            errors.rejectValue("wardName", "wardName.null", "Can't leave blank ward's name!");
+//        }
+//
+        if (address.length() == 0) {
+            errors.rejectValue("address", "address.null", "Can't leave blank your address!");
+        } else if (address.length() < 5) {
+            errors.rejectValue("address", "address.length", "Address must be more than 5 letters!");
+        }
+    }
+
+    public Customer toCustomer() {
+        Customer customer = new Customer();
+        customer.setName(name);
+        customer.setPhone(phone);
+        customer.setEmail(email);
+        customer.setLocationRegion(locationRegionDTO.toLocationRegion());
+        return customer;
     }
 }

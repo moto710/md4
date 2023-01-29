@@ -1,19 +1,19 @@
 package com.ajaxbankingtransaction.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.ajaxbankingtransaction.model.dto.TransferDTO;
+import lombok.*;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+
+@Getter @Setter
+@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Entity
 @Table(name = "transfers")
-public class Transfer extends BaseEntity{
+public class Transfer extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,59 +39,14 @@ public class Transfer extends BaseEntity{
     @JoinColumn(name = "sender_id", referencedColumnName = "id", nullable = false)
     private Customer sender;
 
-    public Integer getId() {
-        return id;
+    public TransferDTO toTransferDTO() {
+        return new TransferDTO()
+                .setId(id)
+                .setTransactionAmount(transactionAmount)
+                .setTransferAmount(transferAmount)
+                .setRecipientDTO(recipient.toCustomerDTO())
+                .setSenderDTO(sender.toCustomerDTO())
+                ;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public BigDecimal getFee() {
-        return fee;
-    }
-
-    public void setFee(BigDecimal fee) {
-        this.fee = fee;
-    }
-
-    public BigDecimal getFeeAmount() {
-        return feeAmount;
-    }
-
-    public void setFeeAmount(BigDecimal feeAmount) {
-        this.feeAmount = feeAmount;
-    }
-
-    public BigDecimal getTransactionAmount() {
-        return transactionAmount;
-    }
-
-    public void setTransactionAmount(BigDecimal transactionAmount) {
-        this.transactionAmount = transactionAmount;
-    }
-
-    public BigDecimal getTransferAmount() {
-        return transferAmount;
-    }
-
-    public void setTransferAmount(BigDecimal transferAmount) {
-        this.transferAmount = transferAmount;
-    }
-
-    public Customer getRecipient() {
-        return recipient;
-    }
-
-    public void setRecipient(Customer recipient) {
-        this.recipient = recipient;
-    }
-
-    public Customer getSender() {
-        return sender;
-    }
-
-    public void setSender(Customer sender) {
-        this.sender = sender;
-    }
 }

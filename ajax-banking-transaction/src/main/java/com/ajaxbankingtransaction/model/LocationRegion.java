@@ -1,16 +1,19 @@
 package com.ajaxbankingtransaction.model;
 
+import com.ajaxbankingtransaction.model.dto.LocationRegionDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true)
 @Entity
 @Table(name = "location_regions")
 public class LocationRegion {
@@ -20,19 +23,19 @@ public class LocationRegion {
     private Integer id;
 
     @Column(name = "province_id", nullable = false)
-    private Integer provinceId;
+    private String provinceId;
 
     @Column(name = "province_name", nullable = false)
     private String provinceName;
 
     @Column(name = "district_id", nullable = false)
-    private Integer districtId;
+    private String districtId;
 
     @Column(name = "district_name", nullable = false)
     private String districtName;
 
     @Column(name = "ward_id", nullable = false)
-    private Integer wardId;
+    private String wardId;
 
     @Column(name = "ward_name", nullable = false)
     private String wardName;
@@ -43,75 +46,18 @@ public class LocationRegion {
 //    @OneToOne(mappedBy = "locationRegion")
 //    private Customer customer;
 
-    public Integer getId() {
-        return id;
+
+    public LocationRegionDTO toLocationRegionDTO() {
+        return new LocationRegionDTO()
+                .setId(id)
+                .setProvinceId(provinceId)
+                .setProvinceName(provinceName)
+                .setDistrictId(districtId)
+                .setDistrictName(districtName)
+                .setWardId(wardId)
+                .setWardName(wardName)
+                .setAddress(address);
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
-    public Integer getProvinceId() {
-        return provinceId;
-    }
-
-    public void setProvinceId(Integer provinceId) {
-        this.provinceId = provinceId;
-    }
-
-    public String getProvinceName() {
-        return provinceName;
-    }
-
-    public void setProvinceName(String provinceName) {
-        this.provinceName = provinceName;
-    }
-
-    public Integer getDistrictId() {
-        return districtId;
-    }
-
-    public void setDistrictId(Integer districtId) {
-        this.districtId = districtId;
-    }
-
-    public String getDistrictName() {
-        return districtName;
-    }
-
-    public void setDistrictName(String districtName) {
-        this.districtName = districtName;
-    }
-
-    public Integer getWardId() {
-        return wardId;
-    }
-
-    public void setWardId(Integer wardId) {
-        this.wardId = wardId;
-    }
-
-    public String getWardName() {
-        return wardName;
-    }
-
-    public void setWardName(String wardName) {
-        this.wardName = wardName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-//    public Customer getCustomer() {
-//        return customer;
-//    }
-//
-//    public void setCustomer(Customer customer) {
-//        this.customer = customer;
-//    }
 }

@@ -4,16 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 @Getter
 @Setter
-@Accessors(chain = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class CustomerEditDTO implements Validator {
 
     private String customerId;
@@ -23,38 +21,6 @@ public class CustomerEditDTO implements Validator {
     private String email;
 
     private String phone;
-
-    public String getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
 
     @Override
     public boolean supports(Class<?> clazz) {

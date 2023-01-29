@@ -1,24 +1,23 @@
 package com.ajaxbankingtransaction.model;
 
 
+import com.ajaxbankingtransaction.model.dto.CustomerDTO;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.Accessors;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Entity
 @Table(name = "customers")
 @Component
-public class Customer extends BaseEntity{
+@Accessors(chain = true)
+public class Customer extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -27,65 +26,43 @@ public class Customer extends BaseEntity{
     private String name;
 
     @NotBlank
-    @Column(precision = 12, nullable = false)
+    @Column(precision = 12, nullable = false, updatable = false)
     private BigDecimal balance;
 
     @Column(nullable = false, unique = true)
     private String email;
 
-//    @OneToOne
-//    @JoinColumn(name = "location_region_id",referencedColumnName = "id")
-//    private LocationRegion locationRegion;
-
     @NotBlank
     private String phone;
 
-    public Integer getId() {
-        return id;
-    }
+    @OneToOne
+    @JoinColumn(name = "location_region_id",referencedColumnName = "id", nullable = false)
+    private LocationRegion locationRegion;
 
-    public void setId(Integer id) {
+//    @OneToMany(targetEntity = Deposit.class, fetch = FetchType.EAGER)
+//    private List<Deposit> deposits;
+//
+//    @OneToMany(targetEntity = Transfer.class)
+//    private List<Transfer> transfers;
+
+    public Customer (Integer id, String name, BigDecimal balance, String email, String phone, Boolean deleted, LocationRegion locationRegion){
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
         this.balance = balance;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
         this.email = email;
-    }
-
-//    public LocationRegion getLocationRegion() {
-//        return locationRegion;
-//    }
-
-//    public void setLocationRegion(LocationRegion locationRegion) {
-//        this.locationRegion = locationRegion;
-//    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
         this.phone = phone;
+        this.deleted = deleted;
+        this.locationRegion = locationRegion;
+    }
+    public CustomerDTO toCustomerDTO() {
+        return new CustomerDTO()
+                .setId(id)
+                .setName(name)
+                .setEmail(email)
+                .setPhone(phone)
+                .setBalance(balance)
+                .setDeleted(deleted)
+                .setLocationRegionDTO(locationRegion.toLocationRegionDTO());
     }
 
 }

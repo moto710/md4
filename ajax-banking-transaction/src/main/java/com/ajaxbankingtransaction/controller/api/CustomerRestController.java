@@ -1,11 +1,9 @@
 package com.ajaxbankingtransaction.controller.api;
 
+import com.ajaxbankingtransaction.exception.CheckWithdrawBalance;
 import com.ajaxbankingtransaction.exception.DataInputException;
-import com.ajaxbankingtransaction.model.Customer;
-import com.ajaxbankingtransaction.model.Deposit;
-import com.ajaxbankingtransaction.model.Transfer;
-import com.ajaxbankingtransaction.model.Withdraw;
-import com.ajaxbankingtransaction.model.dto.CustomerCreateDTO;
+import com.ajaxbankingtransaction.model.*;
+import com.ajaxbankingtransaction.model.dto.*;
 import com.ajaxbankingtransaction.service.customer.ICustomerService;
 import com.ajaxbankingtransaction.utils.AppUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 
 @RestController
@@ -33,58 +28,67 @@ public class CustomerRestController {
     private AppUtils appUtils;
 
     private Customer customer;
+
+    private CustomerDTO customerDTO;
+
+    private Optional<CustomerDTO> customerDTOOptional;
     private Optional<Customer> customerOptional;
 
-    private List<Customer> customerList;
+    private List<CustomerDTO> customerDTOList;
 
     @GetMapping
-    public ResponseEntity<List<Customer>> getALlCustomers() {
+    private ResponseEntity<List<CustomerDTO>> getALlCustomers() {
 
-        List<Customer> customers = customerService.findAllByDeletedIsFalse();
+        List<CustomerDTO> customers = customerService.findAllCustomerDTOByDeletedIsFalse();
 
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
     @GetMapping("/{customerId}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable Integer customerId) {
+    private ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Integer customerId) {
 
-        customerOptional = customerService.findById(customerId);
+        customerDTOOptional = customerService.findCustomerDTOByIdAndDeletedIsFalse(customerId);
 
-        if (!customerOptional.isPresent()) {
+        if (!customerDTOOptional.isPresent()) {
             throw new NullPointerException("Customer not found!");
         }
 
-        customer = customerOptional.get();
-        return new ResponseEntity<>(customer, HttpStatus.OK);
+        customerDTO = customerDTOOptional.get();
+        return new ResponseEntity<>(customerDTO, HttpStatus.OK);
     }
 
     @GetMapping("/recipients-list/{id}")
-    private ResponseEntity<List<Customer>> getRecipientsList(@PathVariable Integer id) {
-        customerList = customerService.findAllByDeletedIsFalseAndIdNot(id);
+    private ResponseEntity<List<CustomerDTO>> getRecipientsList(@PathVariable Integer id) {
+        customerDTOList = customerService.findAllCustomerDTOByDeletedIsFalseAndIdNot(id);
 
-        return new ResponseEntity<>(customerList, HttpStatus.OK);
+        return new ResponseEntity<>(customerDTOList, HttpStatus.OK);
     }
-
+    
     @PostMapping
-    private ResponseEntity<?> create(@Validated @RequestBody CustomerCreateDTO customerCreateDTO, BindingResult bs) {
-        new CustomerCreateDTO().validate(customerCreateDTO, bs);
+    private ResponseEntity<?> create(@Validated @RequestBody CustomerCreateDTO customerCreateDTO, BindingResult br) {
+        new CustomerCreateDTO().validate(customerCreateDTO, br);
 
-        if (bs.hasFieldErrors()) {
-            return appUtils.mapErrorToResponse(bs);
+        if (br.hasFieldErrors()) {
+            return appUtils.mapErrorToResponse(br);
         }
+        customer = customerCreateDTO.toCustomer();
 
-        customer = new Customer();
-        customer.setName(customerCreateDTO.getName());
-        customer.setEmail(customerCreateDTO.getEmail());
-        customer.setPhone(customerCreateDTO.getPhone());
         customer.setBalance(BigDecimal.ZERO);
-
+        customer.setCreatedAt(new Date());
         customerService.save(customer);
 
-        return new ResponseEntity<>(customer, HttpStatus.CREATED);
+        customerDTO = customer.toCustomerDTO();
+
+        return new ResponseEntity<>(customerDTO, HttpStatus.CREATED);
     }
     @PatchMapping("/{id}")
-    public ResponseEntity<Customer> update(@PathVariable Integer id, @RequestBody Customer reqCustomer) {
+    private ResponseEntity<?> update(@PathVariable Integer id,@Validated @RequestBody CustomerDTO customerUpdateDTO, BindingResult br) {
+        new CustomerDTO().validate(customerUpdateDTO, br);
+
+        if (br.hasFieldErrors()) {
+            return appUtils.mapErrorToResponse(br);
+        }
+
         customerOptional = customerService.findById(id);
 
         if (!customerOptional.isPresent()) {
@@ -92,78 +96,138 @@ public class CustomerRestController {
         }
 
         customer = customerOptional.get();
-        customer.setEmail(reqCustomer.getEmail());
-        customer.setName(reqCustomer.getName());
-        customer.setPhone(reqCustomer.getPhone());
-        customer.setDeleted(reqCustomer.getDeleted());
+        customer.setName(customerUpdateDTO.getName());
+        customer.setEmail(customerUpdateDTO.getEmail());
+        customer.setPhone(customerUpdateDTO.getPhone());
+        customer.setDeleted(customerUpdateDTO.getDeleted());
+        customer.setLocationRegion(customerUpdateDTO.getLocationRegionDTO().toLocationRegion());
 
         customerService.save(customer);
 
-        return new ResponseEntity<>(customer, HttpStatus.OK);
+        customerDTO = customer.toCustomerDTO();
+
+        return new ResponseEntity<>(customerDTO, HttpStatus.OK);
     }
 
     @PostMapping("/deposit")
-    private ResponseEntity<Customer> deposit(@RequestBody Deposit deposit) {
-        Integer id = deposit.getCustomer().getId();
-        customerOptional = customerService.findById(id);
+    private ResponseEntity<?> deposit(@Validated @RequestBody DepositCreateDTO depositCreateDTO, BindingResult br) {
+        new DepositCreateDTO().validate(depositCreateDTO, br);
 
-        if (!customerOptional.isPresent()) {
+        if (br.hasFieldErrors()) {
+            return appUtils.mapErrorToResponse(br);
+        }
+
+        Integer id = Integer.parseInt(depositCreateDTO.getCustomerId());
+        customerDTOOptional = customerService.findCustomerDTOByIdAndDeletedIsFalse(id);
+
+        if (!customerDTOOptional.isPresent()) {
             throw new NullPointerException("Customer not found!");
         }
 
-        customer = customerOptional.get();
-        BigDecimal currentBalance = customer.getBalance();
-        BigDecimal transactionAmount = deposit.getTransactionAmount();
+        customerDTO = customerDTOOptional.get();
+
+        BigDecimal currentBalance = customerDTO.getBalance();
+        BigDecimal transactionAmount = BigDecimal.valueOf(Long.parseLong(depositCreateDTO.getTransactionAmount()));
+
+        if (transactionAmount.compareTo(BigDecimal.TEN) < 0) {
+            throw new DataInputException("Minimum amount to deposit is 10$!");
+        } else if (transactionAmount.compareTo(BigDecimal.valueOf(1000000000)) > 0) {
+            throw new DataInputException("Maximum amount to deposit is 1.000.000.000$!");
+        }
+
         BigDecimal newBalance = currentBalance.add(transactionAmount);
 
-        customer.setBalance(newBalance);
-        customerService.deposit(customer, deposit);
+        customer = customerDTO.toCustomer();
 
-        return new ResponseEntity<>(customer, HttpStatus.OK);
+        customerDTO.setBalance(newBalance);
+
+        Deposit deposit = new Deposit();
+        deposit.setCustomer(customer);
+        deposit.setTransactionAmount(transactionAmount);
+
+        customerService.deposit(deposit);
+
+        return new ResponseEntity<>(customerDTO, HttpStatus.OK);
     }
 
     @PostMapping("/withdraw")
-    private ResponseEntity<Customer> withdraw(@RequestBody Withdraw withdraw) {
-        Integer id = withdraw.getCustomer().getId();
-        customerOptional = customerService.findById(id);
+    private ResponseEntity<?> withdraw(@Validated @RequestBody WithdrawCreateDTO withdrawCreateDTO, BindingResult br) {
+        new WithdrawCreateDTO().validate(withdrawCreateDTO, br);
 
-        if (!customerOptional.isPresent()) {
+        if (br.hasFieldErrors()) {
+            return appUtils.mapErrorToResponse(br);
+        }
+
+        Integer id = Integer.parseInt(withdrawCreateDTO.getCustomerId());
+        customerDTOOptional = customerService.findCustomerDTOByIdAndDeletedIsFalse(id);
+
+        if (!customerDTOOptional.isPresent()) {
             throw new NullPointerException("Customer not found!");
         }
 
-        customer = customerOptional.get();
-        BigDecimal currentBalance = customer.getBalance();
-        BigDecimal transactionAmount = withdraw.getTransactionAmount();
+        customerDTO = customerDTOOptional.get();
+
+        BigDecimal currentBalance = customerDTO.getBalance();
+        BigDecimal transactionAmount = BigDecimal.valueOf(Long.parseLong(withdrawCreateDTO.getTransactionAmount()));
+
+        if (transactionAmount.compareTo(currentBalance) > 0) {
+            throw new CheckWithdrawBalance("Not enough balance to withdraw!");
+        } else if (transactionAmount.compareTo(BigDecimal.TEN) < 0) {
+            throw new DataInputException("Minimum amount to withdraw is 10$!");
+        } else if (transactionAmount.compareTo(BigDecimal.valueOf(1000000000)) > 0) {
+            throw new DataInputException("Maximum amount to withdraw is 1.000.000.000$!");
+        }
+
         BigDecimal newBalance = currentBalance.subtract(transactionAmount);
 
-        customer.setBalance(newBalance);
-        customerService.withdraw(customer, withdraw);
+        customer = customerDTO.toCustomer();
 
-        return new ResponseEntity<>(customer, HttpStatus.OK);
+        customerDTO.setBalance(newBalance);
+
+        Withdraw withdraw = new Withdraw();
+        withdraw.setCustomer(customer);
+        withdraw.setTransactionAmount(transactionAmount);
+
+        customerService.withdraw(withdraw);
+
+        return new ResponseEntity<>(customerDTO, HttpStatus.OK);
     }
 
     @PostMapping("/transfer")
-    private ResponseEntity<?> transfer(@RequestBody Transfer transfer) {
-        Integer senderId = transfer.getSender().getId();
-        Integer recipientId = transfer.getRecipient().getId();
+    private ResponseEntity<?> transfer(@Validated @RequestBody TransferCreateDTO transferCreateDTO, BindingResult br) {
+        new TransferCreateDTO().validate(transferCreateDTO, br);
 
-        Optional<Customer> senderOptional = customerService.findById(senderId);
-        Optional<Customer> recipientOptional = customerService.findById(recipientId);
+        if (br.hasFieldErrors()) {
+            return appUtils.mapErrorToResponse(br);
+        }
 
-        if (!senderOptional.isPresent()) {
+        Integer senderId = Integer.parseInt(transferCreateDTO.getSenderId());
+        Integer recipientId = Integer.parseInt(transferCreateDTO.getRecipientId());
+        BigDecimal transferAmount = BigDecimal.valueOf(Long.parseLong(transferCreateDTO.getTransferAmount()));
+
+        if (transferAmount.compareTo(BigDecimal.TEN) < 0) {
+            throw new DataInputException("Minimum amount to transfer is 10$!");
+        } else if (transferAmount.compareTo(BigDecimal.valueOf(1000000000)) > 0) {
+            throw new DataInputException("Maximum amount to transfer is 1.000.000.000$!");
+        }
+
+        Optional<CustomerDTO> senderDTOOptional = customerService.findCustomerDTOByIdAndDeletedIsFalse(senderId);
+        Optional<CustomerDTO> recipientDTOOptional = customerService.findCustomerDTOByIdAndDeletedIsFalse(recipientId);
+
+        if (!senderDTOOptional.isPresent()) {
             throw new NullPointerException("Sender not found!");
         }
-        if (!recipientOptional.isPresent()) {
+        if (!recipientDTOOptional.isPresent()) {
             throw new NullPointerException("Recipient not found!");
         }
 
-        Customer sender = senderOptional.get();
-        Customer recipient = recipientOptional.get();
+        CustomerDTO senderDTO = senderDTOOptional.get();
+        CustomerDTO recipientDTO = recipientDTOOptional.get();
 
-        BigDecimal currentSenderBalance = sender.getBalance();
-        BigDecimal currentRecipientBalance = recipient.getBalance();
-        BigDecimal transferAmount = transfer.getTransferAmount();
-        BigDecimal feesAmount = transferAmount.multiply(BigDecimal.valueOf(10 / 100));
+        BigDecimal currentSenderBalance = senderDTO.getBalance();
+        BigDecimal currentRecipientBalance = recipientDTO.getBalance();
+        BigDecimal fee = BigDecimal.TEN;
+        BigDecimal feesAmount = transferAmount.multiply(fee.divide(BigDecimal.valueOf(100)));
         BigDecimal transactionAmount = transferAmount.add(feesAmount);
 
         if (transactionAmount.compareTo(currentSenderBalance) > 0) {
@@ -173,21 +237,25 @@ public class CustomerRestController {
         BigDecimal senderNewBalance = currentSenderBalance.subtract(transactionAmount);
         BigDecimal recipientNewBalance = currentRecipientBalance.add(transferAmount);
 
-        sender.setBalance(senderNewBalance);
-        recipient.setBalance(recipientNewBalance);
+        Customer sender = senderDTO.toCustomer();
+        Customer recipient = recipientDTO.toCustomer();
 
+        senderDTO.setBalance(senderNewBalance);
+        recipientDTO.setBalance(recipientNewBalance);
+
+        Transfer transfer = new Transfer();
+        transfer.setFee(BigDecimal.valueOf(10));
+        transfer.setFeeAmount(feesAmount);
+        transfer.setTransactionAmount(transactionAmount);
+        transfer.setTransferAmount(transferAmount);
         transfer.setSender(sender);
         transfer.setRecipient(recipient);
-        transfer.setFee(BigDecimal.valueOf(10));
-        transfer.setTransferAmount(transferAmount);
-        transfer.setTransactionAmount(transactionAmount);
-        transfer.setFeeAmount(feesAmount);
 
         customerService.transfer(transfer);
 
-        Map<String, Customer> transferInfo = new HashMap<>();
-        transferInfo.put("sender", sender);
-        transferInfo.put("recipient", recipient);
+        Map<String, CustomerDTO> transferInfo = new HashMap<>();
+        transferInfo.put("sender", senderDTO);
+        transferInfo.put("recipient", recipientDTO);
 
         return new ResponseEntity<>(transferInfo, HttpStatus.OK);
     }

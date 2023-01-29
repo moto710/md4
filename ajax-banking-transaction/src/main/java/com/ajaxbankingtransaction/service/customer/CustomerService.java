@@ -1,13 +1,8 @@
 package com.ajaxbankingtransaction.service.customer;
 
-import com.ajaxbankingtransaction.model.Customer;
-import com.ajaxbankingtransaction.model.Deposit;
-import com.ajaxbankingtransaction.model.Transfer;
-import com.ajaxbankingtransaction.model.Withdraw;
-import com.ajaxbankingtransaction.repository.ICustomerRepository;
-import com.ajaxbankingtransaction.repository.IDepositRepository;
-import com.ajaxbankingtransaction.repository.ITransferRepository;
-import com.ajaxbankingtransaction.repository.IWithdrawRepository;
+import com.ajaxbankingtransaction.model.*;
+import com.ajaxbankingtransaction.model.dto.CustomerDTO;
+import com.ajaxbankingtransaction.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +24,9 @@ public class CustomerService implements ICustomerService {
     @Autowired
     private IDepositRepository depositRepository;
 
+    @Autowired
+    private ILocationRegionRepository locationRegionRepository;
+
     @Override
     public Iterable<Customer> findAll() {
         return customerRepository.findAll();
@@ -40,6 +38,25 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
+    public Optional<Customer> findCustomersByIdAndDeletedIsFalse(Integer id) {
+        return customerRepository.findCustomersByIdAndDeletedIsFalse(id);
+    }
+
+    @Override
+    public Optional<CustomerDTO> findCustomerDTOByIdAndDeletedIsFalse(Integer id) {
+        return customerRepository.findCustomerDTOByIdAndDeletedIsFalse(id);
+    }
+
+    @Override
+    public List<CustomerDTO> findAllCustomerDTOByDeletedIsFalseAndIdNot(Integer id) {
+        return customerRepository.findAllCustomerDTOByDeletedIsFalseAndIdNot(id);
+    }
+
+    @Override
+    public List<CustomerDTO> findAllCustomerDTOByDeletedIsFalse() {
+        return customerRepository.findAllCustomerDTOByDeletedIsFalse();
+    }
+    @Override
     public List<Customer> findAllByDeletedIsFalseAndIdNot(Integer id) {
         return customerRepository.findAllByDeletedIsFalseAndIdNot(id);
     }
@@ -50,13 +67,15 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public List<Customer> findAllByIdNot(int id) {
+    public List<Customer> findAllByIdNot(Integer id) {
         return customerRepository.findAllByIdNot(id);
     }
 
 
     @Override
     public void save(Customer customer) {
+        LocationRegion locationRegion = customer.getLocationRegion();
+        locationRegionRepository.save(locationRegion);
         customerRepository.save(customer);
     }
 
@@ -71,20 +90,18 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public void deposit(Customer customer, Deposit deposit) {
-        int idCustomer = customer.getId();
+    public void deposit(Deposit deposit) {
+        int idCustomer = deposit.getCustomer().getId();
         BigDecimal transactionAmount = deposit.getTransactionAmount();
-        deposit.setCustomer(customer);
         deposit.setCreatedAt(new Date());
         depositRepository.save(deposit);
         customerRepository.increaseBalance(idCustomer, transactionAmount);
     }
 
     @Override
-    public void withdraw(Customer customer, Withdraw withdraw) {
-        int idCustomer = customer.getId();
+    public void withdraw(Withdraw withdraw) {
+        int idCustomer = withdraw.getCustomer().getId();
         BigDecimal transactionAmount = withdraw.getTransactionAmount();
-        withdraw.setCustomer(customer);
         withdraw.setCreatedAt(new Date());
         withdrawRepository.save(withdraw);
         customerRepository.decreaseBalance(idCustomer, transactionAmount);
