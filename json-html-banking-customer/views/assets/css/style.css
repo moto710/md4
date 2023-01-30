@@ -24,6 +24,11 @@ footer {
     width: 100%;
     min-height: 75px;
     padding: 10px;
+    background-color: #d1e7dd;
+}
+
+.showbtn {
+    width: 25rem;
 }
 
 .footer-success {
@@ -41,7 +46,7 @@ footer {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .modal-alert-danger {

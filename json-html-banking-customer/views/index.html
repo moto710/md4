@@ -44,17 +44,63 @@
                         <th class="text-center">Province</th>
                         <th class="text-center">District</th>
                         <th class="text-center">Ward</th>
-                        <th class="text-center" colspan="5">Action</th>
                     </tr>
                 </thead>
                 <tbody>
+
+                    <tr id="tr_1" data-id="1" class="tbr">
+                        <td class="text-center">1</td>
+                        <td class="text-center">bfdbdfb</td>
+                        <td class="text-center">bfdbdfb</td>
+                        <td class="text-center">bdfbdfb</td>
+                        <td class="text-end">bfdbdfb</td>
+                        <td class="text-center">bdfbdfdfb</td>
+                        <td class="text-center">bdrdfd</td>
+                        <td class="text-center">brehrh</td>
+                        <td class="text-center">vgerhr</td>
+
+                    </tr>
+                    <tr id="tr_2" data-id="2" class="tbr">
+                        <td class="text-center">2</td>
+                        <td class="text-center">bfdbdfb</td>
+                        <td class="text-center">bfdbdfb</td>
+                        <td class="text-center">bdfbdfb</td>
+                        <td class="text-end">bfdbdfb</td>
+                        <td class="text-center">bdfbdfdfb</td>
+                        <td class="text-center">bdrdfd</td>
+                        <td class="text-center">brehrh</td>
+                        <td class="text-center">vgerhr</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
-        <footer class="hidden">
-
-        </footer>
     </div>
+    <footer class="d-flex hidden close-footer">
+        <div class="showbtn mx-auto">
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-secondary btn-lg update" data-id="2">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button type="button" class="btn btn-outline-success btn-lg deposit" data-id="2">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button type="button" class="btn btn-outline-warning btn-lg withdraw" data-id="2">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-outline-primary btn-lg transfer" data-id="2">
+                    <i class="fas fa-exchange-alt"></i>
+                </button>
+                <button type="button" class="btn btn-outline-danger btn-lg delete" data-id="2">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+        <div>
+            <button class="btn-close" type="button" aria-label="Close" id="closeFooter">
+
+            </button>
+        </div>
+    </footer>
 
     <!-- Modal Create -->
     <div class="modal fade" id="modalCreate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -72,33 +118,39 @@
                     <form method="post" id="frmCreateCustomer">
                         <div class="row mt-3">
                             <div class="col-lg-4 pe-1">
-                                <label>Full Name</label>
+                                <label for="fullNameCre">Full Name</label>
                                 <input type="text" class="form-control" id="fullNameCre" name="fullNameCre" />
                             </div>
                             <div class="col-lg-4 px-1">
-                                <label>Email</label>
+                                <label for="emailCre">Email</label>
                                 <input type="email" class="form-control" id="emailCre" name="emailCre" />
                             </div>
                             <div class="col-lg-4 ps-1">
-                                <label>Phone</label>
+                                <label for="phoneCre">Phone</label>
                                 <input type="tel" class="form-control" id="phoneCre" name="phoneCre" />
                             </div>
                         </div>
                         <div class="row mt-3">
                             <div class="col-lg-3 pe-1">
-                                <label>Province</label>
-                                <input type="text" class="form-control" id="provinceCre" name="provinceCre" />
+                                <label for="provinceCre">Province</label>
+                                <select id="provinceCre" class="form-control">
+
+                                </select>
                             </div>
                             <div class="col-lg-3 px-1">
-                                <label>District</label>
-                                <input type="text" class="form-control" id="districtCre" name="districtCre" />
+                                <label for="districtCre">District</label>
+                                <select id="districtCre" class="form-control">
+
+                                </select>
                             </div>
                             <div class="col-lg-3 px-1">
-                                <label>Ward</label>
-                                <input type="text" class="form-control" id="wardCre" name="wardCre" />
+                                <label for="wardCre">Ward</label>
+                                <select id="wardCre" class="form-control">
+
+                                </select>
                             </div>
                             <div class="col-lg-3 ps-1">
-                                <label>Address</label>
+                                <label for="addressCre">Address</label>
                                 <input type="text" class="form-control" id="addressCre" name="addressCre" />
                             </div>
                         </div>
@@ -372,19 +424,38 @@
 
 
     <script>
-
         const page = {
             urls: {
-                getAllCustomers: AppBase.API_CUSTOMER + "?deleted=0",
-                postNewCustomer: AppBase.API_CUSTOMER,
+                getAllCustomers: AppBase.API_CUSTOMER,
+                getAllCustomersNotId: AppBase.API_CUSTOMER + "/recipients-list/",
                 getCustomer: AppBase.API_CUSTOMER + "/",
                 doDeposit: AppBase.API_DEPOSIT,
                 doWithdraw: AppBase.API_WITHDRAW,
-                doTransfer: AppBase.API_TRANSFER
+                doTransfer: AppBase.API_TRANSFER,
+                getAllTransfers: AppBase.API_TRANSFERS
+            }
+        }
+
+        const vApi = {
+            urls: {
+                getAllProvinces: "https://vapi.vnappmob.com/api/province/",
+                getAllDistricts: "https://vapi.vnappmob.com/api/province/district/",
+                getAllWards: "https://vapi.vnappmob.com/api/province/ward/"
             }
         }
 
         let customer = {};
+
+
+        $(".tbr").on("click", () => {
+            let id = $(this).data("id");
+            console.log(id);
+            $("footer").removeClass("hidden").addClass("show");
+        })
+
+        $("#closeFooter").on("click", () => {
+            $("footer").removeClass("show").addClass("hidden");
+        })
 
         function getAllCustomers() {
             $.ajax({
@@ -398,7 +469,7 @@
                 .done((data) => {
                     $.each(data, (i, item) => {
                         let str = renderCustomer(item);
-                        document.querySelector("#tbCustomer tbody").innerHTML += str;
+                        $("#tbCustomer tbody").append(str);
                     })
 
                     allAddEvent();
@@ -408,23 +479,177 @@
                 })
         }
 
+        function getAllProvinces() {
+            $.ajax({
+                type: "GET",
+                url: vApi.urls.getAllProvinces
+            })
+                .done((data) => {
+                    $("#provinceCre").append(`<option disabled selected>--Select your province--</option>`);
+                    $.each(data.results, (i, item) => {
+                        let pro = renderSelectOptionProvince(item);
+                        $("#provinceCre").append(pro);
+                    })
+                    addEventChangeProvince();
+                })
+                .fail((error) => {
+                    sweetAlertError("Can't find provinces list!");
+                })
+        }
+
+        function getAllDistrictsByProvinceId(id) {
+            $.ajax({
+                type: "GET",
+                url: vApi.urls.getAllDistricts + id
+            })
+                .done((data) => {
+                    $("#districtCre").empty();
+                    $.each(data.results, (i, item) => {
+                        let dis = renderSelectOptionDistrict(item);
+                        $("#districtCre").append(dis);
+                    })
+                    getAllWardsByDistrictId($("#districtCre").val());
+                    addEventChangeDistrict();
+                })
+                .fail((error) => {
+                    console.log("fail")
+                    sweetAlertError("Can't find districts list!");
+                })
+        }
+
+        function getAllWardsByDistrictId(id) {
+            $.ajax({
+                type: "GET",
+                url: vApi.urls.getAllWards + id
+            })
+                .done((data) => {
+                    $("#wardCre").empty();
+                    $.each(data.results, (i, item) => {
+                        let war = renderSelectOptionWard(item);
+                        $("#wardCre").append(war);
+                    })
+                    addEventChangeWard();
+                })
+                .fail((error) => {
+                    sweetAlertError("Can't find wards list!");
+                })
+        }
+
+        function addEventChangeProvince() {
+            let removed = false;
+            $("#provinceCre").change(function () {
+                let provinceId = $("#provinceCre").val();
+
+                if (provinceId !== 0) {
+                    if (!removed) {
+                        $('#provinceCre option')[0].remove();
+                        removed = !removed;
+                    }
+                }
+                getAllDistrictsByProvinceId(provinceId);
+            })
+        }
+
+        function addEventChangeDistrict() {
+            $("#districtCre").change(function () {
+                let districtId = $(this).val();
+                getAllWardsByDistrictId(districtId);
+            })
+        }
+
+        function addEventChangeWard() {
+            $("#wardCre").change(function () {
+                let wardId = $(this).val();
+            })
+        }
+
         function addEventShowModalUpdate() {
             $(".update").on("click", function () {
+                $("#modalUpdate").modal("show");
                 let customerId = $(this).data("id");
 
                 findById(customerId).then(() => {
+                    $("#idUp").val(customer.id);
+                    $("#fullNameUp").val(customer.name);
+                    $("#emailUp").val(customer.email);
+                    $("#phoneUp").val(customer.phone);
 
-                    if (customer !== null) {
-                        $("#idUp").val(customer.id);
-                        $("#fullNameUp").val(customer.fullName);
-                        $("#emailUp").val(customer.email);
-                        $("#phoneUp").val(customer.phone);
-                        $("#addressUp").val(customer.address);
+                    $.ajax({
+                        type: "GET",
+                        url: vApi.urls.getAllProvinces,
+                    })
+                        .done((data) => {
+                            $("#provinceUp").append(`<option selected value="${customer.locationRegionDTO.provinceId}">${customer.locationRegionDTO.provinceName}</option>`);
+                            $("#districtUp").append(`<option selected value="${customer.locationRegionDTO.districtId}">${customer.locationRegionDTO.districtName}</option>`);
+                            $("#wardUp").append(`<option selected value="${customer.locationRegionDTO.wardId}">${customer.locationRegionDTO.wardName}</option>`);
 
-                        $("#modalUpdate").modal("show");
-                    }
-                });
-            })
+                            $.each(data.results, (i, item) => {
+                                if (item.province_id !== customer.locationRegionDTO.provinceId) {
+                                    $("#provinceUp").append(renderSelectOptionProvince(item));
+                                }
+                            })
+                            let provinceId = $("#provinceUp").val();
+                            let districtId = $("#districtUp").val();
+
+                            $("#provinceUp").on("change", function () {
+                                $("#districtUp").empty();
+                                provinceId = $(this).val();
+
+                                $.ajax({
+                                    type: "GET",
+                                    url: vApi.urls.getAllDistricts + provinceId
+                                })
+                                    .done((data) => {
+                                        $.each(data.results, (i, item) => {
+                                            if (item.district_id !== customer.locationRegionDTO.districtId) {
+                                                let dis = renderSelectOptionDistrict(item);
+                                                $("#districtUp").append(dis);
+                                            }
+                                        })
+                                    })
+                                    .fail((error) => {
+                                        console.log("fail")
+                                        sweetAlertError("Can't find districts list!");
+                                    })
+                            })
+
+                            $("#districtUp").on("change", function () {
+                                $("#wardUp").empty();
+                                districtId = $(this).val();
+
+                                $.ajax({
+                                    type: "GET",
+                                    url: vApi.urls.getAllWards + districtId
+                                })
+                                    .done((data) => {
+                                        $.each(data.results, (i, item) => {
+                                            if (item.ward_id !== customer.locationRegionDTO.wardId) {
+                                                let war = renderSelectOptionWard(item);
+                                                $("#wardUp").append(war);
+                                            }
+                                        })
+                                    })
+                                    .fail((error) => {
+                                        sweetAlertError("Can't find wards list!");
+                                    })
+
+                            })
+
+                            //
+                            // $("#wardUp").on("change", function () {
+                            //     let wardId = $(this).val();
+                            // })
+                        })
+
+                    $("#addressUp").val(customer.locationRegionDTO.address);
+
+                })
+                    .catch(() => {
+                        sweetAlertError("Customer not found!");
+                    });
+            }
+
+            )
         }
 
         function addEventShowModalDeposit() {
@@ -432,14 +657,15 @@
                 let customerId = $(this).data("id");
 
                 findById(customerId).then(() => {
-                    if (customer !== null) {
-                        $("#idDep").val(customer.id);
-                        $("#fullNameDep").val(customer.fullName);
-                        $("#balanceDep").val(customer.balance);
+                    $("#idDep").val(customer.id);
+                    $("#fullNameDep").val(customer.name);
+                    $("#balanceDep").val(customer.balance);
 
-                        $("#modalDeposit").modal("show");
-                    }
-                });
+                    $("#modalDeposit").modal("show");
+                })
+                    .catch(() => {
+                        sweetAlertError("Customer not found!");
+                    });
             })
         }
 
@@ -448,14 +674,15 @@
                 let customerId = $(this).data("id");
 
                 findById(customerId).then(() => {
-                    if (customer !== null) {
-                        $("#idWith").val(customer.id);
-                        $("#fullNameWith").val(customer.fullName);
-                        $("#balanceWith").val(customer.balance);
+                    $("#idWith").val(customer.id);
+                    $("#fullNameWith").val(customer.name);
+                    $("#balanceWith").val(customer.balance);
 
-                        $("#modalWithdraw").modal("show");
-                    }
-                });
+                    $("#modalWithdraw").modal("show");
+                })
+                    .catch(() => {
+                        sweetAlertError("Customer not found!");
+                    });
             })
         }
 
@@ -464,39 +691,36 @@
                 let senderId = +$(this).data("id");
 
                 findById(senderId).then(() => {
-                    if (customer !== null) {
-                        $("#idCustomerSend").val(customer.id);
-                        $("#fullNameSend").val(customer.fullName);
-                        $("#emailSend").val(customer.email);
-                        $("#balanceSend").val(customer.balance);
-                        $("#recipientId").empty();
-                    $("#modalTransfer").modal("show");
+                    $.ajax({
+                        headers: {
+                            "accept": "application/json",
+                            "content-type": "application/json"
+                        },
+                        type: "GET",
+                        url: page.urls.getAllCustomersNotId + senderId
+                    })
+                        .done((data) => {
+                            $("#recipientId").empty();
 
-                        $.ajax({
-                            headers: {
-                                "accept": "application/json",
-                                "content-type": "application/json"
-                            },
-                            type: "GET",
-                            url: page.urls.getAllCustomers
+                            $.each(data, (i, item) => {
+                                let str = renderSelectOptionRecipient(item);
+                                $("#recipientId").append("beforeend", str);
+                            })
+                            $("#idCustomerSend").val(customer.id);
+                            $("#fullNameSend").val(customer.name);
+                            $("#emailSend").val(customer.email);
+                            $("#balanceSend").val(customer.balance);
+                            $("#modalTransfer").modal("show");
+
+                            countTransferTransaction();
                         })
-                            .done((data) => {
-                                $.each(data, (i, item) => {
-                                    if (item.id !== customer.id) {
-                                        let str = renderSelectOptionRecipient(item);
-                                        $("#recipientId").append("beforeend", str);
-                                    }
-                                })
-
-                                countTransferTransaction();
-
-                                // allAddEvent();
-                            })
-                            .fail((error) => {
-                                console.log(error);
-                            })
-                    }
-                });
+                        .fail((error) => {
+                            console.log(error);
+                        })
+                })
+                    .catch(() => {
+                        sweetAlertError("Customer not found!");
+                    });
             })
         }
 
@@ -508,24 +732,12 @@
                     "content-type": "application/json"
                 },
                 type: "GET",
-                url: page.urls.doTransfer
+                url: page.urls.getAllTransfers
             })
                 .done((data) => {
                     $.each(data, (i, transfer) => {
-                        let senderId = transfer.senderId,
-                            recipientId = transfer.recipientId,
-                            senderName = '',
-                            recipientName = '';
-
-                        findById(senderId).then(() => {
-                            senderName = customer.fullName;
-                            findById(recipientId).then(() => {
-                                recipientName = customer.fullName;
-
-                                let str = renderShowTransferHistory(transfer, senderName, recipientName);
-                                $("#tbTransferHistory tbody").append(str);
-                            })
-                        })
+                        let str = renderShowTransferHistory(transfer);
+                        $("#tbTransferHistory tbody").append(str);
                     })
                 })
                 .fail((error) => {
@@ -547,66 +759,81 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        findById(customerId).then(() => {
+                            customer.deleted = 1;
+                            console.log(customer);
+                            $.ajax({
+                                headers: {
+                                    "accept": "application/json",
+                                    "content-type": "application/json"
+                                },
+                                type: "PATCH",
+                                url: page.urls.getCustomer + customerId,
+                                data: JSON.stringify(customer)
+                            })
+                                .done((data) => {
+                                    $("#tr_" + customerId).remove();
 
-                        let customer = {
-                            deleted: 1
-                        }
-
-                        $.ajax({
-                            headers: {
-                                "accept": "application/json",
-                                "content-type": "application/json"
-                            },
-                            type: "PATCH",
-                            url: page.urls.getAllCustomers + "/" + customerId,
-                            data: JSON.stringify(customer)
+                                    sweetAlertSuccess("Delete customer");
+                                })
+                                .fail((error) => {
+                                    console.log(error)
+                                })
+                        }).catch(() => {
+                            sweetAlertError("Customer not found!");
                         })
-                            .done((data) => {
-                                $("#tr_" + customerId).remove();
 
-                                sweetAlertSuccess("Delete customer");
-                            })
-                            .fail((error) => {
-                                console.log(error)
-                            })
                     }
                 })
             })
         }
 
-        function renderSelectOptionProvince(item){
-            return `<option value="${item.province_id}">${item.province_name}</option>`;
-        }
-        
         function renderSelectOptionRecipient(item) {
             return `
-                <option value="${item.id}">${item.fullName}</option>
+                <option value="${item.id}">${item.name}</option>
                 `;
         }
 
-        function renderShowTransferHistory(transfer, senderName, recipientName) {
+        function renderSelectOptionProvince(item) {
+            return `<option value="${item.province_id}">${item.province_name}</option>`;
+        }
+
+        function renderSelectOptionDistrict(item) {
+            return `<option value="${item.district_id}">${item.district_name}</option>`;
+        }
+
+        function renderSelectOptionWard(item) {
+            return `<option value="${item.ward_id}">${item.ward_name}</option>`;
+        }
+
+        function renderShowTransferHistory(transfer) {
             return `
-                                <tr>
-                                    <td>${transfer.id}</td>
-                                    <td>${transfer.senderId}</td>
-                                    <td>${senderName}</td>
-                                    <td>${transfer.recipientId}</td>
-                                    <td>${recipientName}</td>
-                                    <td>${transfer.transferAmount}</td>
-                                    <td>${transfer.transactionAmount}</td>
-                                </tr>
-                                `;
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Full Name</th>
+                        <th class="text-center">Email</th>
+                        <th class="text-center">Phone</th>
+                        <th class="text-center">Balance</th>
+                        <th class="text-center">Province</th>
+                        <th class="text-center">District</th>
+                        <th class="text-center">Ward</th>
+                        <th class="text-center" colspan="5">Action</th>
+                    </tr>
+                `;
         }
 
         function renderCustomer(item) {
             return `
                 <tr id="tr_${item.id}">
                     <td class="text-center">${item.id}</td>
-                    <td>${item.fullName}</td>
+                    <td class="text-center">${item.name}</td>
                     <td class="text-center">${item.email}</td>
                     <td class="text-center">${item.phone}</td>
                     <td class="text-end">${item.balance}</td>
-                    <td>${item.address}</td>
+                    <td class="text-center">${item.locationRegionDTO.provinceName}</td>
+                    <td class="text-center">${item.locationRegionDTO.districtName}</td>
+                    <td class="text-center">${item.locationRegionDTO.wardName}</td>
+                    <td class="text-center">${item.locationRegionDTO.address}</td>
                     <td>
                         <button type="button" class="btn btn-outline-secondary update" data-id="${item.id}">
                             <i class="fas fa-edit"></i>
@@ -687,21 +914,41 @@
             })
         }
 
+        function sweetAlertError(message) {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: `${message}`
+            })
+        }
+
         function createCustomer() {
-            let fullName = $("#fullNameCre").val(),
+            let name = $("#fullNameCre").val(),
                 email = $("#emailCre").val(),
                 phone = $("#phoneCre").val(),
-                address = $("#addressCre").val(),
-                balance = 0,
-                deleted = 0;
+                provinceId = $("#provinceCre").val(),
+                provinceName = $("#provinceCre").find("option:selected").text(),
+                districtId = $("#districtCre").val(),
+                districtName = $("#districtCre").find("option:selected").text(),
+                wardId = $("#wardCre").val(),
+                wardName = $("#wardCre").find("option:selected").text(),
+                address = $("#addressCre").val();
 
-            let customer = {
-                fullName,
+            let locationRegionDTO = {
+                provinceId,
+                provinceName,
+                districtId,
+                districtName,
+                wardId,
+                wardName,
+                address
+            }
+
+            let customerCreateDTO = {
+                name,
                 email,
                 phone,
-                address,
-                balance,
-                deleted
+                locationRegionDTO
             }
 
             $.ajax({
@@ -710,16 +957,16 @@
                     "content-type": "application/json"
                 },
                 type: "POST",
-                url: page.urls.postNewCustomer,
-                data: JSON.stringify(customer)
+                url: page.urls.getAllCustomers,
+                data: JSON.stringify(customerCreateDTO)
             })
                 .done((data) => {
-                    customer = data;
+                    customerCreateDTO = data;
                     $("#modalCreate").modal("hide");
 
                     sweetAlertSuccess("Create new customer")
 
-                    let newRow = renderCustomer(customer);
+                    let newRow = renderCustomer(customerCreateDTO);
 
                     $("#tbCustomer tbody").append(newRow);
 
@@ -727,22 +974,39 @@
 
                 })
                 .fail((error) => {
-                    console.log(error)
+                    console.log(error);
+                    sweetAlertError("Create new customer fail!");
                 })
         }
 
         function updateCustomer() {
             let id = +$("#idUp").val(),
-                fullName = $("#fullNameUp").val(),
+                name = $("#fullNameUp").val(),
                 email = $("#emailUp").val(),
                 phone = $("#phoneUp").val(),
+                provinceId = $("#provinceUp").val(),
+                provinceName = $("#provinceUp").find("option:selected").text(),
+                districtId = $("#districtUp").val(),
+                districtName = $("#districtUp").find("option:selected").text(),
+                wardId = $("#wardUp").val(),
+                wardName = $("#wardUp").find("option:selected").text(),
                 address = $("#addressUp").val();
 
-            let customer = {
-                fullName,
+            const locationRegionDTO = {
+                provinceId,
+                provinceName,
+                districtId,
+                districtName,
+                wardId,
+                wardName,
+                address
+            }
+
+            let customerUpdateDTO = {
+                name,
                 email,
                 phone,
-                address
+                locationRegionDTO
             }
 
             $.ajax({
@@ -752,7 +1016,7 @@
                 },
                 type: "PATCH",
                 url: page.urls.getCustomer + id,
-                data: JSON.stringify(customer)
+                data: JSON.stringify(customerUpdateDTO)
             })
                 .done((data) => {
                     customer = data;
@@ -769,19 +1033,18 @@
 
                 })
                 .fail((error) => {
-                    console.log(error)
+                    console.log(error);
+                    sweetAlertError("Update fail!");
                 })
         }
 
         function deposit() {
-            let currentBalance = customer.balance;
-            let transactionAmount = +$("#transactionAmountDep").val();
-            let newBalance = currentBalance + transactionAmount;
-            customer.balance = newBalance;
+            let transactionAmount = +$("#transactionAmountDep").val(),
+                customerId = customer.id;
 
-            let deposit = {
-                customerId: customer.id,
-                transactionAmount: transactionAmount
+            let depositCreateDTO = {
+                customerId,
+                transactionAmount
             }
 
             $.ajax({
@@ -791,52 +1054,36 @@
                 },
                 type: "POST",
                 url: page.urls.doDeposit,
-                data: JSON.stringify(deposit)
+                data: JSON.stringify(depositCreateDTO)
             })
                 .done((data) => {
+                    findById(customerId).then(() => {
+
+                        let currentRow = $("#tr_" + customer.id);
+                        let newRow = renderCustomer(customer);
+
+                        currentRow.replaceWith(newRow);
+
+                        $("#modalDeposit").modal("hide");
+
+                        sweetAlertSuccess("Deposit");
+                        allAddEvent();
+                    });
 
                 })
                 .fail((error) => {
                     console.error(error);
-                })
-
-            $.ajax({
-                headers: {
-                    "accept": "application/json",
-                    "content-type": "application/json"
-                },
-                type: "PATCH",
-                url: page.urls.getCustomer + customer.id,
-                data: JSON.stringify(customer)
-            })
-                .done((data) => {
-                    customer = data;
-
-                    let currentRow = $("#tr_" + customer.id);
-                    let newRow = renderCustomer(customer);
-
-                    currentRow.replaceWith(newRow);
-
-                    $("#modalDeposit").modal("hide");
-
-                    sweetAlertSuccess("Deposit");
-
-                    allAddEvent();
-                })
-                .fail((error) => {
-                    console.error(error);
+                    sweetAlertError("Deposit fail!");
                 })
         }
 
         function withdraw() {
-            let currentBalance = customer.balance,
-                transactionAmount = +$("#transactionAmountWith").val(),
-                newBalance = currentBalance - transactionAmount;
-            customer.balance = newBalance;
+            let transactionAmount = +$("#transactionAmountWith").val(),
+                customerId = customer.id;
 
-            let withdraw = {
-                customerId: customer.id,
-                transactionAmount: transactionAmount
+            let withdrawCreateDTO = {
+                customerId,
+                transactionAmount
             }
 
             $.ajax({
@@ -844,150 +1091,79 @@
                     "accept": "application/json",
                     "content-type": "application/json"
                 },
-                type: "PATCH",
-                url: page.urls.getCustomer + customer.id,
-                data: JSON.stringify(customer)
+                type: "POST",
+                url: page.urls.doWithdraw,
+                data: JSON.stringify(withdrawCreateDTO)
             })
                 .done((data) => {
-                    $.ajax({
-                        headers: {
-                            "accept": "application/json",
-                            "content-type": "application/json"
-                        },
-                        type: "POST",
-                        url: page.urls.doWithdraw,
-                        data: JSON.stringify(withdraw)
+                    findById(customerId).then(() => {
+                        let currentRow = $("#tr_" + customer.id);
+                        let newRow = renderCustomer(customer);
+
+                        currentRow.replaceWith(newRow);
+
+                        $("#modalWithdraw").modal("hide");
+
+                        sweetAlertSuccess("Withdraw")
+
+                        allAddEvent();
                     })
-                        .done((data) => {
+                })
+                .fail((error) => {
+                    console.error(error);
+                    sweetAlertError("Withdraw fail!");
+                })
+        }
 
-                        })
-                        .fail((error) => {
-                            console.error(error);
-                        })
-                    customer = data;
+        function transfer() {
+            let senderId = +$("#idCustomerSend").val(),
+                recipientId = +$("#recipientId").val(),
+                transferAmount = +$("#transferAmountTran").val();
 
-                    let currentRow = $("#tr_" + customer.id);
-                    let newRow = renderCustomer(customer);
+            let transferCreateDTO = {
+                senderId,
+                recipientId,
+                transferAmount
+            }
 
-                    currentRow.replaceWith(newRow);
+            $.ajax({
+                headers: {
+                    "accept": "application/json",
+                    "content-type": "application/json"
+                },
+                type: "POST",
+                url: page.urls.doTransfer,
+                data: JSON.stringify(transferCreateDTO)
+            })
+                .done((data) => {
+                    let sender = data.sender,
+                        recipient = data.recipient;
 
-                    $("#modalWithdraw").modal("hide");
+                    let currentSenderRow = $("#tr_" + sender.id),
+                        newSenderRow = renderCustomer(sender);
 
-                    sweetAlertSuccess("Withdraw")
+                    currentSenderRow.replaceWith(newSenderRow);
+
+                    let currentRecipientRow = $("#tr_" + recipient.id),
+                        newRecipientRow = renderCustomer(recipient);
+
+                    currentRecipientRow.replaceWith(newRecipientRow);
+
+                    $("#modalTransfer").modal("hide");
+
+                    sweetAlertSuccess("Transfer");
 
                     allAddEvent();
                 })
                 .fail((error) => {
                     console.error(error);
-                })
-        }
-
-        function transfer() {
-            let sender = structuredClone(customer);
-
-            let senderCurrentBalance = sender.balance,
-                transferAmount = +$("#transferAmountTran").val(),
-                fees = 10,
-                feesAmount = transferAmount * fees / 100,
-                transactionAmount = transferAmount + feesAmount,
-                senderNewBalance = senderCurrentBalance - transactionAmount;
-            sender.balance = senderNewBalance;
-
-            $.ajax({
-                headers: {
-                    "accept": "application/json",
-                    "content-type": "application/json"
-                },
-                type: "PATCH",
-                url: page.urls.getCustomer + sender.id,
-                data: JSON.stringify(sender)
-            })
-                .done((data) => {
-                    let recipientId = +$("#recipientId").find(":selected").val();
-                    findById(recipientId).then(() => {
-                        let recipient = structuredClone(customer),
-                            recipientCurrentBalance = recipient.balance,
-                            recipientNewBalance = recipientCurrentBalance + transferAmount;
-                        recipient.balance = recipientNewBalance;
-
-                        $.ajax({
-                            headers: {
-                                "accept": "application/json",
-                                "content-type": "application/json"
-                            },
-                            type: "PATCH",
-                            url: page.urls.getCustomer + recipient.id,
-                            data: JSON.stringify(recipient)
-                        })
-                            .done((data) => {
-                                let transfer = {
-                                    fees: 10,
-                                    feesAmount: feesAmount,
-                                    transactionAmount: transactionAmount,
-                                    transferAmount: transferAmount,
-                                    senderId: sender.id,
-                                    recipientId: recipient.id
-                                }
-
-                                $.ajax({
-                                    headers: {
-                                        "accept": "application/json",
-                                        "content-type": "application/json"
-                                    },
-                                    type: "POST",
-                                    url: page.urls.doTransfer,
-                                    data: JSON.stringify(transfer)
-                                })
-                                    .done((data) => {
-
-                                        let currentSenderRow = $("#tr_" + sender.id);
-                                        newSenderRow = renderCustomer(sender);
-
-                                        currentSenderRow.replaceWith(newSenderRow);
-
-                                        let currentRecipientRow = $("#tr_" + recipient.id),
-                                            newRecipientRow = renderCustomer(recipient);
-
-                                        currentRecipientRow.replaceWith(newRecipientRow);
-
-                                        $("#modalTransfer").modal("hide");
-
-                                        sweetAlertSuccess("Transfer");
-
-                                        allAddEvent();
-                                    })
-                                    .fail((error) => {
-                                        console.log(error);
-                                    })
-                            })
-                            .fail((error) => {
-                                console.log(error);
-                            })
-                    });
-                })
-                .fail((error) => {
-                    console.error(error);
+                    sweetAlertError("Transfer fail!");
                 })
         }
 
         $("#btnShowCreateModal").on("click", () => {
+            getAllProvinces();
             $("#modalCreate").modal("show");
-
-            $.ajax({
-                headers: {
-                    "accept": "application/json",
-                    "content-type": "application/json"
-                },
-                type: "GET",
-                url: "https://vapi.vnappmob.com/api/province"
-            })
-                .done((data) => {
-                    console.log(data);
-                    $.each(data, (i, item) => {
-                        let pro = renderSelectOptionProvince(item);
-                        $("#provinceCre").append("beforeend", pro);
-                    })
-                })
         })
 
         $("#btnShowTransferHistoryModal").click(() => {
@@ -1018,6 +1194,17 @@
         $("#modalCreate").on("hidden.bs.modal", () => {
             $("#frmCreateCustomer")[0].reset();
             $("#frmCreateCustomer").validate().resetForm();
+            $("#provinceCre").empty();
+            $("#districtCre").empty();
+            $("#wardCre").empty();
+        })
+
+        $("#modalUpdate").on("hidden.bs.modal", () => {
+            $("#frmUpdateCustomer")[0].reset();
+            $("#frmUpdateCustomer").validate().resetForm();
+            $("#provinceUp").empty();
+            $("#districtUp").empty();
+            $("#wardUp").empty();
         })
 
         $("#modalWithdraw").on("hidden.bs.modal", () => {
@@ -1038,7 +1225,7 @@
         $("#modalTransferHistory").on("hidden.bs.modal", () => {
             $("#tbTransferHistory tbody").empty();
         })
-        
+
         $("#frmCreateCustomer").validate({
             rules: {
                 fullNameCre: {
@@ -1143,7 +1330,7 @@
             messages: {
                 transactionAmountDep: {
                     required: "Please fill your money to deposit.",
-                    min: "Minium amount to deposit is 10$",
+                    min: "Minimum amount to deposit is 10$",
                     max: "Maximum amount to deposit is 1.000.000.000$",
                     number: "Only number in this field!"
                 }
@@ -1179,7 +1366,7 @@
             messages: {
                 transactionAmountWith: {
                     required: "Please fill your money to withdraw.",
-                    min: "Minium amount to withdraw is 10$",
+                    min: "Minimum amount to withdraw is 10$",
                     max: "Maximum amount to withdraw is 1.000.000.000$",
                     number: "Only number in this field!"
                 }
@@ -1215,7 +1402,7 @@
             messages: {
                 transferAmountTran: {
                     required: "Please fill your money to transfer.",
-                    min: "Minium amount to transfer is 10$",
+                    min: "Minimum amount to transfer is 10$",
                     max: "Maximum amount to transfer is 1.000.000.000$",
                     number: "Only number in this field!"
                 }
