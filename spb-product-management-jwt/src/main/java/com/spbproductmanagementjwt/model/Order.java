@@ -1,11 +1,9 @@
 package com.spbproductmanagementjwt.model;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -16,14 +14,13 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Entity
-@Accessors(chain = true)
-@Table(name = "carts")
-public class Cart extends BaseEntity{
+@Table(name = "orders")
+public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "total_amount", precision = 12, scale = 0, nullable = false)
+    @Column(name = "total_amount", precision = 10, scale = 0, nullable = false)
     private BigDecimal totalAmount;
 }

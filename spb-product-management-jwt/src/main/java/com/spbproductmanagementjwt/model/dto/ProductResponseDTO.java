@@ -27,7 +27,5 @@ public class ProductResponseDTO {
 
     private String fileName;
 
-    private String fileFolder;
-
-    private String fileUrl;
+    private String folderName;
 }

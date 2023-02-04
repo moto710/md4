@@ -7,11 +7,11 @@ import com.spbproductmanagementjwt.model.dto.ProductCreateDTO;
 import com.spbproductmanagementjwt.model.dto.ProductResponseDTO;
 import com.spbproductmanagementjwt.repository.IProductMediaRepository;
 import com.spbproductmanagementjwt.repository.IProductRepository;
-import com.spbproductmanagementjwt.service.productmedia.IProductMediaService;
 import com.spbproductmanagementjwt.service.upload.IUploadService;
 import com.spbproductmanagementjwt.utils.UploadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -35,6 +35,8 @@ public class ProductService implements IProductService {
     @Autowired
     private IUploadService uploadService;
 
+    private Product product;
+
     @Override
     public List<Product> findAll() {
         return productRepository.findAll();
@@ -52,8 +54,7 @@ public class ProductService implements IProductService {
 
     @Override
     public void save(Product product) {
-//        productRepository.save(product.getProductMedia());
-//        productRepository.save(product);
+        productRepository.save(product);
     }
 
     @Override
@@ -67,44 +68,47 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product create(ProductCreateDTO productCreateDTO) {
-
-        Product product = productCreateDTO.toProduct();
-        product.setId(null);
+    public Product createWithOutMedia(ProductCreateDTO productCreateDTO) {
+        product = productCreateDTO.toProduct();
         productRepository.save(product);
 
-        String fileType = productCreateDTO.getMultipartFile().getContentType();
-
-        assert fileType != null;
-
-        fileType = fileType.substring(0, 5);
+        return product;
+    }
+    @Override
+    public Product createWithMedia(ProductCreateDTO productCreateDTO, MultipartFile file) {
+        product = productCreateDTO.toProduct();
+        productRepository.save(product);
 
         ProductMedia productMedia = new ProductMedia();
-        productMedia.setId(null);
-        productMedia.setFileType(fileType);
+        productMedia.setProduct(product);
+        productMedia.setFileType(file.getContentType());
+        productMedia.setFileFolder(uploadUtils.IMAGE_UPLOAD_FOLDER);
         productMediaRepository.save(productMedia);
 
-        uploadAndSaveProductImage(productCreateDTO, product, productMedia);
+        uploadAndSaveProductImage(file, productMedia);
 
         return product;
     }
 
-    private void uploadAndSaveProductImage(ProductCreateDTO productCreateDTO, Product product, ProductMedia productMedia) {
+    private void uploadAndSaveProductImage(MultipartFile file, ProductMedia productMedia) {
         try {
-            Map uploadResult = uploadService.uploadImage(productCreateDTO.getMultipartFile(), uploadUtils.buildImageUploadParams(productMedia));
+            Map uploadResult = uploadService.uploadImage(file, uploadUtils.buildImageUploadParams(productMedia));
             String fileUrl = (String) uploadResult.get("secure_url");
             String fileFormat = (String) uploadResult.get("format");
 
             productMedia.setFileName(productMedia.getId() + "." + fileFormat);
             productMedia.setFileUrl(fileUrl);
-            productMedia.setFileFolder(uploadUtils.IMAGE_UPLOAD_FOLDER);
             productMedia.setCloudId(productMedia.getFileFolder() + "/" + productMedia.getId());
-            productMedia.setProduct(product);
             productMediaRepository.save(productMedia);
 
         } catch (IOException e) {
             e.printStackTrace();
             throw new DataInputException("Upload image fail!");
         }
+    }
+
+    @Override
+    public List<ProductResponseDTO> findAllProductResponseDTO() {
+        return productRepository.findAllProductResponseDTO();
     }
 }

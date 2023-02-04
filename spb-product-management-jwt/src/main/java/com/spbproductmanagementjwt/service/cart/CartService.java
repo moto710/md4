@@ -43,29 +43,10 @@ public class CartService implements ICartService {
         return Optional.empty();
     }
 
-    @Override
-    public Optional<Cart> findByUsername(String username) {
-        return cartRepository.findByUsername(username);
-    }
-
-    @Override
-    public void addNewCart(Product product, String username) {
-        Cart cart = new Cart();
-        cart.setId(null);
-        cart.setTotalAmount(product.getPrice());
-        cart.setUsername(username);
-        cartRepository.save(cart);
-
-        CartDetail cartDetail = new CartDetail();
-        cartDetail.setId(null);
-        cartDetail.setCart(cart);
-        cartDetail.setProduct(product);
-        cartDetail.setProductName(product.getName());
-        cartDetail.setProductPrice(product.getPrice());
-        cartDetail.setProductQuantity(1L);
-        cartDetail.setProductAmount(product.getPrice());
-        cartDetailRepository.save(cartDetail);
-    }
+//    @Override
+//    public Optional<Cart> findByUsername(String username) {
+//        return cartRepository.findByUsername(username);
+//    }
 
     @Override
     public void updateCartNotExistProduct(Cart cart, Product product, String username) {
@@ -110,6 +91,64 @@ public class CartService implements ICartService {
 
     @Override
     public void save(Cart cart) {
+        cartRepository.save(cart);
+    }
 
+    @Override
+    public Optional<Cart> findByCreatedBy(String createdBy) {
+        return cartRepository.findByCreatedBy(createdBy);
+    }
+
+    @Override
+    public void addNewCart(Product product, Long quantity, String createdBy) {
+        BigDecimal totalAmount = product.getPrice();
+        Cart cart = new Cart();
+        cart.setTotalAmount(totalAmount);
+        cart.setCreatedBy(createdBy);
+        cartRepository.save(cart);
+
+        CartDetail cartDetail = new CartDetail();
+        cartDetail.setCart(cart);
+        cartDetail.setProduct(product);
+        cartDetail.setProductName(product.getName());
+        cartDetail.setProductPrice(product.getPrice());
+        cartDetail.setProductQuantity(quantity);
+        cartDetail.setProductAmount(product.getPrice());
+        cartDetailRepository.save(cartDetail);
+    }
+
+    @Override
+    public void addCartDetail(Cart cart, Product product, Long quantity) {
+        CartDetail cartDetail = new CartDetail();
+        cartDetail.setCart(cart);
+        cartDetail.setProduct(product);
+        cartDetail.setProductName(product.getName());
+        cartDetail.setProductPrice(product.getPrice());
+        cartDetail.setProductQuantity(quantity);
+        cartDetail.setProductAmount(product.getPrice());
+        cartDetailRepository.save(cartDetail);
+
+        BigDecimal totalAmount = cartDetailRepository.getAllProductAmount(cart);
+        cart.setTotalAmount(totalAmount);
+        cartRepository.save(cart);
+    }
+
+    @Override
+    public void updateCartDetail(CartDetail cartDetail, Long quantity) {
+        Cart cart = cartDetail.getCart();
+
+        BigDecimal productPrice = cartDetail.getProduct().getPrice();
+        Long currentQuantity = cartDetail.getProductQuantity();
+        long newQuantity = currentQuantity + quantity;
+
+        BigDecimal productAmount = productPrice.multiply(BigDecimal.valueOf(newQuantity));
+        cartDetail.setProductPrice(productPrice);
+        cartDetail.setProductQuantity(newQuantity);
+        cartDetail.setProductAmount(productAmount);
+        cartDetailRepository.save(cartDetail);
+
+        BigDecimal totalAmount = cartDetailRepository.getAllProductAmount(cart);
+        cart.setTotalAmount(totalAmount);
+        cartRepository.save(cart);
     }
 }

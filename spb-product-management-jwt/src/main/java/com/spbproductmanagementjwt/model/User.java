@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @Entity
 @Table(name = "users")
-public class User extends BaseEntity{
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

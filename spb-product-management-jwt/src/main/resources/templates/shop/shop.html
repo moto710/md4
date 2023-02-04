@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping</title>
+    <link rel="stylesheet" href="/assets/vendor/datatables/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="/assets/sweetalert2/v11.7.0/sweetalert2.min.css">
+    <link rel="stylesheet" href="/assets/vendor/fontawesome-free/css/all.min.css"/>
+    <link rel="stylesheet" href="/assets/css/preview-image.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+<div class="container-fluid">
+
+    <header>
+        <div class="row">
+            <div class="col-sm-5">
+                <h1>Shopping</h1>
+            </div>
+            <div class="col-sm-7">
+                <a class="btn btn-outline-light create-modal">
+                    <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                    <span> Add New Product</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="box-body">
+
+    </div>
+</div>
+
+<div class="loader hide"></div>
+
+<script src="/assets/vendor/jquery/jquery.min.js"></script>
+<script src="/assets/jquery-validate/v1.19.5/jquery.validate.min.js"></script>
+<script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/sweetalert2/v11.7.0/sweetalert2.min.js"></script>
+<script src="/assets/js/appBase.js"></script>
+
+<script>
+    let page = {
+        urls: {
+            getAllProducts: AppBase.API_PRODUCT,
+            doSave: AppBase.API_PRODUCT
+        },
+        element: {},
+        commands: {},
+        loadData: {},
+        dialogs: {
+            elements: {},
+            commands: {}
+        }
+    }
+
+    page.element.loader = $(".loader");
+    page.element.tempProduct = $("#tempProduct");
+    page.element.currentRow = $("#currentRow");
+    page.element.btnShowCreateModal = $("a.create-modal");
+    page.element.frmListProduct = $(".box-body")
+
+    page.loadData.getAllProducts = () => {
+        $.ajax({
+            type: "GET",
+            url: page.urls.getAllProducts,
+        }).done((data) => {
+
+            $.each(data, (i, item) => {
+                let str = page.commands.renderProduct(item);
+                page.element.frmListProduct.append(str)
+            })
+
+        }).fail((err) => {
+            console.log(err)
+        }).always(function () {
+            page.element.loader.addClass("hide");
+            page.element.btnSave.prop('disabled', false);
+        });
+    }
+
+    page.commands.renderProduct = (obj) => {
+        let cloudinaryServer = 'https://res.cloudinary.com/dsmffep5o/image/upload';
+        let BASE_SCALE_IMAGE = "c_limit,w_285,h_215,q_100";
+        let folderName = obj.folderName;
+        let fileName = obj.fileName;
+
+        let avatarUrl = cloudinaryServer + '/' + BASE_SCALE_IMAGE + '/' + folderName + '/' + fileName;
+
+        return `
+        <div class="cart" style="width: 18rem; float: left;">
+          <img src="${avatarUrl}" class="cart-img-top" alt="...">
+          <div class="cart-body">
+            <h5 class="cart-title">${obj.name}</h5>
+            <p class="cart-text">${obj.price}</p>
+            <a href="#" class="btn btn-primary">Add to cart</a>
+          </div>
+        </div>
+      `;
+    }
+
+    page.initializeControlEvent = () => {
+
+    }
+
+    $(() => {
+        page.loadData.getAllProducts();
+
+        page.initializeControlEvent();
+
+    });
+</script>
+</body>
+</html>

@@ -66,10 +66,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/auth/login",
                         "/api/auth/register",
                         "/login",
-                        "/logout",
-                        "/products"
+                        "/logout"
                 ).permitAll()
-                .antMatchers("/histories").hasAnyAuthority("ADMIN")
+                .antMatchers("/transfers").hasAnyAuthority("ADMIN")
                 .antMatchers("/resources/**", "/assets/**").permitAll()
                 .antMatchers(
                         "/v3/api-docs",
@@ -83,20 +82,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
+//                .loginProcessingUrl("/login")
                 .loginPage("/login")
+//                .usernameParameter("username")
+//                .passwordParameter("password")
+//                .defaultSuccessUrl("/")
                 .and()
                 .logout()
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/products")
+                .logoutSuccessUrl("/login")
                 .deleteCookies("JWT")
                 .invalidateHttpSession(true)
         ;
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling().accessDeniedPage("/403");
-
-//        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-//                .exceptionHandling().accessDeniedHandler(customAccessDeniedHandler());
+                .exceptionHandling().accessDeniedHandler(customAccessDeniedHandler());
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.cors();

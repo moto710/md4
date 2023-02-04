@@ -22,4 +22,9 @@ public interface ICartDetailRepository extends JpaRepository<CartDetail, Long> {
 
     @Query("SELECT SUM(cd.productAmount) FROM CartDetail AS cd WHERE cd.cart.id = :cartId")
     BigDecimal sumTotalAmountByCartId(@Param("cartId") Long cartId);
+
+    @Query("SELECT SUM(cd.productAmount) FROM CartDetail AS cd WHERE cd.cart = :cart")
+    BigDecimal getAllProductAmount(@Param("cart") Cart cart);
+
+    Optional<CartDetail> findByProduct(Product product);
 }

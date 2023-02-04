@@ -19,8 +19,7 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
                 "pm.product.price, " +
                 "pm.product.description, " +
                 "pm.fileName, " +
-                "pm.fileFolder, " +
-                "pm.fileUrl " +
+                "pm.fileFolder " +
             ") " +
             "FROM ProductMedia AS pm " +
             "WHERE pm.product.deleted = FALSE "
@@ -40,4 +39,16 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
             "WHERE p.id = :productId"
     )
     void reactivate(@Param("productId") Long productId);
+
+    @Query("SELECT NEW com.spbproductmanagementjwt.model.dto.ProductResponseDTO (" +
+            "pm.product.id, " +
+            "pm.product.name, " +
+            "pm.product.price, " +
+            "pm.product.description, " +
+            "pm.fileFolder, " +
+            "pm.fileName " +
+            ") " +
+            "FROM ProductMedia AS pm"
+    )
+    List<ProductResponseDTO> findAllProductResponseDTO();
 }

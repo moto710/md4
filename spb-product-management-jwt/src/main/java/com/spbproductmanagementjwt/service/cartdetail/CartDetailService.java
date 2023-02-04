@@ -30,13 +30,13 @@ public class CartDetailService implements ICartDetailService {
     }
 
     @Override
-    public List<CartDetail> findAll() {
-        return null;
+    public Optional<CartDetail> findById(Long id) {
+        return cartDetailRepository.findById(id);
     }
 
     @Override
-    public Optional<CartDetail> findById(Long id) {
-        return Optional.empty();
+    public List<CartDetail> findAll() {
+        return cartDetailRepository.findAll();
     }
 
     @Override
@@ -51,6 +51,11 @@ public class CartDetailService implements ICartDetailService {
 
     @Override
     public void save(CartDetail cartDetail) {
+        cartDetailRepository.save(cartDetail);
+    }
 
+    @Override
+    public Optional<CartDetail> findByProduct(Product product) {
+        return cartDetailRepository.findByProduct(product);
     }
 }

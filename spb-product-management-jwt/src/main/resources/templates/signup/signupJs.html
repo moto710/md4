@@ -21,11 +21,10 @@
     <!-- Page level custom scripts -->
     <script src="/assets/js/demo/datatables-demo.js"></script>
     <script src="/assets/js/appBase.js"></script>
-
     <script>
         const page = {
             urls: {
-                login: AppBase.API_LOGIN
+                signup: AppBase.API_SIGNUP
             },
             elements: {},
             commands: {},
@@ -36,43 +35,53 @@
             }
         }
 
-        page.elements.username = $("#username");
-        page.elements.password = $("#password");
-        page.elements.btnLogin = $("#btnLogin");
+        page.elements.usernameSup = $("#usernameSup");
+        // page.elements.emailReg = $("#emailReg");
+        page.elements.passwordSup = $("#passwordSup");
+        // page.elements.rePasswordReg = $("#rePasswordReg");
+        page.elements.btnSignup = $("#btnSignup");
 
-        page.elements.btnLogin.on("click", () => {
-            let userLoginDTO = {
-                username: page.elements.username.val(),
-                password: page.elements.password.val()
+        page.commands.createProduct = () => {
+            let userDTO = {
+                username: page.elements.usernameSup.val(),
+                password: page.elements.passwordSup.val()
             }
-            AppBase.successAlert("userLoginDTO")
-            console.log(userLoginDTO)
-            console.log(userLoginDTO.username)
-            console.log(userLoginDTO.password)
-            console.log(page.urls.login)
+
+            console.log(userDTO)
+
             $.ajax({
                 headers: {
                     'accept': 'application/json',
                     'content-type': 'application/json'
                 },
                 type: "POST",
-                url: page.urls.login,
-                data: JSON.stringify(userLoginDTO)
+                url: page.urls.signup,
+                data: JSON.stringify(userDTO)
             })
                 .done((data) => {
                     console.log(data);
-                    console.log("login");
+                    console.log("register");
                     location.href = '/products';
 
-                    AppBase.successAlert("Login success!");
+                    AppBase.successAlert("Signup success!");
                 })
                 .fail((jqXHR) => {
                     console.log(jqXHR)
                     console.log("fail");
-                    console.log(data);
-                    console.log(userLoginDTO)
-                    AppBase.errorAlert("Login fail!");
+                    console.log(userDTO)
+                    AppBase.errorAlert("Signup fail!");
                 })
+        }
+
+        page.initializeControlEvent = () => {
+            page.elements.btnSignup.on("click", function () {
+                page.commands.createProduct();
+            });
+        }
+
+        $(() => {
+            page.initializeControlEvent();
         })
     </script>
+
 </th:block>

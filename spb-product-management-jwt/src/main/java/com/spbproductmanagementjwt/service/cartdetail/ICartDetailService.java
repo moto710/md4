@@ -13,4 +13,6 @@ public interface ICartDetailService extends IGeneralService<CartDetail> {
     Optional<CartDetail> findByCartAndProduct(Cart cart, Product product);
 
     List<CartDetail> findAllByCart(Cart cart);
+
+    Optional<CartDetail> findByProduct(Product product);
 }

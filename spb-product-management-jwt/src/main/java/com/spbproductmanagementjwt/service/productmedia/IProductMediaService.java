@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface IProductMediaService extends IGeneralService<ProductMedia> {
 
-    Optional<ProductMedia> findByProduct(Product product);
+    ProductMedia findByProduct(Product product);
 }

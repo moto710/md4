@@ -45,10 +45,17 @@ public class Product extends BaseEntity{
                 .setName(name)
                 .setPrice(price)
                 .setDescription(description)
+                .setFolderName(productMedia.getFileFolder())
                 .setFileName(productMedia.getFileName())
-                .setFileFolder(productMedia.getFileFolder())
-                .setFileUrl(productMedia.getFileUrl())
                 ;
     }
 
+    public ProductResponseDTO toProductResponseDTO() {
+        return new ProductResponseDTO()
+                .setId(id)
+                .setName(name)
+                .setPrice(price)
+                .setDescription(description)
+                ;
+    }
 }

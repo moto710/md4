@@ -2,7 +2,6 @@ class AppBase {
     static DOMAIN = location.origin;
 
     static API_PRODUCT = this.DOMAIN  + "/api/products";
-    // static API_CREATE = this.API_PRODUCT + "/create";
 
     static SERVER_CLOUDINARY = "https://res.cloudinary.com";
     static CLOUDINARY_NAME = "/dsmffep5o";
@@ -10,6 +9,7 @@ class AppBase {
     static CLOUDINARY_SCALE_280_200 = "c_limit,w_280,h_200,q_100";
 
     static API_LOGIN = this.DOMAIN  + "/api/auth/login";
+    static API_SIGNUP = this.DOMAIN  + "/api/auth/signup";
 
     static CLOUDINARY_URL = this.SERVER_CLOUDINARY + this.CLOUDINARY_NAME + '/image/upload';
 

@@ -22,7 +22,6 @@
     <script src="/assets/js/demo/datatables-demo.js"></script>
     <script src="/assets/js/appBase.js"></script>
 
-
     <script>
         const page = {
             urls: {
@@ -63,118 +62,27 @@
         page.dialogs.elements.btnClearImagePreview = $(".clear-image-preview i");
 
 
-        page.commands.showCreateModal = () => {
-            page.dialogs.elements.modalCreateProduct.modal('show');
-        }
-
-
-
-        page.elements.btnCreateProduct.on("click", function () {
-            console.log('alo')
-            page.dialogs.elements.frmCreateProduct.trigger("submit");
-        })
-
-        page.dialogs.commands.createProduct = () => {
-            page.elements.loader.removeClass("hide");
-            page.elements.btnSave.prop('disabled', true);
-
-            let formData = new FormData();
-            formData.append("name", page.dialogs.elements.productName.val().toString());
-            formData.append("price", page.dialogs.elements.productPrice.val().toString());
-            formData.append("description", page.dialogs.elements.description.val().toString());
-            formData.append("file", page.dialogs.elements.imageFile[0].files[0]);
-
-            console.log(formData)
-
+        page.loadData.getAllProducts = () => {
             $.ajax({
-                type: "POST",
-                contentType: false,
-                cache: false,
-                processData: false,
+                type: "GET",
                 url: page.urls.getAllProducts,
-                data: formData
             }).done((data) => {
-                console.log(data)
-                let str = AppBase.renderProduct(data);
-                page.elements.tbProductBody.prepend(str);
 
-                AppBase.successAlert("Add product success!");
-
-                page.dialogs.elements.modalCreateProduct.modal('hide');
+                $.each(data, (i, item) => {
+                    page.commands.renderProduct(item);
+                })
 
             }).fail((err) => {
                 console.log(err)
-                AppBase.errorAlert("Add product fail!");
             }).always(function () {
                 page.elements.loader.addClass("hide");
                 page.elements.btnSave.prop('disabled', false);
             });
         }
 
-        page.dialogs.elements.modalCreateProduct.on("hidden.bs.modal", () => {
-            page.dialogs.elements.frmCreateProduct[0].reset();
-            // page.dialogs.elements.frmCreateProduct.validate().resetForm();
-        })
-
-        page.dialogs.elements.btnCreateProduct.on("click", () => {
-            page.dialogs.commands.createProduct();
-        })
-
-        page.initializeControlEvent = () => {
-
-            page.elements.btnShowCreateModal.on("click", function () {
-                page.commands.showCreateModal();
-            });
-
-            page.elements.btnSave.on("click", function () {
-                page.dialogs.commands.createProduct();
-            });
-
-            page.dialogs.elements.divImagePreview.on("click", function () {
-                page.dialogs.elements.imageFile.trigger("click");
-            });
-
-            page.dialogs.elements.imageFile.on("change", function () {
-                page.dialogs.commands.changeImagePreview();
-            });
-
-            page.dialogs.elements.btnClearImagePreview.on("click", function () {
-                page.dialogs.elements.clearImagePreview();
-            });
-
+        page.commands.showCreateModal = () => {
+            page.dialogs.elements.modalCreateProduct.modal('show');
         }
-
-        page.commands.getAllProducts = () => {
-            $.ajax({
-                type: "GET",
-                url: page.urls.getAllProducts
-            })
-                .done((data) => {
-                    $.each(data, (i, item) => {
-                        let str = AppBase.renderProduct(item);
-                        page.elements.tbProductBody.prepend(str);
-                    })
-                })
-                .fail((jqXHR) => {
-                    AppBase.errorAlert("Load product list fail!");
-                })
-        }
-
-        page.commands.loadData = () => {
-            page.commands.getAllProducts();
-        }
-
-        $(() => {
-
-            // page.loadData.getAllProducts().then(function () {
-            //     page.initializeControlEvent();
-            // });
-
-            page.commands.loadData();
-
-            page.initializeControlEvent();
-
-        });
 
         page.dialogs.commands.loadImageToCanvas = (imageFile) => {
             page.dialogs.elements.imagePreview.css("display", "");
@@ -200,7 +108,7 @@
 
                 reader.readAsDataURL(imageFile);
 
-                reader.onload = function (e) {
+                reader.onload = function(e){
                     if (e.target.readyState === FileReader.DONE) {
                         page.dialogs.commands.loadImageToCanvas(imageFile);
                     }
@@ -210,12 +118,98 @@
             }
         }
 
-        page.dialogs.elements.clearImagePreview = () => {
-            page.dialogs.elements.imageFile.val("");
-            page.dialogs.elements.imagePreview.css("display", "none");
-            page.dialogs.elements.wrapper.removeClass("active");
-            page.dialogs.elements.wrapperContent.css("opacity", 1);
+        page.dialogs.commands.createProduct = () => {
+            page.elements.loader.removeClass("hide");
+            page.elements.btnSave.prop('disabled', true);
+
+            let formData = new FormData();
+            formData.append("name", page.dialogs.elements.productName.val().toString());
+            formData.append("price", page.dialogs.elements.productPrice.val().toString());
+            formData.append("description", page.dialogs.elements.description.val().toString());
+            formData.append("file", page.dialogs.elements.imageFile[0].files[0]);
+
+            $.ajax({
+                type: "POST",
+                contentType: false,
+                cache: false,
+                processData: false,
+                url: page.urls.createProduct,
+                data: formData
+            }).done((data) => {
+                page.commands.renderProduct(data);
+
+                // page.commands.addRow();
+
+                AppBase.successAlert("Add product success!");
+
+                page.dialogs.elements.modalCreateProduct.modal('hide');
+
+            }).fail((err) => {
+                console.log(err)
+                AppBase.errorAlert("Add product fail!");
+            }).always(function () {
+                page.elements.loader.addClass("hide");
+                page.elements.btnSave.prop('disabled', false);
+            });
         }
+
+        page.commands.renderProduct = (obj) => {
+            let cloudinaryServer = 'https://res.cloudinary.com/dsmffep5o/image/upload';
+            let BASE_SCALE_IMAGE = "c_limit,w_150,h_100,q_100";
+            let folderName = obj.folderName;
+            let fileName = obj.fileName;
+
+            let avatarUrl = cloudinaryServer + '/' + BASE_SCALE_IMAGE + '/' + folderName + '/' + fileName;
+
+            let str = `
+                <tr>
+                    <td>${obj.id}</td>
+                    <td>
+                        <img src="${avatarUrl}" alt=""/>
+                    </td>
+                    <td>${obj.name}</td>
+                    <td>${obj.price}</td>
+                    <td>${obj.description}</td>
+                    <td>Edit</td>
+                </tr>
+            `;
+
+            page.elements.tbProductBody.prepend(str)
+        }
+
+        page.initializeControlEvent = () => {
+
+            page.elements.btnShowCreateModal.on("click", function () {
+                page.commands.showCreateModal();
+            });
+
+            page.elements.btnSave.on("click", function () {
+                page.dialogs.commands.createProduct();
+            });
+
+            page.dialogs.elements.divImagePreview.on("click", function () {
+                page.dialogs.elements.imageFile.trigger("click");
+            });
+
+            page.dialogs.elements.imageFile.on("change", function () {
+                page.dialogs.commands.changeImagePreview();
+            });
+
+            // page.dialogs.elements.btnClearImagePreview.on("click", function () {
+            //     page.dialogs.elements.clearImagePreview();
+            // });
+
+        }
+
+        $(() => {
+            page.loadData.getAllProducts();
+            // page.loadData.getAllProducts().then(function () {
+            //     page.initializeControlEvent();
+            // });
+
+            page.initializeControlEvent();
+
+        });
 
     </script>
 </th:block>

@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface IProductMediaRepository extends JpaRepository<ProductMedia, String> {
 
-    Optional<ProductMedia> findByProduct(Product product);
+    ProductMedia findByProduct(Product product);
 }

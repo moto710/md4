@@ -4,8 +4,8 @@
 <head>
     <title>Products List</title>
 
-    <th:block th:replace="head :: head-1"/>
-    <th:block th:replace="head :: head-2"/>
+    <th:block th:replace="head :: head-1"></th:block>
+    <th:block th:replace="head :: head-2"></th:block>
 </head>
 
 <body id="page-top">
@@ -400,9 +400,10 @@
     </a>
 
     <!-- Logout Modal-->
-    <th:block th:replace="product/allModal :: modalLogout"/>
+    <th:block th:replace="product/allModal :: modalLogout"></th:block>
 
-    <th:block th:replace="product/productJs :: js"/>
+    <th:block th:replace="product/productJs :: js">
+    </th:block>
 
 </body>
 

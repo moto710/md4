@@ -51,17 +51,17 @@ public class AuthAPI {
     @Autowired
     private AppUtils appUtils;
 
-    @PostMapping("/register")
+    @PostMapping("/signup")
     public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDTO, BindingResult br) {
 
         if (br.hasErrors()) {
-            System.out.println("register error");
             return appUtils.mapErrorToResponse(br);
         }
 
-        Long roleId = userDTO.getRole().getId();
+//        Long roleId = userDTO.getRole().getId();
 
-        Optional<Role> optRole = roleService.findById(roleId);
+//        Optional<Role> optRole = roleService.findById(roleId);
+        Optional<Role> optRole = roleService.findById(1L);
 
         if (!optRole.isPresent()) {
             throw new DataInputException("Invalid role!");
@@ -74,6 +74,8 @@ public class AuthAPI {
         }
 
         try {
+            User user = userDTO.toUser();
+            user.setRole(optRole.get());
             userService.save(userDTO.toUser());
 
             return new ResponseEntity<>(HttpStatus.CREATED);
@@ -85,7 +87,6 @@ public class AuthAPI {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO) {
-        System.out.println(userLoginDTO);
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userLoginDTO.getUsername(), userLoginDTO.getPassword()));

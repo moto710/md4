@@ -15,4 +15,14 @@ public class HomeController {
     public String showLoginPage() {
         return "/login/login";
     }
+
+    @GetMapping("/signup")
+    public String showSignupPage() {
+        return "/signup/signup";
+    }
+
+    @GetMapping("/shop")
+    public String showShoppingPage() {
+        return "shop/shop";
+    }
 }

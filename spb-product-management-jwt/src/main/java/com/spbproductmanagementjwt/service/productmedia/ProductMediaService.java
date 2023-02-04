@@ -29,7 +29,7 @@ public class ProductMediaService implements IProductMediaService{
 
 
     @Override
-    public Optional<ProductMedia> findByProduct(Product product) {
+    public ProductMedia findByProduct(Product product) {
         return productMediaRepository.findByProduct(product);
     }
 
