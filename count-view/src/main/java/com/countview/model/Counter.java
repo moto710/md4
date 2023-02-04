@@ -1,20 +1,2 @@
-package com.countview.model;
-
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Counter {
-
-    private int count;
-
-    public int increment() {
-        return count++;
-    }
+package com.countview.model;public class Counter {
 }
