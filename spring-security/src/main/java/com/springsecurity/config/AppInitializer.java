@@ -1,4 +1,4 @@
-package com.codegym.configuration;
+package com.springsecurity.config;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 

@@ -1,4 +1,9 @@
 package com.cg.spbajaxbankingtransactionjwt.service.role;
 
-public interface IRoleService {
+import com.cg.spbajaxbankingtransactionjwt.model.Role;
+import com.cg.spbajaxbankingtransactionjwt.service.IGeneral;
+
+public interface IRoleService extends IGeneral<Role> {
+
+    Role findByName(String name);
 }

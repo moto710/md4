@@ -32,6 +32,7 @@ public class CustomerRestController {
     private CustomerDTO customerDTO;
 
     private Optional<CustomerDTO> customerDTOOptional;
+
     private Optional<Customer> customerOptional;
 
     private List<CustomerDTO> customerDTOList;
@@ -63,7 +64,25 @@ public class CustomerRestController {
 
         return new ResponseEntity<>(customerDTOList, HttpStatus.OK);
     }
-    
+
+    @PatchMapping("/delete/{id}")
+    private ResponseEntity<?> deleteCustomer(@PathVariable Integer id){
+        customerDTOOptional = customerService.findCustomerDTOByIdAndDeletedIsFalse(id);
+
+        if (!customerDTOOptional.isPresent()) {
+            throw new NullPointerException("Customer not found!");
+        }
+
+        customerDTO = customerDTOOptional.get();
+
+        customerDTO.setDeleted(true);
+
+        customer = customerDTO.toCustomer();
+
+        customerService.save(customer);
+
+        return new ResponseEntity<>(customerDTO, HttpStatus.OK);
+    }
     @PostMapping
     private ResponseEntity<?> create(@Validated @RequestBody CustomerCreateDTO customerCreateDTO, BindingResult br) {
         new CustomerCreateDTO().validate(customerCreateDTO, br);
@@ -99,7 +118,6 @@ public class CustomerRestController {
         customer.setName(customerUpdateDTO.getName());
         customer.setEmail(customerUpdateDTO.getEmail());
         customer.setPhone(customerUpdateDTO.getPhone());
-        customer.setDeleted(customerUpdateDTO.getDeleted());
         customer.setLocationRegion(customerUpdateDTO.getLocationRegionDTO().toLocationRegion());
 
         customerService.save(customer);

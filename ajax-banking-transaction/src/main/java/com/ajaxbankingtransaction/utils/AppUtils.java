@@ -20,7 +20,7 @@ public class AppUtils {
         for (FieldError fieldError : fieldErrors) {
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
-
+        System.out.println(errors.values());
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 }

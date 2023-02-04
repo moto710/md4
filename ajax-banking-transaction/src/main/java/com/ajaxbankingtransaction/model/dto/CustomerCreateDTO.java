@@ -9,8 +9,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerCreateDTO implements Validator {
@@ -22,10 +21,6 @@ public class CustomerCreateDTO implements Validator {
     private String phone;
 
     private LocationRegionDTO locationRegionDTO;
-
-    public void setLocationRegionDTO(LocationRegionDTO locationRegionDTO) {
-        this.locationRegionDTO = locationRegionDTO;
-    }
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -100,11 +95,10 @@ public class CustomerCreateDTO implements Validator {
     }
 
     public Customer toCustomer() {
-        Customer customer = new Customer();
-        customer.setName(name);
-        customer.setPhone(phone);
-        customer.setEmail(email);
-        customer.setLocationRegion(locationRegionDTO.toLocationRegion());
-        return customer;
+        return new Customer()
+                .setName(name)
+                .setPhone(phone)
+                .setEmail(email)
+                .setLocationRegion(locationRegionDTO.toLocationRegion());
     }
 }

@@ -32,7 +32,7 @@ import java.util.Properties;
 @EnableJpaRepositories("com.codegym.cms.repository")
 @ComponentScan("com.codegym.cms")
 @EnableSpringDataWebSupport
-public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
+public class AppConfiguration implements WebMvcConfigurer, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
 

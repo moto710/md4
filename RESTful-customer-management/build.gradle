@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'war'
+    id "io.freefair.lombok" version "6.6.1"
 }
 
 group 'com'
@@ -37,6 +38,7 @@ dependencies {
     implementation group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.7.2'
     implementation group: 'org.springframework', name: 'spring-tx', version: '5.3.18'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.4.2'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
 }
 
 test {

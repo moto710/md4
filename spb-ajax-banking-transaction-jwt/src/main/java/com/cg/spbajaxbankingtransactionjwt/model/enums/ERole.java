@@ -1,2 +1,10 @@
-package com.cg.spbajaxbankingtransactionjwt.model.enums;public enum ERole {
+package com.cg.spbajaxbankingtransactionjwt.model.enums;
+
+public enum ERole {
+
+    ROLE_USER,
+
+    ROLE_MODERATOR,
+
+    ROLE_ADMIN
 }

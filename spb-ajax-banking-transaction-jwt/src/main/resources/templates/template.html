@@ -44,6 +44,18 @@
 
         let customer = {};
 
+
+
+        $(".tbr").on("click", () => {
+            let id = $(this).data("id");
+            console.log(id);
+            $("footer").removeClass("hidden").addClass("show");
+        })
+
+        $("#closeFooter").on("click", () => {
+            $("footer").removeClass("show").addClass("hidden");
+        })
+
         function getAllCustomers() {
             $.ajax({
                 headers: {
@@ -100,7 +112,7 @@
                     addEventChangeProvince();
                 })
                 .fail((error) => {
-                    sweetAlertError("Can't find provinces list!", error);
+                    sweetAlertError("Can't find provinces list!");
                 })
         }
 
@@ -119,7 +131,7 @@
                     addEventChangeDistrict();
                 })
                 .fail((error) => {
-                    sweetAlertError("Can't find districts list!", error);
+                    sweetAlertError("Can't find districts list!");
                 })
         }
 
@@ -137,7 +149,7 @@
                     addEventChangeWard();
                 })
                 .fail((error) => {
-                    sweetAlertError("Can't find wards list!", error);
+                    sweetAlertError("Can't find wards list!");
                 })
         }
 
@@ -407,7 +419,7 @@
                                     sweetAlertSuccess("Delete customer");
                                 })
                                 .fail((error) => {
-                                    sweetAlertError("Can't delete this customer!", error);
+                                    sweetAlertError("Can't delete this customer!");
                                 })
                         }).catch(() => {
                             sweetAlertError("Customer not found!", "error");
@@ -541,12 +553,11 @@
             })
         }
 
-        function sweetAlertError(message, error) {
+        function sweetAlertError(message) {
             Swal.fire({
                 position: 'center',
                 icon: 'error',
-                title: `${message}`,
-                text: '${error}'
+                title: `${message}`
             })
         }
 
@@ -602,7 +613,16 @@
 
                 })
                 .fail((error) => {
-                    sweetAlertError("Create new customer fail!", error);
+                    sweetAlertError("Create new customer fail!");
+
+                    let errors = error.responseJSON;
+                    $("#modalCreateCustomer .modal-alert-danger").empty().removeClass('hidden').addClass('show');
+
+                    $.each(errors, (k, v) => {
+                        let subK = k.replaceAll('locationRegion.', '');
+                        let str = `<label id="${subK}-error" class="error" for="${subK}Cre">${v}</label>`;
+                        $("#modalCreateCustomer .modal-alert-danger").append(str);
+                    })
                 })
         }
 
@@ -658,7 +678,16 @@
                     $("#modalUpdate").modal("hide");
                 })
                 .fail((error) => {
-                    sweetAlertError("Update fail!", error);
+                    sweetAlertError("Update fail!");
+
+                    let errors = error.responseJSON;
+                    $("#modalUpdateCustomer .modal-alert-danger").empty().removeClass('hidden').addClass('show');
+
+                    $.each(errors, (k, v) => {
+                        let subK = k.replaceAll('locationRegion.', '');
+                        let str = `<label id="${subK}-error" class="error" for="${subK}Cre">${v}</label>`;
+                        $("#modalUpdateCustomer .modal-alert-danger").append(str);
+                    })
                 })
         }
 
@@ -697,7 +726,7 @@
 
                 })
                 .fail((error) => {
-                    sweetAlertError("Deposit fail!", error);
+                    sweetAlertError("Deposit fail!");
                 })
         }
 
@@ -732,7 +761,7 @@
                     allAddEvent();
                 })
                 .fail((error) => {
-                    sweetAlertError("Withdraw fail!", error);
+                    sweetAlertError("Withdraw fail!");
                 })
         }
 
@@ -777,7 +806,8 @@
                     allAddEvent();
                 })
                 .fail((error) => {
-                    sweetAlertError("Transfer fail!", error);
+                    console.log(error)
+                    sweetAlertError("Transfer fail!");
                 })
         }
 

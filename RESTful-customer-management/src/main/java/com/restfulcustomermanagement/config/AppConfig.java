@@ -43,7 +43,6 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware{
         this.applicationContext = applicationContext;
     }
 
-    //Cấu hình Thymleaf
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
@@ -70,7 +69,6 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware{
         return viewResolver;
     }
 
-    //Cấu hình JPA
     @Bean
     @Qualifier(value = "entityManager")
     public EntityManager entityManager(EntityManagerFactory entityManagerFactory) {
@@ -93,7 +91,7 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware{
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/spring_customer_management");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/james");
         dataSource.setUsername("root");
         dataSource.setPassword("123456789");
         return dataSource;

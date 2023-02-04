@@ -26,6 +26,7 @@
                 getAllCustomers: AppBase.API_CUSTOMER,
                 getAllCustomersNotId: AppBase.API_CUSTOMER + "/recipients-list/",
                 getCustomer: AppBase.API_CUSTOMER + "/",
+                deleteCustomer: AppBase.API_CUSTOMER + "/delete/",
                 doDeposit: AppBase.API_DEPOSIT,
                 doWithdraw: AppBase.API_WITHDRAW,
                 doTransfer: AppBase.API_TRANSFER,
@@ -72,7 +73,7 @@
                     "content-type": "application/json"
                 },
                 type: "GET",
-                url: "http://localhost:8080/api/transfers"
+                url: page.urls.getAllTransfers
             })
                 .done((data) => {
                     $.each(data, (i, transfer) => {
@@ -99,7 +100,7 @@
                     addEventChangeProvince();
                 })
                 .fail((error) => {
-                    sweetAlertError("Can't find provinces list!");
+                    sweetAlertError("Can't find provinces list!", error);
                 })
         }
 
@@ -118,8 +119,7 @@
                     addEventChangeDistrict();
                 })
                 .fail((error) => {
-                    console.log("fail")
-                    sweetAlertError("Can't find districts list!");
+                    sweetAlertError("Can't find districts list!", error);
                 })
         }
 
@@ -137,7 +137,7 @@
                     addEventChangeWard();
                 })
                 .fail((error) => {
-                    sweetAlertError("Can't find wards list!");
+                    sweetAlertError("Can't find wards list!", error);
                 })
         }
 
@@ -268,27 +268,6 @@
                                         sweetAlertError("Can't find wards list!");
                                     })
 
-                                $("#districtUp").change(function () {
-                                    districtId = $(this).val();
-
-                                    $.ajax({
-                                        type: "GET",
-                                        url: vApi.urls.getAllWards + districtId
-                                    })
-                                        .done((data) => {
-                                            $("#wardUp").empty();
-                                            $.each(data.results, (i, item) => {
-                                                let war = renderSelectOptionWard(item);
-                                                $("#wardUp").append(war);
-                                            })
-                                            $("#wardUp").change(function () {
-                                                wardId = $(this).val();
-                                            })
-                                        })
-                                        .fail((error) => {
-                                            sweetAlertError("Can't find wards list!");
-                                        })
-                                })
                             })
                             .fail((error) => {
                                 console.log(error)
@@ -296,10 +275,32 @@
                             })
                     })
 
+                    $("#districtUp").change(function () {
+                        districtId = $(this).val();
+
+                        $.ajax({
+                            type: "GET",
+                            url: vApi.urls.getAllWards + districtId
+                        })
+                            .done((data) => {
+                                $("#wardUp").empty();
+                                $.each(data.results, (i, item) => {
+                                    let war = renderSelectOptionWard(item);
+                                    $("#wardUp").append(war);
+                                })
+                                $("#wardUp").change(function () {
+                                    wardId = $(this).val();
+                                })
+                            })
+                            .fail((error) => {
+                                sweetAlertError("Can't find wards list!");
+                            })
+                    })
+
                     $("#modalUpdate").modal("show");
                 })
                     .catch(() => {
-                        sweetAlertError("Customer not found!");
+                        sweetAlertError("Customer not found!", "error");
                     });
             })
         }
@@ -316,7 +317,7 @@
                     $("#modalDeposit").modal("show");
                 })
                     .catch(() => {
-                        sweetAlertError("Customer not found!");
+                        sweetAlertError("Customer not found!", "error");
                     });
             })
         }
@@ -333,7 +334,7 @@
                     $("#modalWithdraw").modal("show");
                 })
                     .catch(() => {
-                        sweetAlertError("Customer not found!");
+                        sweetAlertError("Customer not found!", "error");
                     });
             })
         }
@@ -367,11 +368,11 @@
                             countTransferTransaction();
                         })
                         .fail((error) => {
-                            console.log(error);
+                            sweetAlertError("Sender not found!", "error");
                         })
                 })
                     .catch(() => {
-                        sweetAlertError("Customer not found!");
+                        sweetAlertError("Customer not found!", "error");
                     });
             })
         }
@@ -391,15 +392,13 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         findById(customerId).then(() => {
-                            customer.deleted = 1;
-                            console.log(customer);
                             $.ajax({
                                 headers: {
                                     "accept": "application/json",
                                     "content-type": "application/json"
                                 },
                                 type: "PATCH",
-                                url: page.urls.getCustomer + customerId,
+                                url: page.urls.deleteCustomer + customerId,
                                 data: JSON.stringify(customer)
                             })
                                 .done((data) => {
@@ -408,12 +407,11 @@
                                     sweetAlertSuccess("Delete customer");
                                 })
                                 .fail((error) => {
-                                    console.log(error)
+                                    sweetAlertError("Can't delete this customer!", error);
                                 })
                         }).catch(() => {
-                            sweetAlertError("Customer not found!");
+                            sweetAlertError("Customer not found!", "error");
                         })
-
                     }
                 })
             })
@@ -543,11 +541,12 @@
             })
         }
 
-        function sweetAlertError(message) {
+        function sweetAlertError(message, error) {
             Swal.fire({
                 position: 'center',
                 icon: 'error',
-                title: `${message}`
+                title: `${message}`,
+                text: '${error}'
             })
         }
 
@@ -603,8 +602,7 @@
 
                 })
                 .fail((error) => {
-                    console.log(error);
-                    sweetAlertError("Create new customer fail!");
+                    sweetAlertError("Create new customer fail!", error);
                 })
         }
 
@@ -619,8 +617,7 @@
                 districtName = $("#districtUp").find("option:selected").text(),
                 wardId = $("#wardUp").val(),
                 wardName = $("#wardUp").find("option:selected").text(),
-                address = $("#addressUp").val(),
-                deleted = 0;
+                address = $("#addressUp").val();
 
             const locationRegionDTO = {
                 provinceId,
@@ -636,7 +633,6 @@
                 name,
                 email,
                 phone,
-                deleted,
                 locationRegionDTO
             }
 
@@ -662,8 +658,7 @@
                     $("#modalUpdate").modal("hide");
                 })
                 .fail((error) => {
-                    console.log(error);
-                    sweetAlertError("Update fail!");
+                    sweetAlertError("Update fail!", error);
                 })
         }
 
@@ -702,8 +697,7 @@
 
                 })
                 .fail((error) => {
-                    console.error(error);
-                    sweetAlertError("Deposit fail!");
+                    sweetAlertError("Deposit fail!", error);
                 })
         }
 
@@ -738,8 +732,7 @@
                     allAddEvent();
                 })
                 .fail((error) => {
-                    console.error(error);
-                    sweetAlertError("Withdraw fail!");
+                    sweetAlertError("Withdraw fail!", error);
                 })
         }
 
@@ -784,8 +777,7 @@
                     allAddEvent();
                 })
                 .fail((error) => {
-                    console.error(error);
-                    sweetAlertError("Transfer fail!");
+                    sweetAlertError("Transfer fail!", error);
                 })
         }
 
@@ -868,6 +860,10 @@
                 phoneCre: {
                     required: true,
                     isValidPhone: true
+                },
+                addressCre: {
+                    required: true,
+                    minlength: 5
                 }
             },
             messages: {
@@ -879,7 +875,11 @@
                     required: "Email is required.",
                 },
                 phoneCre: {
-                    required: "Phone number is required"
+                    required: "Phone number is required."
+                },
+                addressCre: {
+                    required: "Address is required.",
+                    minlength: "Address must be more than 5 letters"
                 }
             },
             errorLabelContainer: "#modalCreate .modal-alert-danger",
@@ -914,6 +914,10 @@
                 phoneUp: {
                     required: true,
                     isValidPhone: true
+                },
+                addressUp: {
+                    required: true,
+                    minlength: 5
                 }
             },
             messages: {
@@ -925,7 +929,11 @@
                     required: "Email is required.",
                 },
                 phoneUp: {
-                    required: "Phone number is required"
+                    required: "Phone number is required."
+                },
+                addressUp: {
+                    required: "Address is required.",
+                    minlength: "Address must be more than 5 letters"
                 }
             },
             errorLabelContainer: "#modalUpdate .modal-alert-danger",
