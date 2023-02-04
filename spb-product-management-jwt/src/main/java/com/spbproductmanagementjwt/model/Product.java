@@ -1,6 +1,7 @@
 package com.spbproductmanagementjwt.model;
 
-import com.spbproductmanagementjwt.model.dto.ProductDTO;
+import com.spbproductmanagementjwt.model.dto.ProductCreateDTO;
+import com.spbproductmanagementjwt.model.dto.ProductResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,18 +29,26 @@ public class Product extends BaseEntity{
     @Column(nullable = false)
     private BigDecimal price;
 
-    @Column(nullable = false, name = "quantities")
-    private Double quantity;
+    private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "supplier_id",referencedColumnName = "id", nullable = false)
-    private Supplier supplier;
+    public ProductCreateDTO toProductDTO() {
+        return new ProductCreateDTO()
+                .setName(name)
+                .setPrice(price.toString())
+                .setDescription(description)
+                ;
+    }
 
-    public ProductDTO toProductDTO() {
-        return new ProductDTO()
+    public ProductResponseDTO toProductResponseDTO(ProductMedia productMedia) {
+        return new ProductResponseDTO()
                 .setId(id)
                 .setName(name)
-                .setQuantity(quantity.toString())
-                .setSupplierDTO(supplier.toSupplierDTO());
+                .setPrice(price)
+                .setDescription(description)
+                .setFileName(productMedia.getFileName())
+                .setFileFolder(productMedia.getFileFolder())
+                .setFileUrl(productMedia.getFileUrl())
+                ;
     }
+
 }

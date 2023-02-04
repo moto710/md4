@@ -25,17 +25,17 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:8080", "http://localhost:3300")
-                        .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
-            }
-        };
-    }
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurerAdapter() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/api/**")
+//                        .allowedOrigins("http://localhost:8080", "http://localhost:3300")
+//                        .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
+//            }
+//        };
+//    }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -52,7 +52,7 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
     public Properties additionalProperties() {
         Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
         return properties;
     }
 
@@ -65,15 +65,4 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
         dataSource.setPassword("123456789");
         return dataSource;
     }
-
-//    @Bean
-//    public SpringResourceTemplateResolver templateResolver() {
-//        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-//        templateResolver.setApplicationContext(applicationContext);
-//        templateResolver.setPrefix("/WEB-INF/views");
-//        templateResolver.setSuffix(".html");
-//        templateResolver.setTemplateMode(TemplateMode.HTML);
-//        templateResolver.setCharacterEncoding("UTF-8");
-//        return templateResolver;
-//    }
 }

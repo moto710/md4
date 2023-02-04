@@ -16,13 +16,11 @@ import org.springframework.validation.Validator;
 @NoArgsConstructor
 public class SupplierDTO implements Validator {
 
-    private Long id;
-
     private String name;
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return ProductDTO.class.isAssignableFrom(clazz);
+        return ProductCreateDTO.class.isAssignableFrom(clazz);
     }
 
     @Override
@@ -39,7 +37,6 @@ public class SupplierDTO implements Validator {
 
     public Supplier toSupplier() {
         return new Supplier()
-                .setId(id)
                 .setName(name);
     }
 }

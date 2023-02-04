@@ -30,7 +30,12 @@ public class SupplierService implements ISupplierService{
     }
 
     @Override
-    public void delete(Supplier supplier) {
+    public void deactivate(Long id) {
+
+    }
+
+    @Override
+    public void reactivate(Long id) {
 
     }
 }

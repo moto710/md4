@@ -27,7 +27,6 @@ public class Supplier extends BaseEntity{
 
     public SupplierDTO toSupplierDTO() {
         return new SupplierDTO()
-                .setId(id)
                 .setName(name);
     }
 }

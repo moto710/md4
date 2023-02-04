@@ -1,0 +1,208 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<th:block th:fragment="js">
+
+    <!-- Page level plugins -->
+    <script src="/assets/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="/assets/js/demo/datatables-demo.js"></script>
+
+
+    <script>
+        const page = {
+            urls: {
+                getAllProducts: AppBase.API_PRODUCT,
+                createProduct: AppBase.API_PRODUCT
+            },
+            elements: {},
+            commands: {},
+            loadData: {},
+            dialogs: {
+                elements: {},
+                commands: {}
+            }
+        }
+
+        page.elements.loader = $(".loader");
+
+        page.elements.btnShowCreateModal = $("#btnShowCreateModal");
+        page.elements.btnSave = $("#btnSave");
+
+        page.elements.tbProductBody = $('#tbListProducts tbody');
+
+        page.dialogs.elements.modalCreateProduct = $("#modalCreateProduct");
+        page.dialogs.elements.frmCreateProduct = $("#frmCreateProduct");
+        page.dialogs.elements.btnCreateProduct = $("#btnCreateProduct");
+
+        page.dialogs.elements.wrapper = $("section .wrapper");
+        page.dialogs.elements.productName = $("#productName");
+        page.dialogs.elements.productPrice = $("#productPrice");
+        page.dialogs.elements.description = $("#description");
+        page.dialogs.elements.imageFile = $("#imageFile");
+        page.dialogs.elements.wrapperContent = $("section .wrapper .content");
+        page.dialogs.elements.imagePreview = $("section .image-preview canvas");
+        page.dialogs.elements.canvas = $("#canvas");
+        page.dialogs.elements.context = page.dialogs.elements.canvas[0].getContext('2d');
+        page.dialogs.elements.imagePreview.css("display", "none");
+        page.dialogs.elements.divImagePreview = $("div.image-preview, div.file-name");
+        page.dialogs.elements.btnClearImagePreview = $(".clear-image-preview i");
+
+
+        page.commands.showCreateModal = () => {
+            page.dialogs.elements.modalCreateProduct.modal('show');
+        }
+
+
+
+        page.elements.btnCreateProduct.on("click", function () {
+            console.log('alo')
+            page.dialogs.elements.frmCreateProduct.trigger("submit");
+        })
+
+        page.dialogs.commands.createProduct = () => {
+            page.elements.loader.removeClass("hide");
+            page.elements.btnSave.prop('disabled', true);
+
+            let formData = new FormData();
+            formData.append("name", page.dialogs.elements.productName.val().toString());
+            formData.append("price", page.dialogs.elements.productPrice.val().toString());
+            formData.append("description", page.dialogs.elements.description.val().toString());
+            formData.append("file", page.dialogs.elements.imageFile[0].files[0]);
+
+            console.log(formData)
+
+            $.ajax({
+                type: "POST",
+                contentType: false,
+                cache: false,
+                processData: false,
+                url: page.urls.getAllProducts,
+                data: formData
+            }).done((data) => {
+                console.log(data)
+                let str = AppBase.renderProduct(data);
+                page.elements.tbProductBody.prepend(str);
+
+                AppBase.successAlert("Add product success!");
+
+                page.dialogs.elements.modalCreateProduct.modal('hide');
+
+            }).fail((err) => {
+                console.log(err)
+                AppBase.errorAlert("Add product fail!");
+            }).always(function () {
+                page.elements.loader.addClass("hide");
+                page.elements.btnSave.prop('disabled', false);
+            });
+        }
+
+        page.dialogs.elements.modalCreateProduct.on("hidden.bs.modal", () => {
+            page.dialogs.elements.frmCreateProduct[0].reset();
+            // page.dialogs.elements.frmCreateProduct.validate().resetForm();
+        })
+
+        page.dialogs.elements.btnCreateProduct.on("click", () => {
+            page.dialogs.commands.createProduct();
+        })
+
+        page.initializeControlEvent = () => {
+
+            page.elements.btnShowCreateModal.on("click", function () {
+                page.commands.showCreateModal();
+            });
+
+            page.elements.btnSave.on("click", function () {
+                page.dialogs.commands.createProduct();
+            });
+
+            page.dialogs.elements.divImagePreview.on("click", function () {
+                page.dialogs.elements.imageFile.trigger("click");
+            });
+
+            page.dialogs.elements.imageFile.on("change", function () {
+                page.dialogs.commands.changeImagePreview();
+            });
+
+            page.dialogs.elements.btnClearImagePreview.on("click", function () {
+                page.dialogs.elements.clearImagePreview();
+            });
+
+        }
+
+        page.commands.getAllProducts = () => {
+            $.ajax({
+                type: "GET",
+                url: page.urls.getAllProducts
+            })
+                .done((data) => {
+                    $.each(data, (i, item) => {
+                        let str = AppBase.renderProduct(item);
+                        page.elements.tbProductBody.prepend(str);
+                    })
+                })
+                .fail((jqXHR) => {
+                    AppBase.errorAlert("Load product list fail!");
+                })
+        }
+
+        page.commands.loadData = () => {
+            page.commands.getAllProducts();
+        }
+
+        $(() => {
+
+            // page.loadData.getAllProducts().then(function () {
+            //     page.initializeControlEvent();
+            // });
+
+            page.commands.loadData();
+
+            page.initializeControlEvent();
+
+        });
+
+        page.dialogs.commands.loadImageToCanvas = (imageFile) => {
+            page.dialogs.elements.imagePreview.css("display", "");
+            page.dialogs.elements.wrapper.addClass("active");
+            page.dialogs.elements.wrapperContent.css("opacity", 0);
+
+            let imageObj = new Image();
+
+            imageObj.onload = function () {
+                page.dialogs.elements.context.canvas.width = imageObj.width;
+                page.dialogs.elements.context.canvas.height = imageObj.height;
+                page.dialogs.elements.context.drawImage(imageObj, 0, 0, imageObj.width, imageObj.height);
+            };
+
+            imageObj.src = URL.createObjectURL(imageFile)
+        }
+
+        page.dialogs.commands.changeImagePreview = () => {
+            let imageFile = page.dialogs.elements.imageFile[0].files[0];
+
+            if (imageFile) {
+                let reader = new FileReader();
+
+                reader.readAsDataURL(imageFile);
+
+                reader.onload = function (e) {
+                    if (e.target.readyState === FileReader.DONE) {
+                        page.dialogs.commands.loadImageToCanvas(imageFile);
+                    }
+                }
+            } else {
+                page.dialogs.elements.clearImagePreview();
+            }
+        }
+
+        page.dialogs.elements.clearImagePreview = () => {
+            page.dialogs.elements.imageFile.val("");
+            page.dialogs.elements.imagePreview.css("display", "none");
+            page.dialogs.elements.wrapper.removeClass("active");
+            page.dialogs.elements.wrapperContent.css("opacity", 1);
+        }
+
+    </script>
+</th:block>

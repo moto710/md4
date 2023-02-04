@@ -1,9 +1,43 @@
 package com.spbproductmanagementjwt.repository;
 
 import com.spbproductmanagementjwt.model.Product;
+import com.spbproductmanagementjwt.model.dto.ProductResponseDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface IProductRepository extends JpaRepository<Product, Long> {
+
+    @Query("SELECT NEW com.spbproductmanagementjwt.model.dto.ProductResponseDTO (" +
+                "pm.product.id, " +
+                "pm.product.name, " +
+                "pm.product.price, " +
+                "pm.product.description, " +
+                "pm.fileName, " +
+                "pm.fileFolder, " +
+                "pm.fileUrl " +
+            ") " +
+            "FROM ProductMedia AS pm " +
+            "WHERE pm.product.deleted = FALSE "
+    )
+    List<ProductResponseDTO> findAllProductResponseDTOByDeleteIsFalse();
+
+    @Modifying
+    @Query("UPDATE Product AS p " +
+            "SET p.deleted = true " +
+            "WHERE p.id = :productId"
+    )
+    void deactivate(@Param("productId") Long productId);
+
+    @Modifying
+    @Query("UPDATE Product AS p " +
+            "SET p.deleted = false " +
+            "WHERE p.id = :productId"
+    )
+    void reactivate(@Param("productId") Long productId);
 }

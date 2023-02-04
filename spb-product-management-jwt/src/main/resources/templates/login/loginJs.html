@@ -1,0 +1,55 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<th:block th:fragment="js">
+    <script>
+        const page = {
+            urls: {
+                login: AppBase.API_LOGIN
+            },
+            elements: {},
+            commands: {},
+            loadData: {},
+            dialogs: {
+                elements: {},
+                commands: {}
+            }
+        }
+
+        page.elements.username = $("#username");
+        page.elements.password = $("#password");
+        page.elements.btnLogin = $("#btnLogin");
+
+        page.elements.btnLogin.on("click", () => {
+            let username = page.elements.username.val(),
+                password = page.elements.password.val();
+
+            const user = {
+                username,
+                password
+            }
+
+            console.log(user)
+            console.log("user")
+            console.log(user.username)
+            $.ajax({
+                headers: {
+                    'accept': 'application/json',
+                    'content-type': 'application/json'
+                },
+                type: 'POST',
+                url: page.urls.login,
+                data: JSON.stringify(user)
+            })
+                .done((data) => {
+                    console.log(data);
+                    location.href = '/products';
+
+                    AppBase.successAlert("Login success!");
+                })
+                .fail((jqXHR) => {
+                    console.log(jqXHR)
+                    AppBase.errorAlert("Login fail!");
+                })
+        })
+    </script>
+</th:block>
