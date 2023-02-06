@@ -39,7 +39,7 @@ public class HomeController {
 
     @GetMapping("/suspended-products")
     private String showSuspendedProducts() {
-        return "product/showSuspendedProduct";
+        return "product/suspendedProduct";
     }
 
     @GetMapping("/suspended-customers")

@@ -57,6 +57,40 @@ public class ProductRestController {
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
+    @GetMapping("/suspendedProducts")
+    private ResponseEntity<?> getAllSuspendedProducts() {
+        List<ProductResponseDTO> productList = productService.findAllProductResponseDTOByDeleteIsTrue();
+        return new ResponseEntity<>(productList, HttpStatus.OK);
+    }
+
+    @GetMapping("/suspendedProducts/{id}")
+    private ResponseEntity<?> getSuspendedProduct(@PathVariable Long id) {
+        productOptional = productService.findByIdAndDeletedIsTrue(id);
+
+        if (!productOptional.isPresent()) {
+            throw new NullPointerException("Product invalid!");
+        }
+
+        productResponseDTO =  productOptional.get().toProductResponseDTO();
+
+        return new ResponseEntity<>(productResponseDTO, HttpStatus.OK);
+    }
+
+    @PatchMapping("/suspendedProducts/{id}")
+    private ResponseEntity<?> reactiveProduct(@PathVariable Long id) {
+        productOptional = productService.findByIdAndDeletedIsTrue(id);
+
+        if (!productOptional.isPresent()) {
+            throw new NullPointerException("Product invalid!");
+        }
+
+        productService.reactivate(id);
+
+        productResponseDTO =  productOptional.get().toProductResponseDTO();
+
+        return new ResponseEntity<>(productResponseDTO, HttpStatus.OK);
+    }
+
     @PatchMapping("/{id}")
     private ResponseEntity<?> updateProduct(@PathVariable("id") Long id, @RequestBody ProductDTO productDTO) {
         productOptional = productService.findById(id);

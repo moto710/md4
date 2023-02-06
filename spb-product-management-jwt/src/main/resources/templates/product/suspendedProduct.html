@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 
 <head>
-    <title>Suspended Customers List</title>
+    <title>Suspended Products List</title>
 
     <th:block th:replace="head :: head"></th:block>
 </head>
@@ -31,11 +31,11 @@
 
                 <!-- Page Heading -->
                 <div>
-                    <h1 class="h3 mb-2 text-gray-800">Suspended Customer Details</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Product Details</h1>
                 </div>
 
                 <!-- DataTales Example -->
-                <th:block th:replace="customer/tbCustomer :: tbSuspendedCustomerList"></th:block>
+                <th:block th:replace="product/tbProduct :: tbSuspendedProductList"/>
 
                 <div class="loader hide"></div>
 
@@ -47,7 +47,7 @@
 
 
         <!-- Footer -->
-        <th:block th:replace="template :: footer"></th:block>
+        <th:block th:replace="template :: footer"/>
         <!-- End of Footer -->
 
     </div>
@@ -61,10 +61,11 @@
     <i class="fas fa-angle-up"></i>
 </a>
 
-<!-- Logout Modal-->
-<th:block th:replace="customer/allModal :: modalLogout"></th:block>
 
-<th:block th:replace="customer/suspendedCustomersJs :: script"></th:block>
+<!-- Logout Modal-->
+<th:block th:replace="allModal :: modalLogout"></th:block>
+
+<th:block th:replace="product/suspenedProductJs :: script"></th:block>
 
 </body>
 

@@ -18,6 +18,8 @@ public interface ICustomerRepository extends JpaRepository<Customer, Long> {
 
     Optional<Customer> findCustomersByIdAndDeletedIsFalse(Long id);
 
+    Optional<Customer> findCustomersByIdAndDeletedIsTrue(Long id);
+
     List<Customer> findAllByFullNameLikeOrEmailLikeOrPhoneLike(String fullName, String email, String phone);
 
     Optional<Customer> findByIdAndDeletedIsFalse(Long id);

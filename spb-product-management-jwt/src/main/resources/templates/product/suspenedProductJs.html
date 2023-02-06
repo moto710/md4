@@ -24,8 +24,8 @@
     <script>
         const page = {
             urls: {
-                getAllSuspendedCustomers: AppBase.API_SUSPENDED_CUSTOMER,
-                getSuspendedCustomer: AppBase.API_SUSPENDED_CUSTOMER + "/"
+                getAllSuspendedProducts: AppBase.API_SUSPENDED_PRODUCT,
+                getSuspendedProduct: AppBase.API_SUSPENDED_PRODUCT + "/"
             },
             elements: {},
             commands: {},
@@ -36,15 +36,15 @@
             }
         }
 
-        let customer = {};
+        let product = {};
 
-        page.elements.tbSuspendedCustomer = $("#tbSuspendedCustomer tbody");
+        page.elements.tbSuspendedProducts = $("#tbSuspendedProducts tbody");
 
         page.elements.btnReactive = $(".btnReactive");
 
 
         $(() => {
-            page.loadData.getAllSuspendedCustomers().then(() => {
+            page.loadData.getAllSuspendedProducts().then(() => {
                 page.initializeControlEvent();
             });
         });
@@ -69,16 +69,16 @@
                                     "content-type": "application/json"
                                 },
                                 type: "PATCH",
-                                url: page.urls.getSuspendedCustomer + id,
-                                data: JSON.stringify(customer)
+                                url: page.urls.getSuspendedProduct + id,
+                                data: JSON.stringify(product)
                             })
                                 .done((data) => {
                                     $("#tr_" + id).remove();
-                                    AppBase.successAlert("Reactive customer success!");
+                                    AppBase.successAlert("Reactive product success!");
                                 })
                                 .fail((error) => {
                                     console.log(error)
-                                    AppBase.errorAlert("Reactive customer fail!");
+                                    AppBase.errorAlert("Reactive product fail!");
                                 })
                         }
                     })
@@ -86,16 +86,14 @@
             })
         }
 
-        page.loadData.getAllSuspendedCustomers = () => {
+        page.loadData.getAllSuspendedProducts = () => {
             return $.ajax({
                 type: "GET",
-                url: page.urls.getAllSuspendedCustomers,
+                url: page.urls.getAllSuspendedProducts,
             }).done((data) => {
 
                 $.each(data, (i, item) => {
-                    let str = page.commands.renderSuspendedCustomers(item);
-
-                    page.elements.tbSuspendedCustomer.prepend(str);
+                    page.commands.renderSuspendedProducts(item);
                 })
 
             }).fail((err) => {
@@ -103,18 +101,23 @@
             })
         }
 
-        page.commands.renderSuspendedCustomers = (item) => {
-            return `
-                <tr id="tr_${item.id}" data-id="${item.id}">
-                    <td class="text-end">${item.id}</td>
-                    <td class="text-end">${item.fullName}</td>
-                    <td class="text-end">${item.email}</td>
-                    <td class="text-end">${item.phone}</td>
-                    <td class="text-end">${item.balance}</td>
-                    <td class="text-end">${item.locationRegionDTO.provinceName}</td>
-                    <td class="text-end">${item.locationRegionDTO.districtName}</td>
-                    <td class="text-end">${item.locationRegionDTO.wardName}</td>
-                    <td class="text-end">${item.locationRegionDTO.address}</td>
+        page.commands.renderSuspendedProducts = (item) => {
+            let cloudinaryServer = 'https://res.cloudinary.com/dsmffep5o/image/upload';
+            let BASE_SCALE_IMAGE = "c_limit,w_150,h_100,q_100";
+            let folderName = item.folderName;
+            let fileName = item.fileName;
+
+            let avatarUrl = cloudinaryServer + '/' + BASE_SCALE_IMAGE + '/' + folderName + '/' + fileName;
+
+            let str = `
+                <tr id="tr_${item.id}">
+                    <td>${item.id}</td>
+                    <td class="img">
+                        <img src="${avatarUrl}" alt="${fileName}" class="img"/>
+                    </td>
+                    <td>${item.name}</td>
+                    <td>${item.price}</td>
+                    <td>${item.description}</td>
                     <td>
                         <button type="button" class="btn btn-warning btn-sm btnReactive" data-id="${item.id}">
                             <i class="fas fa-redo-alt"></i>
@@ -122,15 +125,17 @@
                     </td>
                 </tr>
             `;
+
+            page.elements.tbSuspendedProducts.prepend(str)
         }
 
         page.commands.findById = (id) => {
             return $.ajax({
                 type: "GET",
-                url: page.urls.getSuspendedCustomer + id
+                url: page.urls.getSuspendedProduct + id
             })
                 .done((data) => {
-                    customer = data;
+                    product = data;
                 })
                 .fail((error) => {
                     console.log(error)

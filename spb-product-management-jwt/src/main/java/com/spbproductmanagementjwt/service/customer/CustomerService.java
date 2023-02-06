@@ -134,6 +134,11 @@ customerRepository.reactivate(id);
     }
 
     @Override
+    public Optional<Customer> findCustomersByIdAndDeletedIsTrue(Long id) {
+        return customerRepository.findCustomersByIdAndDeletedIsTrue(id);
+    }
+
+    @Override
     public Optional<CustomerDTO> findCustomerDTOByIdAndDeletedIsFalse(Long id) {
         return customerRepository.findCustomerDTOByIdAndDeletedIsFalse(id);
     }

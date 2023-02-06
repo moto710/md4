@@ -72,6 +72,34 @@ public class CustomerRestController {
         return new ResponseEntity<>(suspendedCustomers, HttpStatus.OK);
     }
 
+    @GetMapping("/suspendedCustomers/{id}")
+    private ResponseEntity<?> getSuspendedCustomer(@PathVariable Long id) {
+        customerOptional = customerService.findCustomersByIdAndDeletedIsTrue(id);
+
+        if (!customerOptional.isPresent()) {
+            throw new NullPointerException("Invalid customer!");
+        }
+
+        customer = customerOptional.get();
+
+        return new ResponseEntity<>(customer.toCustomerResponseDTO(), HttpStatus.OK);
+    }
+
+    @PatchMapping("/suspendedCustomers/{id}")
+    private ResponseEntity<?> reactiveCustomer(@PathVariable Long id) {
+        customerOptional = customerService.findCustomersByIdAndDeletedIsTrue(id);
+
+        if (!customerOptional.isPresent()) {
+            throw new NullPointerException("Invalid customer!");
+        }
+
+        customer = customerOptional.get();
+
+        customerService.reactivate(id);
+
+        return new ResponseEntity<>(customer.toCustomerResponseDTO(), HttpStatus.OK);
+    }
+
     @PatchMapping("/delete/{id}")
     private ResponseEntity<?> deleteCustomer(@PathVariable Long id){
         System.out.println(customerDTO.getId());

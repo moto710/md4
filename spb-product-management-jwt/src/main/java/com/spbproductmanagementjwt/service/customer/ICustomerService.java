@@ -22,6 +22,9 @@ public interface ICustomerService extends IGeneralService<Customer> {
     void decrementBalance(Long customerId, BigDecimal transactionAmount);
 
     Optional<Customer> findCustomersByIdAndDeletedIsFalse(Long id);
+
+    Optional<Customer> findCustomersByIdAndDeletedIsTrue(Long id);
+
     Optional<CustomerDTO> findCustomerDTOByIdAndDeletedIsFalse(Long id);
 
     List<CustomerDTO> findAllCustomerDTOByDeletedIsFalseAndIdNot(Long id);

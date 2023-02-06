@@ -2,6 +2,7 @@ class AppBase {
     static DOMAIN = location.origin;
 
     static API_PRODUCT = this.DOMAIN  + "/api/products";
+    static API_SUSPENDED_PRODUCT = this.API_PRODUCT + "/suspendedProducts"
 
     static SERVER_CLOUDINARY = "https://res.cloudinary.com";
     static CLOUDINARY_NAME = "/dsmffep5o";

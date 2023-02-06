@@ -48,8 +48,18 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public List<ProductResponseDTO> findAllProductResponseDTOByDeleteIsTrue() {
+        return productRepository.findAllProductResponseDTOByDeleteIsTrue();
+    }
+
+    @Override
     public Optional<Product> findById(Long id) {
         return productRepository.findById(id);
+    }
+
+    @Override
+    public Optional<Product> findByIdAndDeletedIsTrue(Long id) {
+        return productRepository.findByIdAndDeletedIsTrue(id);
     }
 
     @Override
