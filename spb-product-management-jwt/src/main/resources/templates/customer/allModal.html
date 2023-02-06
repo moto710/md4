@@ -1,0 +1,372 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<th:block th:fragment="modalCreate">
+    <!-- Modal Create -->
+    <div class="modal fade" id="modalCreate" data-backdrop="static" data-keyboard="false" tabindex="-1"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Create New Customer</h1>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hidden">
+
+                    </div>
+                    <form method="post" id="frmCreateCustomer">
+                        <div class="row mt-3">
+                            <div class="col-lg-4 pe-1">
+                                <label for="fullNameCre">Full Name</label>
+                                <input type="text" class="form-control" id="fullNameCre" name="fullNameCre"/>
+                            </div>
+                            <div class="col-lg-4 px-1">
+                                <label for="emailCre">Email</label>
+                                <input type="email" class="form-control" id="emailCre" name="emailCre"/>
+                            </div>
+                            <div class="col-lg-4 ps-1">
+                                <label for="phoneCre">Phone</label>
+                                <input type="tel" class="form-control" id="phoneCre" name="phoneCre"/>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-3 pe-1">
+                                <label for="provinceCre">Province</label>
+                                <select id="provinceCre" class="form-control" name="provinceCre">
+
+                                </select>
+                            </div>
+                            <div class="col-lg-3 px-1">
+                                <label for="districtCre">District</label>
+                                <select id="districtCre" class="form-control" name="districtCre">
+
+                                </select>
+                            </div>
+                            <div class="col-lg-3 px-1">
+                                <label for="wardCre">Ward</label>
+                                <select id="wardCre" class="form-control" name="wardCre">
+
+                                </select>
+                            </div>
+                            <div class="col-lg-3 ps-1">
+                                <label for="addressCre">Address</label>
+                                <input type="text" class="form-control" id="addressCre" name="addressCre"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCreate" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Create
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="modalUpdate">
+    <!-- Modal Update -->
+    <div class="modal fade" id="modalUpdate" data-backdrop="static" data-keyboard="false" tabindex="-1"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Update Customer</h1>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hidden">
+
+                    </div>
+                    <form method="post" id="frmUpdateCustomer">
+                        <div class="row">
+                            <input type="hidden" class="form-control" id="idUp">
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-4 pe-1">
+                                <label for="fullNameUp">Full Name</label>
+                                <input type="text" class="form-control" id="fullNameUp" name="fullNameUp"/>
+                            </div>
+                            <div class="col-lg-4 px-1">
+                                <label for="emailUp">Email</label>
+                                <input type="email" class="form-control" id="emailUp" name="emailUp"/>
+                            </div>
+                            <div class="col-lg-4 ps-1">
+                                <label for="phoneUp">Phone</label>
+                                <input type="tel" class="form-control" id="phoneUp" name="phoneUp"/>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-3 pe-1">
+                                <label for="provinceUp">Province</label>
+                                <select id="provinceUp" class="form-control" name="provinceUp">
+
+                                </select>
+                            </div>
+                            <div class="col-lg-3 px-1">
+                                <label for="districtUp">District</label>
+                                <select id="districtUp" class="form-control" name="districtUp">
+
+                                </select>
+                            </div>
+                            <div class="col-lg-3 px-1">
+                                <label for="wardUp">Ward</label>
+                                <select id="wardUp" class="form-control" name="wardUp">
+
+                                </select>
+                            </div>
+                            <div class="col-lg-3 ps-1">
+                                <label for="addressUp">Address</label>
+                                <input type="text" class="form-control" id="addressUp" name="addressUp"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnUpdate" class="btn btn-secondary">
+                        <i class="fas fa-pencil-alt"></i>
+                        Update
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="modalDeposit">
+    <!-- Modal Deposit -->
+    <div class="modal fade" id="modalDeposit" data-backdrop="static" data-keyboard="false" tabindex="-1"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Deposit Money</h1>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hidden">
+
+                    </div>
+                    <form method="post" id="frmDeposit">
+                        <div class="row mt-3">
+                            <div class="col-lg-6">
+                                <label for="idDep">Customer ID</label>
+                                <input type="text" class="form-control" id="idDep" readonly/>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="fullNameDep">Full Name</label>
+                                <input type="text" class="form-control" id="fullNameDep" readonly/>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-6">
+                                <label for="balanceDep">Balance</label>
+                                <input type="text" class="form-control" id="balanceDep" readonly/>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="transactionAmountDep">Transaction Amount</label>
+                                <input type="text" class="form-control" id="transactionAmountDep"
+                                       name="transactionAmountDep"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnDeposit" class="btn btn-success">
+                        <i class="fas fa-plus"></i>
+                        Deposit
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="modalWithdraw">
+    <!-- Modal Withdraw -->
+    <div class="modal fade" id="modalWithdraw" data-backdrop="static" data-keyboard="false" tabindex="-1"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Withdraw Money</h1>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hidden">
+
+                    </div>
+                    <form method="post" id="frmWithdraw">
+                        <div class="row mt-3">
+                            <div class="col-lg-6">
+                                <label for="idWith">Customer ID</label>
+                                <input type="text" class="form-control" id="idWith" readonly/>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="fullNameWith">Full Name</label>
+                                <input type="text" class="form-control" id="fullNameWith" readonly/>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-6">
+                                <label for="balanceWith">Balance</label>
+                                <input type="text" class="form-control" id="balanceWith" readonly/>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="transactionAmountWith">Transaction Amount</label>
+                                <input type="text" class="form-control" id="transactionAmountWith"
+                                       name="transactionAmountWith"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnWithdraw" class="btn btn-warning">
+                        <i class="fas fa-plus"></i>
+                        Withdraw
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="modalTransfer">
+    <!-- Modal Transfer -->
+    <div class="modal fade" id="modalTransfer" data-backdrop="static" data-keyboard="false" tabindex="-1"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Transfer Money</h1>
+                    <button type="button" class="btn-close close-modal" data-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hidden">
+
+                    </div>
+                    <form method="post" id="frmTransfer">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label for="idCustomerSend">Sender ID</label>
+                                <input type="text" class="form-control" id="idCustomerSend" readonly/>
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="fullNameSend">Sender Name</label>
+                                <input type="text" class="form-control" id="fullNameSend" readonly/>
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="emailSend">Sender Email</label>
+                                <input type="text" class="form-control" id="emailSend" readonly/>
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="balanceSend">Sender Balance</label>
+                                <input type="text" class="form-control" id="balanceSend" readonly/>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-3">
+                                <div>
+                                    <label for="recipientId">Recipient Name</label>
+                                </div>
+                                <div>
+                                    <select class="form-select form-control" aria-label="Default select example"
+                                            id="recipientId">
+                                        <option selected disabled value="0">Choose recipient customer:</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="transferAmountTran">Transfer Amount ($)</label>
+                                <input type="text" class="form-control" id="transferAmountTran"
+                                       name="transferAmountTran"/>
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="fees">Fees (%)</label>
+                                <input type="text" class="form-control" id="fees" value="10" readonly/>
+                            </div>
+                            <div class="col-lg-3">
+                                <label for="transactionAmountTran">Transaction Amount ($)</label>
+                                <input type="text" class="form-control" id="transactionAmountTran"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnTransfer" class="btn btn-primary">
+                        <i class="fas fa-exchange-alt"></i>
+                        Transfer
+                    </button>
+                    <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="modalTransferHistory">
+    <!-- Modal Transfer History-->
+    <div class="modal fade" id="modalTransferHistory" data-backdrop="static" data-keyboard="false" tabindex="-1"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Transfer History</h1>
+                    <button type="button" class="btn-close close-modal" data-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="tbTransferHistory" class="table">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Sender ID</th>
+                            <th>Sender Name</th>
+                            <th>Recipient ID</th>
+                            <th>Recipient Name</th>
+                            <th>Transaction Amount</th>
+                            <th>Transfer Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class=" modal-footer">
+                    <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="modalLogout">
+    <!-- Modal Logout -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="login.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>

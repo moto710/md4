@@ -4,9 +4,10 @@ import com.spbproductmanagementjwt.model.User;
 import com.spbproductmanagementjwt.model.dto.UserDTO;
 import com.spbproductmanagementjwt.service.IGeneralService;
 import org.springframework.security.core.userdetails.UserDetailsService;
+//import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Optional;
-public interface IUserService extends IGeneralService<User>, UserDetailsService {
+public interface IUserService extends IGeneralService<User>, UserDetailsService { //
 
     User getByUsername(String username);
 

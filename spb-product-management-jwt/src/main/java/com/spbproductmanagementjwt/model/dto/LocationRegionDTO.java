@@ -40,4 +40,18 @@ public class LocationRegionDTO {
                 .setAddress(address)
                 ;
     }
+
+    @Override
+    public String toString() {
+        return "LocationRegionDTO{" +
+                "id=" + id +
+                ", provinceId='" + provinceId + '\'' +
+                ", provinceName='" + provinceName + '\'' +
+                ", districtId='" + districtId + '\'' +
+                ", districtName='" + districtName + '\'' +
+                ", wardId='" + wardId + '\'' +
+                ", wardName='" + wardName + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }

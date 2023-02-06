@@ -35,38 +35,38 @@ public class CartAPI {
     @Autowired
     private AppUtils appUtils;
 
-    @PostMapping("/add-to-cart")
-    public ResponseEntity<?> addCart(@RequestBody CartRequestDTO cartRequestDTO) {
-
-        String username = appUtils.getUserName();
-
-        Long productId = cartRequestDTO.getProductId();
-
-        Optional<Product> productOptional = productService.findById(productId);
-
-        if (!productOptional.isPresent()) {
-            throw new DataInputException("Invalid product!");
-        }
-
-        Product product = productOptional.get();
-        Long quantity = cartRequestDTO.getQuantity();
-
-        Optional<Cart> cartOptional = cartService.findByCreatedBy(username);
-
-        if (!cartOptional.isPresent()) {
-            cartService.addNewCart(product, quantity, username);
-        }
-        else {
-            Optional<CartDetail> cartDetailOptional = cartDetailService.findByProduct(product);
-
-            if (!cartDetailOptional.isPresent()) {
-                cartService.addCartDetail(cartOptional.get(), product, quantity);
-            }
-            else {
-                cartService.updateCartDetail(cartDetailOptional.get(), quantity);
-            }
-        }
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @PostMapping("/add-to-cart")
+//    public ResponseEntity<?> addCart(@RequestBody CartRequestDTO cartRequestDTO) {
+//
+//        String username = appUtils.getUserName();
+//
+//        Long productId = cartRequestDTO.getProductId();
+//
+//        Optional<Product> productOptional = productService.findById(productId);
+//
+//        if (!productOptional.isPresent()) {
+//            throw new DataInputException("Invalid product!");
+//        }
+//
+//        Product product = productOptional.get();
+//        Long quantity = cartRequestDTO.getQuantity();
+//
+//        Optional<Cart> cartOptional = cartService.findByCreatedBy(username);
+//
+//        if (!cartOptional.isPresent()) {
+//            cartService.addNewCart(product, quantity, username);
+//        }
+//        else {
+//            Optional<CartDetail> cartDetailOptional = cartDetailService.findByProduct(product);
+//
+//            if (!cartDetailOptional.isPresent()) {
+//                cartService.addCartDetail(cartOptional.get(), product, quantity);
+//            }
+//            else {
+//                cartService.updateCartDetail(cartDetailOptional.get(), quantity);
+//            }
+//        }
+//
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 }

@@ -16,21 +16,21 @@ import java.util.Date;
 public abstract class BaseEntity {
 
     @Column(columnDefinition = "boolean default false", updatable = false)
-    private Boolean deleted = false;
+    protected Boolean deleted = false;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private Date createdAt;
+    protected Date createdAt;
 
     @CreatedBy
     @Column(name = "created_by")
-    private String createdBy;
+    protected String createdBy;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private Date updatedAt;
+    protected Date updatedAt;
 
     @LastModifiedBy
     @Column(name = "updated_by")
-    private String updatedBy;
+    protected String updatedBy;
 }

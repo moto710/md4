@@ -40,16 +40,14 @@
         page.elements.password = $("#password");
         page.elements.btnLogin = $("#btnLogin");
 
-        page.elements.btnLogin.on("click", () => {
+        page.elements.frmLogin = $("#frmLogin");
+
+        page.commands.login = () => {
             let userLoginDTO = {
                 username: page.elements.username.val(),
                 password: page.elements.password.val()
             }
-            AppBase.successAlert("userLoginDTO")
-            console.log(userLoginDTO)
-            console.log(userLoginDTO.username)
-            console.log(userLoginDTO.password)
-            console.log(page.urls.login)
+
             $.ajax({
                 headers: {
                     'accept': 'application/json',
@@ -60,19 +58,27 @@
                 data: JSON.stringify(userLoginDTO)
             })
                 .done((data) => {
-                    console.log(data);
-                    console.log("login");
-                    location.href = '/products';
 
                     AppBase.successAlert("Login success!");
+
+                    setTimeout(() => {
+                        location.href = '/products';
+                    },2000)
                 })
                 .fail((jqXHR) => {
                     console.log(jqXHR)
-                    console.log("fail");
-                    console.log(data);
-                    console.log(userLoginDTO)
                     AppBase.errorAlert("Login fail!");
                 })
+        }
+
+        page.elements.frmLogin.validate({
+            submitHandler: () => {
+                page.commands.login();
+            }
+        });
+
+        page.elements.btnLogin.on("click", () => {
+            page.elements.frmLogin.trigger("submit");
         })
     </script>
 </th:block>

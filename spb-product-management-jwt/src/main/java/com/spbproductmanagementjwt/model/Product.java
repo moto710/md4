@@ -11,13 +11,14 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
 @Entity
 @Table(name = "products")
-public class Product extends BaseEntity{
+public class Product extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,5 +58,15 @@ public class Product extends BaseEntity{
                 .setPrice(price)
                 .setDescription(description)
                 ;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

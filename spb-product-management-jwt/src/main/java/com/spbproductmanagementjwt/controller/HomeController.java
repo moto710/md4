@@ -2,27 +2,48 @@ package com.spbproductmanagementjwt.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class HomeController {
 
-    @GetMapping
-    public String showHomePage() {
+    @GetMapping({"", "/homepage"})
+    private String showHomePage() {
         return "/homepage/homepage";
     }
 
     @GetMapping("/login")
-    public String showLoginPage() {
+    private String showLoginPage() {
         return "/login/login";
     }
 
     @GetMapping("/signup")
-    public String showSignupPage() {
+    private String showSignupPage() {
         return "/signup/signup";
     }
 
     @GetMapping("/shop")
-    public String showShoppingPage() {
+    private String showShoppingPage() {
         return "shop/shop";
+    }
+
+    @GetMapping("/products")
+    private String showProduct() {
+        return "product/product";
+    }
+
+    @GetMapping("/customers")
+    private String showProducts() {
+        return "customer/customer";
+    }
+
+    @GetMapping("/suspended-products")
+    private String showSuspendedProducts() {
+        return "product/showSuspendedProduct";
+    }
+
+    @GetMapping("/suspended-customers")
+    private String showSuspendedCustomers() {
+        return "customer/suspendedCustomer";
     }
 }

@@ -56,4 +56,18 @@ public class LocationRegion {
                 .setAddress(address)
                 ;
     }
+
+    @Override
+    public String toString() {
+        return "LocationRegion{" +
+                "id=" + id +
+                ", provinceId='" + provinceId + '\'' +
+                ", provinceName='" + provinceName + '\'' +
+                ", districtId='" + districtId + '\'' +
+                ", districtName='" + districtName + '\'' +
+                ", wardId='" + wardId + '\'' +
+                ", wardName='" + wardName + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }

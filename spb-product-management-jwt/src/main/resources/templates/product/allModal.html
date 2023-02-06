@@ -2,7 +2,7 @@
 
 <th:block th:fragment="modalCreate">
 
-    <div id="modalCreateProduct" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div id="modalCreateProduct" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
@@ -17,19 +17,20 @@
                                 <div class="form-group row">
                                     <label for="productName" class="col-sm-12 col-form-label">Product</label>
                                     <div class="col-sm-12">
-                                        <input type="text" id="productName" name="productName" class="form-control" />
+                                        <input type="text" id="productName" name="productName" class="form-control"/>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="productPrice" class="col-sm-12 col-form-label">Price</label>
                                     <div class="col-sm-12">
-                                        <input type="number" id="productPrice" name="productPrice" class="form-control" />
+                                        <input type="number" id="productPrice" name="productPrice"
+                                               class="form-control"/>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="description" class="col-sm-12 col-form-label">Description</label>
                                     <div class="col-sm-12">
-                                        <input type="text" class="form-control" id="description" name="description" />
+                                        <input type="text" class="form-control" id="description" name="description"/>
                                     </div>
                                 </div>
                             </div>
@@ -57,7 +58,7 @@
                                             Change image
                                         </div>
                                     </div>
-                                    <input type="file" id="imageFile" accept="image/jpeg, image/png" hidden />
+                                    <input type="file" id="imageFile" accept="image/jpeg, image/png" hidden/>
                                 </section>
                             </div>
                         </fieldset>
@@ -75,7 +76,54 @@
 
 </th:block>
 
+<th:block th:fragment="modalUpdate">
+    <!-- Modal Update -->
+    <div id="modalUpdateProduct" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Update Product</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-alert-danger hidden">
+
+                    </div>
+                    <form method="post" id="frmUpdateProduct">
+                        <div class="row">
+                            <input type="hidden" class="form-control" id="idUp">
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-4 pe-1">
+                                <label for="nameUp">Product</label>
+                                <input type="text" class="form-control" id="nameUp" name="nameUp"/>
+                            </div>
+                            <div class="col-lg-4 px-1">
+                                <label for="priceUp">Price</label>
+                                <input type="email" class="form-control" id="priceUp" name="priceUp"/>
+                            </div>
+                            <div class="col-lg-4 ps-1">
+                                <label for="descriptionUp">Description</label>
+                                <input type="tel" class="form-control" id="descriptionUp" name="descriptionUp"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnUpdate" class="btn btn-secondary">
+                        <i class="fas fa-pencil-alt"></i>
+                        Update
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
 <th:block th:fragment="modalLogout">
+    <!-- Modal Logout -->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog" role="document">

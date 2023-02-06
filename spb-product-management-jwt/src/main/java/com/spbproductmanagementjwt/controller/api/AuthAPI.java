@@ -60,8 +60,7 @@ public class AuthAPI {
 
 //        Long roleId = userDTO.getRole().getId();
 
-//        Optional<Role> optRole = roleService.findById(roleId);
-        Optional<Role> optRole = roleService.findById(1L);
+        Optional<Role> optRole = roleService.findById(2L);
 
         if (!optRole.isPresent()) {
             throw new DataInputException("Invalid role!");
@@ -76,12 +75,12 @@ public class AuthAPI {
         try {
             User user = userDTO.toUser();
             user.setRole(optRole.get());
-            userService.save(userDTO.toUser());
+            userService.save(user);
 
             return new ResponseEntity<>(HttpStatus.CREATED);
 
         } catch (DataIntegrityViolationException e) {
-            throw new DataInputException("Account information is not valid, please check the information again");
+            throw new DataInputException("Account information is not valid, please check the information again!");
         }
     }
 

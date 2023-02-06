@@ -72,6 +72,15 @@ public class ProductService implements IProductService {
         product = productCreateDTO.toProduct();
         productRepository.save(product);
 
+        Optional<ProductMedia> productMediaOptional = productMediaRepository.findById("ce5aa009-afe8-4b43-a1ff-c0bb0385c2bf");
+
+        if (!productMediaOptional.isPresent()) {
+            throw new RuntimeException("No Image!");
+        }
+
+        ProductMedia productMedia = productMediaOptional.get();
+        productMedia.setProduct(product);
+
         return product;
     }
     @Override

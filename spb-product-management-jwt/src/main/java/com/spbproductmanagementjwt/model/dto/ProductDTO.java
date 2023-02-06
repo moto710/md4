@@ -16,13 +16,13 @@ import java.math.BigDecimal;
 @Accessors(chain = true)
 public class ProductDTO {
 
+    private Long id;
+
     private String name;
 
     private String price;
 
-    private String quantity;
-
-//    private SupplierDTO supplierDTO;
+    private String description;
 
     public Product toProduct() {
         return new Product()

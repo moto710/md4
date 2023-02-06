@@ -62,13 +62,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic().authenticationEntryPoint(restServicesEntryPoint());
 
         http.authorizeRequests()
-                .antMatchers("/",
+                .antMatchers(
                         "/api/auth/login",
-                        "/api/auth/register",
+                        "/api/auth/signup",
                         "/login",
                         "/logout"
                 ).permitAll()
-                .antMatchers("/transfers").hasAnyAuthority("ADMIN")
+                .antMatchers("/users").hasAnyAuthority("ADMIN")
+//                .antMatchers("/products").hasAnyAuthority("USER")
                 .antMatchers("/resources/**", "/assets/**").permitAll()
                 .antMatchers(
                         "/v3/api-docs",
@@ -82,7 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-//                .loginProcessingUrl("/login")
+                .loginProcessingUrl("/login")
                 .loginPage("/login")
 //                .usernameParameter("username")
 //                .passwordParameter("password")

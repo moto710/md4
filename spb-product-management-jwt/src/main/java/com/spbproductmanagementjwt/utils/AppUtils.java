@@ -2,8 +2,8 @@ package com.spbproductmanagementjwt.utils;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -26,15 +26,15 @@ public class AppUtils {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    public String getUserName() {
-        String userName;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            userName = ((UserDetails) principal).getUsername();
-        } else {
-            userName = principal.toString();
-        }
-
-        return userName;
-    }
+//    public String getUserName() {
+//        String userName;
+//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        if (principal instanceof UserDetails) {
+//            userName = ((UserDetails) principal).getUsername();
+//        } else {
+//            userName = principal.toString();
+//        }
+//
+//        return userName;
+//    }
 }

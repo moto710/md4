@@ -1,6 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 
-<th:block th:fragment="js">
+<th:block th:fragment="script">
     <!-- Bootstrap core JavaScript-->
     <script src="/assets/vendor/jquery/jquery.min.js"></script>
     <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -41,13 +41,13 @@
         // page.elements.rePasswordReg = $("#rePasswordReg");
         page.elements.btnSignup = $("#btnSignup");
 
-        page.commands.createProduct = () => {
+        page.elements.frmSignup = $("#frmSignup");
+
+        page.commands.signup = () => {
             let userDTO = {
                 username: page.elements.usernameSup.val(),
                 password: page.elements.passwordSup.val()
             }
-
-            console.log(userDTO)
 
             $.ajax({
                 headers: {
@@ -59,28 +59,37 @@
                 data: JSON.stringify(userDTO)
             })
                 .done((data) => {
-                    console.log(data);
-                    console.log("register");
-                    location.href = '/products';
 
                     AppBase.successAlert("Signup success!");
+
+                    setTimeout(() => {
+                        location.href = '/products';
+                    }, 2000)
                 })
                 .fail((jqXHR) => {
                     console.log(jqXHR)
-                    console.log("fail");
-                    console.log(userDTO)
                     AppBase.errorAlert("Signup fail!");
                 })
         }
 
-        page.initializeControlEvent = () => {
-            page.elements.btnSignup.on("click", function () {
-                page.commands.createProduct();
-            });
-        }
+        // page.initializeControlEvent = () => {
+        //     page.elements.btnSignup.on("click", function () {
+        //         page.commands.createProduct();
+        //     });
+        // }
+        //
+        // $(() => {
+        //     page.initializeControlEvent();
+        // })
 
-        $(() => {
-            page.initializeControlEvent();
+        page.elements.frmSignup.validate({
+            submitHandler: () => {
+                page.commands.signup();
+            }
+        });
+
+        page.elements.btnSignup.on("click", () => {
+            page.elements.frmSignup.trigger("submit");
         })
     </script>
 

@@ -2,6 +2,7 @@ package com.spbproductmanagementjwt.model;
 
 import com.spbproductmanagementjwt.model.dto.CustomerDTO;
 import com.spbproductmanagementjwt.model.dto.CustomerResponseDTO;
+import com.spbproductmanagementjwt.model.dto.LocationRegionDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,6 +41,15 @@ public class Customer extends BaseEntity{
     @Column(precision = 12, scale = 0, nullable = false, updatable = false)
     private BigDecimal balance;
 
+    public Customer (Long id, String fullName, BigDecimal balance, String email, String phone, Boolean deleted, LocationRegion locationRegion){
+        this.id = id;
+        this.fullName = fullName;
+        this.balance = balance;
+        this.email = email;
+        this.phone = phone;
+        this.deleted = deleted;
+        this.locationRegion = locationRegion;
+    }
 
     public CustomerResponseDTO toCustomerResponseDTO() {
         return new CustomerResponseDTO()
@@ -57,7 +67,18 @@ public class Customer extends BaseEntity{
                 .setFullName(fullName)
                 .setEmail(email)
                 .setPhone(phone)
-                .setLocationRegion(locationRegion.toLocationRegionDTO())
+                .setLocationRegionDTO(locationRegion.toLocationRegionDTO())
                 .setBalance(balance);
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", balance=" + balance +
+                '}';
     }
 }

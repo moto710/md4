@@ -1,114 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Shopping</title>
-    <link rel="stylesheet" href="/assets/vendor/datatables/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="/assets/sweetalert2/v11.7.0/sweetalert2.min.css">
-    <link rel="stylesheet" href="/assets/vendor/fontawesome-free/css/all.min.css"/>
-    <link rel="stylesheet" href="/assets/css/preview-image.css">
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <title>Shop</title>
+
+    <th:block th:replace="head :: head"></th:block>
 </head>
-<body>
-<div class="container-fluid">
 
-    <header>
-        <div class="row">
-            <div class="col-sm-5">
-                <h1>Shopping</h1>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <th:block th:replace="template :: sidebar"></th:block>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Top bar -->
+            <th:block th:replace="template :: topbar"></th:block>
+            <!-- End of Top bar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="d-flex justify-content-between mb-2">
+                    <div>
+                        <h1 class="h3 mb-2 text-gray-800">Product Details</h1>
+                    </div>
+<!--                    <div>-->
+<!--                        <button type="button" id="btnShowCreateModal" class="btn btn-primary" data-toggle="modal"-->
+<!--                                data-target="#modalCreateProduct">Add to cart-->
+<!--                        </button>-->
+<!--                    </div>-->
+                </div>
+                <div class="box-body">
+                </div>
+                <!-- DataTales Example -->
+<!--                <th:block th:replace="product/tbProductList :: tbProductList"/>-->
+
+                <div class="loader hide"></div>
+
             </div>
-            <div class="col-sm-7">
-                <a class="btn btn-outline-light create-modal">
-                    <i class="fa fa-plus-square-o" aria-hidden="true"></i>
-                    <span> Add New Product</span>
-                </a>
-            </div>
+            <!-- /.container-fluid -->
+
         </div>
-    </header>
+        <!-- End of Main Content -->
 
-    <div class="box-body">
+        <!-- The Creation Modal -->
+
+        <th:block th:replace="product/allModal :: modalCreate"/>
+
+        <th:block th:replace="product/allModal :: modalUpdate"/>
+
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; Your Website 2020</span>
+                </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
 
     </div>
+    <!-- End of Content Wrapper -->
+
 </div>
+<!-- End of Page Wrapper -->
 
-<div class="loader hide"></div>
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
 
-<script src="/assets/vendor/jquery/jquery.min.js"></script>
-<script src="/assets/jquery-validate/v1.19.5/jquery.validate.min.js"></script>
-<script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="/assets/sweetalert2/v11.7.0/sweetalert2.min.js"></script>
-<script src="/assets/js/appBase.js"></script>
 
-<script>
-    let page = {
-        urls: {
-            getAllProducts: AppBase.API_PRODUCT,
-            doSave: AppBase.API_PRODUCT
-        },
-        element: {},
-        commands: {},
-        loadData: {},
-        dialogs: {
-            elements: {},
-            commands: {}
-        }
-    }
+<!-- Logout Modal-->
+<th:block th:replace="product/allModal :: modalLogout"></th:block>
 
-    page.element.loader = $(".loader");
-    page.element.tempProduct = $("#tempProduct");
-    page.element.currentRow = $("#currentRow");
-    page.element.btnShowCreateModal = $("a.create-modal");
-    page.element.frmListProduct = $(".box-body")
+<th:block th:replace="shop/shopJs :: script"></th:block>
 
-    page.loadData.getAllProducts = () => {
-        $.ajax({
-            type: "GET",
-            url: page.urls.getAllProducts,
-        }).done((data) => {
-
-            $.each(data, (i, item) => {
-                let str = page.commands.renderProduct(item);
-                page.element.frmListProduct.append(str)
-            })
-
-        }).fail((err) => {
-            console.log(err)
-        }).always(function () {
-            page.element.loader.addClass("hide");
-            page.element.btnSave.prop('disabled', false);
-        });
-    }
-
-    page.commands.renderProduct = (obj) => {
-        let cloudinaryServer = 'https://res.cloudinary.com/dsmffep5o/image/upload';
-        let BASE_SCALE_IMAGE = "c_limit,w_285,h_215,q_100";
-        let folderName = obj.folderName;
-        let fileName = obj.fileName;
-
-        let avatarUrl = cloudinaryServer + '/' + BASE_SCALE_IMAGE + '/' + folderName + '/' + fileName;
-
-        return `
-        <div class="cart" style="width: 18rem; float: left;">
-          <img src="${avatarUrl}" class="cart-img-top" alt="...">
-          <div class="cart-body">
-            <h5 class="cart-title">${obj.name}</h5>
-            <p class="cart-text">${obj.price}</p>
-            <a href="#" class="btn btn-primary">Add to cart</a>
-          </div>
-        </div>
-      `;
-    }
-
-    page.initializeControlEvent = () => {
-
-    }
-
-    $(() => {
-        page.loadData.getAllProducts();
-
-        page.initializeControlEvent();
-
-    });
-</script>
 </body>
+
 </html>

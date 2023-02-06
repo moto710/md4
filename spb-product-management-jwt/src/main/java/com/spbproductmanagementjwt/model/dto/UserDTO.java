@@ -3,6 +3,8 @@ package com.spbproductmanagementjwt.model.dto;
 import com.spbproductmanagementjwt.model.User;
 import lombok.*;
 import lombok.experimental.Accessors;
+
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -25,8 +27,8 @@ public class UserDTO {
     @Size(max = 30, message = "Maximum password length 30 characters")
     private String password;
 
-//    @Valid
-//    private RoleDTO role;
+    @Valid
+    private RoleDTO role;
 
     public UserDTO(Long id, String username) {
         this.id = id;

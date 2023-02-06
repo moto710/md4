@@ -37,3 +37,12 @@ label.error {
     color: #842029;
     display: list-item;
 }
+
+.img{
+    width: 100px;
+}
+
+.img-shop {
+    width: 150px;
+    height: 200px;
+}
