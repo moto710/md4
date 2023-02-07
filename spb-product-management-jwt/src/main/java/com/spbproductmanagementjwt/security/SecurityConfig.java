@@ -68,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/login",
                         "/logout"
                 ).permitAll()
-                .antMatchers("/users").hasAnyAuthority("ADMIN")
+                .antMatchers("/suspended-products", "/suspended-customers").hasAnyAuthority("ADMIN")
 //                .antMatchers("/products").hasAnyAuthority("USER")
                 .antMatchers("/resources/**", "/assets/**").permitAll()
                 .antMatchers(

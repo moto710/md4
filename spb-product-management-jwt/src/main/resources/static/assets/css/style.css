@@ -19,7 +19,7 @@ thead tr {
 }
 
 footer {
-    position: fixed;
+    /*position: fixed;*/
     bottom: 0;
     width: 100%;
     min-height: 75px;

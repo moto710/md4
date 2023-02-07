@@ -9,9 +9,10 @@ import com.spbproductmanagementjwt.service.product.IProductService;
 import com.spbproductmanagementjwt.service.productmedia.IProductMediaService;
 import com.spbproductmanagementjwt.utils.AppUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -92,7 +93,13 @@ public class ProductRestController {
     }
 
     @PatchMapping("/{id}")
-    private ResponseEntity<?> updateProduct(@PathVariable("id") Long id, @RequestBody ProductDTO productDTO) {
+    private ResponseEntity<?> updateProduct(@PathVariable("id") Long id,@Validated @RequestBody ProductDTO productDTO, BindingResult br) {
+        new ProductDTO().validate(productDTO, br);
+
+        if (br.hasErrors()) {
+            return appUtils.mapErrorToResponse(br);
+        }
+
         productOptional = productService.findById(id);
 
         if (!productOptional.isPresent()) {
@@ -100,8 +107,6 @@ public class ProductRestController {
         }
 
         product = productOptional.get();
-
-        System.out.println(product.toString());
 
 
         product.setName(productDTO.getName());
@@ -129,17 +134,24 @@ public class ProductRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PostMapping
-    private ResponseEntity<?> createProduct(ProductCreateDTO productCreateDTO, MultipartFile file) {
+    private ResponseEntity<?> createProduct(@Validated ProductCreateDTO productCreateDTO, BindingResult br, MultipartFile file) {
+        new ProductCreateDTO().validate(productCreateDTO, br);
+
+        if (br.hasErrors()) {
+            return appUtils.mapErrorToResponse(br);
+        }
+
         if (file == null) {
             product = productService.createWithOutMedia(productCreateDTO);
-            productResponseDTO = product.toProductResponseDTO();
+
         } else {
             product = productService.createWithMedia(productCreateDTO, file);
 
-            ProductMedia productMedia = productMediaService.findByProduct(product);
-
-            productResponseDTO = product.toProductResponseDTO(productMedia);
         }
+
+        ProductMedia productMedia = productMediaService.findByProduct(product);
+
+        productResponseDTO = product.toProductResponseDTO(productMedia);
 
         return new ResponseEntity<>(productResponseDTO, HttpStatus.CREATED);
     }

@@ -51,11 +51,10 @@
 
         page.elements.tbProductBody = $('#tbListProducts tbody');
 
-        page.elements.frmUpdateProduct = $("#frmUpdateProduct");
-
         page.dialogs.elements.modalCreateProduct = $("#modalCreateProduct");
         page.dialogs.elements.modalUpdateProduct = $("#modalUpdateProduct");
 
+        page.dialogs.elements.frmUpdateProduct = $("#frmUpdateProduct");
         page.dialogs.elements.frmCreateProduct = $("#frmCreateProduct");
         page.dialogs.elements.btnCreateProduct = $("#btnCreateProduct");
 
@@ -64,7 +63,9 @@
         page.elements.priceUp = $("#priceUp");
         page.elements.descriptionUp = $("#descriptionUp");
 
+        page.dialogs.elements.btnRemoveImg = $("#btnRemoveImg");
         page.dialogs.elements.wrapper = $("section .wrapper");
+        page.dialogs.elements.productId = $("#productId");
         page.dialogs.elements.productName = $("#productName");
         page.dialogs.elements.productPrice = $("#productPrice");
         page.dialogs.elements.description = $("#description");
@@ -104,12 +105,18 @@
         }
 
         page.dialogs.commands.createProduct = () => {
+            page.elements.btnSave.on("click", () => {
+                page.commands.createProduct();
+            })
+        }
+
+        page.commands.createProduct = () => {
             page.elements.loader.removeClass("hide");
             page.elements.btnSave.prop('disabled', true);
 
             let formData = new FormData();
             formData.append("name", page.dialogs.elements.productName.val().toString());
-            formData.append("price", page.dialogs.elements.productPrice.val().toString());
+            formData.append("price", page.dialogs.elements.productPrice.val());
             formData.append("description", page.dialogs.elements.description.val().toString());
             formData.append("file", page.dialogs.elements.imageFile[0].files[0]);
 
@@ -142,11 +149,21 @@
                 page.commands.showCreateModal();
             });
 
+            page.dialogs.commands.createProduct();
+
             page.dialogs.commands.updateProduct();
 
             page.commands.showUpdateProduct();
 
             page.commands.deleteProduct();
+
+            page.dialogs.elements.divImagePreview.on("click", function () {
+                page.dialogs.elements.imageFile.trigger("click");
+            });
+
+            page.dialogs.elements.imageFile.on("change", function () {
+                page.dialogs.commands.changeImagePreview();
+            });
 
             page.elements.btnLogout.on('click', () => {
                 location.href = '/logout';
@@ -157,8 +174,6 @@
             page.loadData.getAllProducts().then(function () {
                 page.initializeControlEvent();
             });
-
-            page.initializeControlEvent();
 
         });
 
@@ -263,8 +278,52 @@
         }
 
         page.dialogs.elements.modalUpdateProduct.on("hidden.bs.modal", () => {
-            page.elements.frmUpdateProduct[0].reset();
+            page.dialogs.elements.frmUpdateProduct[0].reset();
             // page.elements.frmUpdateProduct.validate().resetForm();
+        })
+
+        page.dialogs.elements.modalCreateProduct.on("hidden.bs.modal", () => {
+            page.dialogs.elements.frmCreateProduct[0].reset();
+            // page.elements.frmCreateProduct.validate().resetForm();
+        })
+
+        page.dialogs.elements.frmCreateProduct.validate({
+            rules: {
+                productName: {
+                    required: true,
+                    minLength: 5
+                },
+                productPrice: {
+                    required: true,
+                    number: true
+                }
+            },
+            messages: {
+                productName: {
+                    required: "Product name is required.",
+                    minlength: "Product name must be more than 4 letters"
+                },
+                productPrice: {
+                    required: "Email is required.",
+                    name: "Please fill only number"
+                }
+            },
+            errorLabelContainer: "#modalCreateProduct .modal-alert-danger",
+            errorPlacement: function (error, element) {
+                error.appendTo("#modalCreateProduct .modal-alert-danger");
+            },
+            showErrors: function (errorMap, errorList) {
+                if (this.numberOfInvalids() > 0) {
+                    $("#modalCreateProduct .modal-alert-danger").removeClass("hidden").addClass("show");
+                } else {
+                    $("#modalCreateProduct .modal-alert-danger").removeClass("show").addClass("hidden").empty();
+                    $("#frmCreateProduct input.error").removeClass("error");
+                }
+                this.defaultShowErrors();
+            },
+            submitHandler: () => {
+                page.commands.createProduct();
+            }
         })
 
         page.commands.renderProduct = (obj) => {
@@ -278,7 +337,7 @@
             let str = `
                 <tr id="tr_${obj.id}">
                     <td>${obj.id}</td>
-                    <td class="img">
+                    <td>
                         <img src="${avatarUrl}" alt="${fileName}" class="img"/>
                     </td>
                     <td>${obj.name}</td>
@@ -331,7 +390,6 @@
 
             imageObj.src = URL.createObjectURL(imageFile)
         }
-
 
     </script>
 </th:block>

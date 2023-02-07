@@ -72,15 +72,15 @@
                 })
         }
 
-        // page.initializeControlEvent = () => {
-        //     page.elements.btnSignup.on("click", function () {
-        //         page.commands.createProduct();
-        //     });
-        // }
-        //
-        // $(() => {
-        //     page.initializeControlEvent();
-        // })
+        page.initializeControlEvent = () => {
+            $('#btnLogout').on('click', () => {
+                location.href = '/logout';
+            })
+        }
+
+        $(() => {
+            page.initializeControlEvent();
+        })
 
         page.elements.frmSignup.validate({
             submitHandler: () => {
@@ -91,6 +91,7 @@
         page.elements.btnSignup.on("click", () => {
             page.elements.frmSignup.trigger("submit");
         })
+
     </script>
 
 </th:block>

@@ -80,5 +80,9 @@
         page.elements.btnLogin.on("click", () => {
             page.elements.frmLogin.trigger("submit");
         })
+
+        $('#btnLogout').on('click', () => {
+            location.href = '/logout';
+        })
     </script>
 </th:block>

@@ -10,7 +10,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="close">x</button>
                 </div>
                 <div class="modal-body">
-                    <div class="modal-alert-danger hide"></div>
+                    <div class="modal-alert-danger hidden"></div>
                     <form id="frmCreateProduct" enctype="multipart/form-data">
                         <fieldset class="row g-3">
                             <div class="mb-3 col-md-6">
@@ -23,7 +23,7 @@
                                 <div class="form-group row">
                                     <label for="productPrice" class="col-sm-12 col-form-label">Price</label>
                                     <div class="col-sm-12">
-                                        <input type="number" id="productPrice" name="productPrice"
+                                        <input type="text" id="productPrice" name="productPrice"
                                                class="form-control"/>
                                     </div>
                                 </div>
@@ -52,7 +52,9 @@
                                             </div>
                                         </div>
                                         <div class="clear-image-preview">
-                                            <i class="fas fa-times"></i>
+                                            <button type="button" id="btnRemoveImg">
+                                                <i class="fas fa-times"></i>
+                                            </button>
                                         </div>
                                         <div class="file-name">
                                             Change image
@@ -92,7 +94,7 @@
                     </div>
                     <form method="post" id="frmUpdateProduct">
                         <div class="row">
-                            <input type="hidden" class="form-control" id="idUp">
+                            <input type="text" class="form-control" id="idUp" name="idUp" hidden>
                         </div>
                         <div class="row mt-3">
                             <div class="col-lg-4 pe-1">

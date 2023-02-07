@@ -30,25 +30,17 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <div class="d-flex justify-content-between mb-2">
-                    <div>
-                        <h1 class="h3 mb-2 text-gray-800">Product Details</h1>
-                    </div>
-<!--                    <div>-->
-<!--                        <button type="button" id="btnShowCreateModal" class="btn btn-primary" data-toggle="modal"-->
-<!--                                data-target="#modalCreateProduct">Add to cart-->
-<!--                        </button>-->
-<!--                    </div>-->
+                <div>
+                    <h1 class="h3 mb-2 text-gray-800">Product Details</h1>
                 </div>
-                <div class="box-body">
+                <div class="box-body mb-2">
                 </div>
+
                 <!-- DataTales Example -->
-<!--                <th:block th:replace="product/tbProductList :: tbProductList"/>-->
 
                 <div class="loader hide"></div>
 
             </div>
-            <!-- /.container-fluid -->
 
         </div>
         <!-- End of Main Content -->
@@ -61,13 +53,7 @@
 
 
         <!-- Footer -->
-        <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Your Website 2020</span>
-                </div>
-            </div>
-        </footer>
+        <th:block th:replace="template :: footer"></th:block>
         <!-- End of Footer -->
 
     </div>

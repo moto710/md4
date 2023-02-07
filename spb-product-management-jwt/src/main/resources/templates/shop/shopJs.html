@@ -44,11 +44,10 @@
         page.element.frmListProduct = $(".box-body")
 
         page.loadData.getAllProducts = () => {
-            $.ajax({
+            return $.ajax({
                 type: "GET",
                 url: page.urls.getAllProducts,
             }).done((data) => {
-                console.log('success')
                 $.each(data, (i, item) => {
                     let str = page.commands.renderProduct(item);
                     page.element.frmListProduct.append(str)
@@ -72,25 +71,26 @@
 
             return `
         <div class="cart mb-2" style="width: 18rem; float: left;">
-          <img src="${avatarUrl}" class="cart-img-top img-shop" alt="...">
+          <img src="${avatarUrl}" class="cart-img-top img-shop" alt="${fileName}">
           <div class="cart-body">
             <h5 class="cart-title">${obj.name}</h5>
             <p class="cart-text">${obj.price}</p>
-            <a href="#" class="btn btn-primary">Add to cart</a>
+            <button type="button" class="btn btn-primary">Add to cart</button>
           </div>
         </div>
       `;
         }
 
         page.initializeControlEvent = () => {
-
+            $('#btnLogout').on('click', () => {
+                location.href = '/logout';
+            })
         }
 
         $(() => {
-            page.loadData.getAllProducts();
-
-            page.initializeControlEvent();
-
+            page.loadData.getAllProducts().then(() => {
+                page.initializeControlEvent();
+            });
         });
 
     </script>
