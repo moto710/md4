@@ -139,7 +139,7 @@
             page.elements.footer.removeClass("show").addClass("hidden");
         })
 
-        function getAllTransferHistory() {
+        page.commands.getAllTransferHistory = () => {
             $.ajax({
                 headers: {
                     "accept": "application/json",
@@ -150,7 +150,7 @@
             })
                 .done((data) => {
                     $.each(data, (i, transfer) => {
-                        let str = renderTransferHistory(transfer);
+                        let str = page.commands.renderTransferHistory(transfer);
                         page.elements.tbTransferHistoryBody.append(str);
                     })
                 })
@@ -159,7 +159,7 @@
                 });
         }
 
-        function getAllProvinces() {
+        page.commands.getAllProvinces = () => {
             $.ajax({
                 type: "GET",
                 url: vApi.urls.getAllProvinces
@@ -167,10 +167,10 @@
                 .done((data) => {
                     page.elements.selectOptionProvinceCre.append(`<option disabled selected>--Select your province--</option>`);
                     $.each(data.results, (i, item) => {
-                        let pro = renderSelectOptionProvince(item);
+                        let pro = page.commands.renderSelectOptionProvince(item);
                         page.elements.selectOptionProvinceCre.append(pro);
                     })
-                    addEventChangeProvince();
+                    page.commands.addEventChangeProvince();
                 })
                 .fail((error) => {
                     console.log(error)
@@ -178,7 +178,7 @@
                 })
         }
 
-        function getAllDistrictsByProvinceId(id) {
+        page.commands.getAllDistrictsByProvinceId = (id) => {
             $.ajax({
                 type: "GET",
                 url: vApi.urls.getAllDistricts + id
@@ -186,18 +186,18 @@
                 .done((data) => {
                     page.elements.selectOptionDistrictCre.empty();
                     $.each(data.results, (i, item) => {
-                        let dis = renderSelectOptionDistrict(item);
+                        let dis = page.commands.renderSelectOptionDistrict(item);
                         page.elements.selectOptionDistrictCre.append(dis);
                     })
-                    getAllWardsByDistrictId(page.elements.selectOptionDistrictCre.val());
-                    addEventChangeDistrict();
+                    page.commands.getAllWardsByDistrictId(page.elements.selectOptionDistrictCre.val());
+                    page.commands.addEventChangeDistrict();
                 })
                 .fail((error) => {
                     AppBase.errorAlert("Can't find districts list!");
                 })
         }
 
-        function getAllWardsByDistrictId(id) {
+        page.commands.getAllWardsByDistrictId = (id) => {
             $.ajax({
                 type: "GET",
                 url: vApi.urls.getAllWards + id
@@ -205,10 +205,10 @@
                 .done((data) => {
                     page.elements.selectOptionWardCre.empty();
                     $.each(data.results, (i, item) => {
-                        let war = renderSelectOptionWard(item);
+                        let war = page.commands.renderSelectOptionWard(item);
                         page.elements.selectOptionWardCre.append(war);
                     })
-                    addEventChangeWard();
+                    page.commands.addEventChangeWard();
                 })
                 .fail((error) => {
                     console.log(error)
@@ -216,7 +216,7 @@
                 })
         }
 
-        function addEventChangeProvince() {
+        page.commands.addEventChangeProvince = () => {
             let removed = false;
             page.elements.selectOptionProvinceCre.change(function () {
                 let provinceId = page.elements.selectOptionProvinceCre.val();
@@ -227,30 +227,30 @@
                         removed = !removed;
                     }
                 }
-                getAllDistrictsByProvinceId(provinceId);
+                page.commands.getAllDistrictsByProvinceId(provinceId);
             })
         }
 
-        function addEventChangeDistrict() {
+        page.commands.addEventChangeDistrict = () => {
             page.elements.selectOptionDistrictCre.change(function () {
                 let districtId = $(this).val();
-                getAllWardsByDistrictId(districtId);
+                page.commands.getAllWardsByDistrictId(districtId);
             })
         }
 
-        function addEventChangeWard() {
+        page.commands.addEventChangeWard = () => {
             page.elements.selectOptionWardCre.change(function () {
                 let wardId = $(this).val();
             })
         }
 
-        function addEventShowModalUpdate() {
+        page.commands.addEventShowModalUpdate = () => {
             $(".btnShowUpdate").on("click", function () {
                 // page.elements.btnShowUpdate.on("click", function () {
                 page.dialogs.elements.modalUpdate.modal("show");
                 let customerId = $(this).data("id");
 
-                findById(customerId).then(() => {
+                page.commands.findById(customerId).then(() => {
                     page.elements.idUp.val(customer.id);
                     page.elements.fullNameUp.val(customer.fullName);
                     page.elements.emailUp.val(customer.email);
@@ -269,7 +269,7 @@
                             page.elements.provinceUp.append(`<option selected value="${customer.locationRegionDTO.provinceId}">${customer.locationRegionDTO.provinceName}</option>`);
                             $.each(data.results, (i, item) => {
                                 if (item.province_id !== customer.locationRegionDTO.provinceId) {
-                                    let pro = renderSelectOptionProvince(item);
+                                    let pro = page.commands.renderSelectOptionProvince(item);
                                     page.elements.provinceUp.append(pro);
                                 }
                             })
@@ -284,7 +284,7 @@
                             page.elements.districtUp.append(`<option selected value="${customer.locationRegionDTO.districtId}">${customer.locationRegionDTO.districtName}</option>`);
                             $.each(data.results, (i, item) => {
                                 if (item.district_id !== customer.locationRegionDTO.districtId) {
-                                    let dis = renderSelectOptionDistrict(item);
+                                    let dis = page.commands.renderSelectOptionDistrict(item);
                                     page.elements.districtUp.append(dis);
                                 }
                             })
@@ -303,7 +303,7 @@
                             page.elements.wardUp.append(`<option selected value="${customer.locationRegionDTO.wardId}">${customer.locationRegionDTO.wardName}</option>`);
                             $.each(data.results, (i, item) => {
                                 if (item.ward_id !== customer.locationRegionDTO.wardId) {
-                                    let war = renderSelectOptionWard(item);
+                                    let war = page.commands.renderSelectOptionWard(item);
                                     page.elements.wardUp.append(war);
                                 }
                             })
@@ -322,7 +322,7 @@
                             .done((data) => {
                                 page.elements.districtUp.empty();
                                 $.each(data.results, (i, item) => {
-                                    let dis = renderSelectOptionDistrict(item);
+                                    let dis = page.commands.renderSelectOptionDistrict(item);
                                     page.elements.districtUp.append(dis);
                                 })
 
@@ -333,7 +333,7 @@
                                     .done((data) => {
                                         page.elements.wardUp.empty();
                                         $.each(data.results, (i, item) => {
-                                            let war = renderSelectOptionWard(item);
+                                            let war = page.commands.renderSelectOptionWard(item);
                                             page.elements.wardUp.append(war);
                                         })
 
@@ -361,7 +361,7 @@
                             .done((data) => {
                                 page.elements.wardUp.empty();
                                 $.each(data.results, (i, item) => {
-                                    let war = renderSelectOptionWard(item);
+                                    let war = page.commands.renderSelectOptionWard(item);
                                     page.elements.wardUp.append(war);
                                 })
                                 page.elements.wardUp.change(function () {
@@ -381,11 +381,11 @@
             })
         }
 
-        function addEventShowModalDeposit() {
+        page.commands.addEventShowModalDeposit = () => {
             $(".btnShowDeposit").on("click", function () {
                 let customerId = $(this).data("id");
 
-                findById(customerId).then(() => {
+                page.commands.findById(customerId).then(() => {
                     page.elements.idDep.val(customer.id);
                     page.elements.fullNameDep.val(customer.name);
                     page.elements.balanceDep.val(customer.balance);
@@ -398,11 +398,11 @@
             })
         }
 
-        function addEventShowModalWithdraw() {
+        page.commands.addEventShowModalWithdraw = () => {
             $(".btnShowWithdraw").on("click", function () {
                 let customerId = $(this).data("id");
 
-                findById(customerId).then(() => {
+                page.commands.findById(customerId).then(() => {
                     page.elements.idWith.val(customer.id);
                     page.elements.fullNameWith.val(customer.name);
                     page.elements.balanceWith.val(customer.balance);
@@ -415,11 +415,11 @@
             })
         }
 
-        function addEventShowModalTransfer() {
+        page.commands.addEventShowModalTransfer = () => {
             $(".btnShowTransfer").on("click", function () {
                 let senderId = +$(this).data("id");
 
-                findById(senderId).then(() => {
+                page.commands.findById(senderId).then(() => {
                     $.ajax({
                         headers: {
                             "accept": "application/json",
@@ -432,7 +432,7 @@
                             page.elements.recipientId.empty();
 
                             $.each(data, (i, item) => {
-                                let str = renderSelectOptionRecipient(item);
+                                let str = page.commands.renderSelectOptionRecipient(item);
                                 page.elements.recipientId.append(str);
                             })
                             page.elements.idCustomerSend.val(customer.id);
@@ -441,7 +441,7 @@
                             page.elements.balanceSend.val(customer.balance);
                             page.dialogs.elements.modalTransfer.modal("show");
 
-                            countTransferTransaction();
+                            page.commands.countTransferTransaction();
                         })
                         .fail((error) => {
                             console.log(error)
@@ -454,7 +454,7 @@
             })
         }
 
-        function addEventShowConfirmDelete() {
+        page.commands.addEventShowConfirmDelete = () => {
             $(".btnShowDelete").on("click", function () {
                 let customerId = $(this).data("id");
 
@@ -468,7 +468,7 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        findById(customerId).then(() => {
+                        page.commands.findById(customerId).then(() => {
                             $.ajax({
                                 headers: {
                                     "accept": "application/json",
@@ -495,25 +495,25 @@
             })
         }
 
-        function renderSelectOptionRecipient(item) {
+        page.commands.renderSelectOptionRecipient = (item) => {
             return `
                 <option value="${item.id}">${item.fullName}</option>
                 `;
         }
 
-        function renderSelectOptionProvince(item) {
+        page.commands.renderSelectOptionProvince = (item) => {
             return `<option value="${item.province_id}">${item.province_name}</option>`;
         }
 
-        function renderSelectOptionDistrict(item) {
+        page.commands.renderSelectOptionDistrict = (item) => {
             return `<option value="${item.district_id}">${item.district_name}</option>`;
         }
 
-        function renderSelectOptionWard(item) {
+        page.commands.renderSelectOptionWard = (item) => {
             return `<option value="${item.ward_id}">${item.ward_name}</option>`;
         }
 
-        function renderTransferHistory(transfer) {
+        page.commands.renderTransferHistory = (transfer) => {
             return `
                     <tr>
                         <td>${transfer.id}</td>
@@ -527,7 +527,7 @@
                 `;
         }
 
-        function renderCustomer(item) {
+        page.commands.renderCustomer = (item) => {
             return `
                 <tr id="tr_${item.id}" data-id="${item.id}">
                     <td class="text-end">${item.id}</td>
@@ -568,7 +568,7 @@
             `;
         }
 
-        function findById(customerId) {
+        page.commands.findById = (customerId) => {
             return $.ajax({
                 headers: {
                     "accept": "application/json",
@@ -585,7 +585,7 @@
                 })
         }
 
-        function countTransferTransaction() {
+        page.commands.countTransferTransaction = () => {
             document.getElementById("transferAmountTran").addEventListener("input", () => {
                 let transferAmount = page.elements.transferAmountTran.val(),
                     fees = 10,
@@ -596,7 +596,7 @@
             })
         }
 
-        function createCustomer() {
+        page.commands.createCustomer = () => {
             let fullName = page.elements.fullNameCre.val(),
                 email = page.elements.emailCre.val(),
                 phone = page.elements.phoneCre.val(),
@@ -637,11 +637,11 @@
                 .done((data) => {
                     AppBase.successAlert("Create new customer success!");
                     customerCreateDTO = data;
-                    let newRow = renderCustomer(customerCreateDTO);
+                    let newRow = page.commands.renderCustomer(customerCreateDTO);
                     $("#tbCustomer tbody").prepend(newRow);
                     page.dialogs.elements.modalCreate.modal("hide");
 
-                    allAddEvent();
+                    page.commands.allAddEvent();
 
                 })
                 .fail((error) => {
@@ -659,7 +659,7 @@
                 })
         }
 
-        function updateCustomer() {
+        page.commands.updateCustomer = () => {
             let id = +page.elements.idUp.val(),
                 fullName = page.elements.fullNameUp.val(),
                 email = page.elements.emailUp.val(),
@@ -701,13 +701,13 @@
             })
                 .done((data) => {
                     let currentRow = $("#tr_" + data.id);
-                    let newRow = renderCustomer(data);
+                    let newRow = page.commands.renderCustomer(data);
 
                     currentRow.replaceWith(newRow);
 
                     AppBase.successAlert("Update customer success!");
 
-                    allAddEvent();
+                    page.commands.allAddEvent();
 
                     page.dialogs.elements.modalUpdate.modal("hide");
                 })
@@ -725,7 +725,7 @@
                 })
         }
 
-        function deposit() {
+        page.commands.deposit = () => {
             let transactionAmount = +page.elements.transactionAmountDep.val(),
                 customerId = customer.id;
 
@@ -744,10 +744,10 @@
                 data: JSON.stringify(depositCreateDTO)
             })
                 .done((data) => {
-                    findById(customerId).then(() => {
+                    page.commands.findById(customerId).then(() => {
 
                         let currentRow = $("#tr_" + customer.id);
-                        let newRow = renderCustomer(customer);
+                        let newRow = page.commands.renderCustomer(customer);
 
                         currentRow.replaceWith(newRow);
 
@@ -755,7 +755,7 @@
 
                         AppBase.successAlert("Deposit success!");
 
-                        allAddEvent();
+                        page.commands.allAddEvent();
                     });
 
                 })
@@ -764,7 +764,7 @@
                 })
         }
 
-        function withdraw() {
+        page.commands.withdraw = () => {
             let transactionAmount = +page.elements.transactionAmountWith.val(),
                 customerId = customer.id;
 
@@ -784,7 +784,7 @@
             })
                 .done((data) => {
                     let currentRow = $("#tr_" + data.id);
-                    let newRow = renderCustomer(data);
+                    let newRow = page.commands.renderCustomer(data);
 
                     currentRow.replaceWith(newRow);
 
@@ -792,14 +792,14 @@
 
                     AppBase.successAlert("Withdraw success!");
 
-                    allAddEvent();
+                    page.commands.allAddEvent();
                 })
                 .fail((error) => {
                     AppBase.errorAlert("Withdraw fail!");
                 })
         }
 
-        function transfer() {
+        page.commands.transfer = () => {
             let senderId = +page.elements.idCustomerSend.val(),
                 recipientId = +page.elements.recipientId.val(),
                 transferAmount = +page.elements.transferAmountTran.val();
@@ -823,12 +823,12 @@
                         recipient = data.recipient;
 
                     let currentSenderRow = $("#tr_" + sender.id),
-                        newSenderRow = renderCustomer(sender);
+                        newSenderRow = page.commands.renderCustomer(sender);
 
                     currentSenderRow.replaceWith(newSenderRow);
 
                     let currentRecipientRow = $("#tr_" + recipient.id),
-                        newRecipientRow = renderCustomer(recipient);
+                        newRecipientRow = page.commands.renderCustomer(recipient);
 
                     currentRecipientRow.replaceWith(newRecipientRow);
 
@@ -836,7 +836,7 @@
 
                     AppBase.successAlert("Transfer success!");
 
-                    allAddEvent();
+                    page.commands.allAddEvent();
                 })
                 .fail((error) => {
                     console.log(error)
@@ -845,12 +845,12 @@
         }
 
         page.elements.btnShowCreateModal.on("click", () => {
-            getAllProvinces();
+            page.commands.getAllProvinces();
             page.dialogs.elements.modalCreate.modal("show");
         })
 
         page.elements.btnShowTransferHistoryModal.on("click", () => {
-            getAllTransferHistory();
+            page.commands.getAllTransferHistory();
             page.dialogs.elements.modalTransferHistory.modal("show");
         })
 
@@ -946,10 +946,10 @@
                 }
             },
             errorLabelContainer: "#modalCreate .modal-alert-danger",
-            errorPlacement: function (error, element) {
+            errorPlacement: function (error) {
                 error.appendTo("#modalCreate .modal-alert-danger");
             },
-            showErrors: function (errorMap, errorList) {
+            showErrors: function () {
                 if (this.numberOfInvalids() > 0) {
                     $("#modalCreate .modal-alert-danger").removeClass("hidden").addClass("show");
                 } else {
@@ -959,7 +959,7 @@
                 this.defaultShowErrors();
             },
             submitHandler: () => {
-                createCustomer();
+                page.commands.createCustomer();
             }
         });
 
@@ -1013,7 +1013,7 @@
                 this.defaultShowErrors();
             },
             submitHandler: () => {
-                updateCustomer();
+                page.commands.updateCustomer();
             }
         });
 
@@ -1035,10 +1035,10 @@
                 }
             },
             errorLabelContainer: "#modalDeposit .modal-alert-danger",
-            errorPlacement: function (error, element) {
+            errorPlacement: function (error) {
                 error.appendTo("#modalDeposit .modal-alert-danger");
             },
-            showErrors: function (errorMap, errorList) {
+            showErrors: function () {
                 if (this.numberOfInvalids() > 0) {
                     $("#modalDeposit .modal-alert-danger").removeClass("hidden").addClass("show");
                 } else {
@@ -1048,7 +1048,7 @@
                 this.defaultShowErrors();
             },
             submitHandler: () => {
-                deposit();
+                page.commands.deposit();
             }
         });
 
@@ -1084,7 +1084,7 @@
                 this.defaultShowErrors();
             },
             submitHandler: () => {
-                withdraw();
+                page.commands.withdraw();
             }
         });
 
@@ -1120,7 +1120,7 @@
                 this.defaultShowErrors();
             },
             submitHandler: () => {
-                transfer();
+                page.commands.transfer();
             }
         });
 
@@ -1133,33 +1133,31 @@
         // }, "Invalid phone number! Example: 909298966 or 0909298966");
 
         $.validator.addMethod("isBiggerThanBalance", function (value, element) {
-            return this.optional(element) || checkBiggerThanBalance();
+            return this.optional(element) || page.commands.checkBiggerThanBalance();
         }, "Withdraw amount must be less than your balance!");
 
         $.validator.addMethod("isBiggerThanBalanceWithFee", function (value, element) {
-            return this.optional(element) || checkBiggerThanBalanceWithFee();
+            return this.optional(element) || page.commands.checkBiggerThanBalanceWithFee();
         }, "Not enough money to do transfer!");
 
-        getAllCustomers();
 
-        function allAddEvent() {
+        page.commands.allAddEvent = () => {
 
-            addEventShowModalUpdate();
+            page.commands.addEventShowModalUpdate();
 
-            addEventShowModalDeposit();
+            page.commands.addEventShowModalDeposit();
 
-            addEventShowModalWithdraw();
+            page.commands.addEventShowModalWithdraw();
 
-            addEventShowModalTransfer();
+            page.commands.addEventShowModalTransfer();
 
-            addEventShowConfirmDelete();
+            page.commands.addEventShowConfirmDelete();
         }
 
-        allAddEvent();
+        page.commands.allAddEvent();
 
-
-        function getAllCustomers() {
-             $.ajax({
+        page.loadData.getAllCustomers = () => {
+             return $.ajax({
                 headers: {
                     "accept": "application/json",
                     "content-type": "application/json"
@@ -1169,24 +1167,31 @@
             })
                 .done((data) => {
                     $.each(data, (i, item) => {
-                        let str = renderCustomer(item);
+                        let str = page.commands.renderCustomer(item);
                         page.elements.tbCustomersBody.prepend(str);
                     })
 
-                    allAddEvent();
+                    page.commands.allAddEvent();
                 })
                 .fail((error) => {
                     console.log(error)
                 })
         }
 
-        function checkBiggerThanBalance() {
+
+        $(() => {
+            page.loadData.getAllCustomers().then(() => {
+                page.commands.allAddEvent();
+            });
+        })
+
+        page.commands.checkBiggerThanBalance = () => {
             let transactionAmount = +page.elements.transactionAmountWith.val(),
                 balanceWith = +page.elements.balanceWith.val();
             return transactionAmount <= balanceWith;
         }
 
-        function checkBiggerThanBalanceWithFee() {
+        page.commands.checkBiggerThanBalanceWithFee = () => {
             let transactionAmount = +page.elements.transferAmountTran.val(),
                 balance = +page.elements.balanceSend.val(),
                 feesAmount = transactionAmount * 10 / 100;

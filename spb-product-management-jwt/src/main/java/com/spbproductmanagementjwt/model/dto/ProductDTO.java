@@ -41,9 +41,9 @@ public class ProductDTO implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        ProductCreateDTO productCreateDTO = (ProductCreateDTO) target;
-        String name = productCreateDTO.getName();
-        String price = productCreateDTO.getPrice();
+        ProductDTO productDTO = (ProductDTO) target;
+        String name = productDTO.getName();
+        String price = productDTO.getPrice();
 
         if (name.length() == 0) {
             errors.rejectValue("name", "name.null", "Please fill product's name!");
@@ -53,8 +53,18 @@ public class ProductDTO implements Validator {
 
         if (price.length() == 0) {
             errors.rejectValue("price", "price.null", "Please fill product's price!");
-        } else if (price.matches("^$|[0-9]*$")) {
+        } else if (!price.matches("^$|[0-9]*$")) {
             errors.rejectValue("price", "price.matches", "Product's price is only number!");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ProductDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price='" + price + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

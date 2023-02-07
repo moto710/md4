@@ -35,6 +35,9 @@
                         <h1 class="h3 mb-2 text-gray-800">Customer Details</h1>
                     </div>
                     <div>
+                        <button type="button" id="btnShowTransferHistoryModal" class="btn btn-primary" data-toggle="modal"
+                                data-target="#modalTransferHistory">Transfer history
+                        </button>
                         <button type="button" id="btnShowCreateModal" class="btn btn-primary" data-toggle="modal"
                                 data-target="#modalCreateProduct">Create new customer
                         </button>
@@ -76,7 +79,7 @@
 <th:block th:replace="customer/allModal :: modalTransferHistory"></th:block>
 
 <!-- Logout Modal-->
-<th:block th:replace="customer/allModal :: modalLogout"></th:block>
+<th:block th:replace="allModal :: modalLogout"></th:block>
 
 <th:block th:replace="customer/customerJs :: script"></th:block>
 

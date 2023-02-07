@@ -100,14 +100,8 @@
             page.dialogs.elements.modalCreateProduct.modal('show');
         }
 
-        page.commands.showUpdateModal = () => {
+        page.commands.showUpdateModal = function () {
             page.dialogs.elements.modalUpdateProduct.modal('show');
-        }
-
-        page.dialogs.commands.createProduct = () => {
-            page.elements.btnSave.on("click", () => {
-                page.commands.createProduct();
-            })
         }
 
         page.commands.createProduct = () => {
@@ -143,19 +137,68 @@
             });
         }
 
+        page.commands.updateProduct = () => {
+            let id = page.elements.idUp.val();
+            let productDTO = {
+                id,
+                name: page.elements.nameUp.val(),
+                price: page.elements.priceUp.val(),
+                description: page.elements.descriptionUp.val()
+            }
+            console.log(productDTO)
+            $.ajax({
+                headers: {
+                    "accept": "application/json",
+                    "content-type": "application/json"
+                },
+                type: "PATCH",
+                url: page.urls.updateProduct + id,
+                data: JSON.stringify(productDTO)
+            })
+                .done((data) => {
+                    let currentRow = $("#tr_" + id);
+                    let newRow = page.commands.renderProduct(data);
+                    currentRow.replaceWith(newRow);
+
+                    AppBase.successAlert("Update product success!");
+                    page.dialogs.elements.modalUpdateProduct.modal("hide");
+                })
+                .fail((error) => {
+                    console.log(error);
+                    AppBase.errorAlert("Update product fail!");
+                })
+        }
+
         page.initializeControlEvent = () => {
 
             page.elements.btnShowCreateModal.on("click", function () {
                 page.commands.showCreateModal();
             });
 
-            page.dialogs.commands.createProduct();
+            $(".btnShowUpdateProduct").on("click", function () {
+                let id = $(this).data("id");
+                page.commands.findProductById(id).then(() => {
+                    page.elements.idUp.val(product.id);
+                    page.elements.nameUp.val(product.name);
+                    page.elements.priceUp.val(product.price);
+                    page.elements.descriptionUp.val(product.description);
+                })
+                page.commands.showUpdateModal();
+            });
 
-            page.dialogs.commands.updateProduct();
-
-            page.commands.showUpdateProduct();
-
+            // page.dialogs.commands.updateProduct();
+            //
+            // page.commands.showUpdateProduct();
+            //
             page.commands.deleteProduct();
+
+            page.elements.btnSave.on("click", () => {
+                page.dialogs.elements.frmCreateProduct.trigger("submit");
+            })
+
+            page.elements.btnUpdate.on("click", () => {
+                page.dialogs.elements.frmUpdateProduct.trigger("submit");
+            })
 
             page.dialogs.elements.divImagePreview.on("click", function () {
                 page.dialogs.elements.imageFile.trigger("click");
@@ -176,52 +219,6 @@
             });
 
         });
-
-        page.dialogs.commands.updateProduct = () => {
-            page.elements.btnUpdate.on("click", () => {
-                let id = page.elements.idUp.val();
-                let productDTO = {
-                    id,
-                    name: page.elements.nameUp.val(),
-                    price: page.elements.priceUp.val(),
-                    description: page.elements.descriptionUp.val()
-                }
-                $.ajax({
-                    headers: {
-                        "accept": "application/json",
-                        "content-type": "application/json"
-                    },
-                    type: "PATCH",
-                    url: page.urls.updateProduct + id,
-                    data: JSON.stringify(productDTO)
-                })
-                    .done((data) => {
-                        let currentRow = $("#tr_" + id);
-                        let newRow = page.commands.renderProduct(data);
-                        currentRow.replaceWith(newRow);
-
-                        AppBase.successAlert("Update product success!");
-                        page.dialogs.elements.modalUpdateProduct.modal("hide");
-                    })
-                    .fail((error) => {
-                        console.log(error);
-                        AppBase.errorAlert("Update product fail!");
-                    })
-            })
-        }
-
-        page.commands.showUpdateProduct = () => {
-            $(".btnShowUpdateProduct").on("click", function () {
-                let id = $(this).data("id");
-                page.commands.findProductById(id).then(() => {
-                    page.elements.idUp.val(product.id);
-                    page.elements.nameUp.val(product.name);
-                    page.elements.priceUp.val(product.price);
-                    page.elements.descriptionUp.val(product.description);
-                })
-                page.commands.showUpdateModal();
-            });
-        }
 
         page.commands.deleteProduct = () => {
             $(".btnShowDeleteProduct").on("click", function () {
@@ -279,23 +276,24 @@
 
         page.dialogs.elements.modalUpdateProduct.on("hidden.bs.modal", () => {
             page.dialogs.elements.frmUpdateProduct[0].reset();
-            // page.elements.frmUpdateProduct.validate().resetForm();
+            page.dialogs.elements.frmUpdateProduct.validate().resetForm();
         })
 
         page.dialogs.elements.modalCreateProduct.on("hidden.bs.modal", () => {
             page.dialogs.elements.frmCreateProduct[0].reset();
-            // page.elements.frmCreateProduct.validate().resetForm();
+            page.dialogs.elements.frmCreateProduct.validate().resetForm();
         })
 
         page.dialogs.elements.frmCreateProduct.validate({
             rules: {
                 productName: {
                     required: true,
-                    minLength: 5
+                    minlength: 5
                 },
                 productPrice: {
                     required: true,
-                    number: true
+                    number: true,
+                    min: 10
                 }
             },
             messages: {
@@ -304,15 +302,16 @@
                     minlength: "Product name must be more than 4 letters"
                 },
                 productPrice: {
-                    required: "Email is required.",
-                    name: "Please fill only number"
+                    required: "Product price is required.",
+                    name: "Please fill only number",
+                    min: "Minimum price is 10$",
                 }
             },
             errorLabelContainer: "#modalCreateProduct .modal-alert-danger",
-            errorPlacement: function (error, element) {
+            errorPlacement: function (error) {
                 error.appendTo("#modalCreateProduct .modal-alert-danger");
             },
-            showErrors: function (errorMap, errorList) {
+            showErrors: function () {
                 if (this.numberOfInvalids() > 0) {
                     $("#modalCreateProduct .modal-alert-danger").removeClass("hidden").addClass("show");
                 } else {
@@ -323,6 +322,47 @@
             },
             submitHandler: () => {
                 page.commands.createProduct();
+            }
+        })
+
+        page.dialogs.elements.frmUpdateProduct.validate({
+            rules: {
+                nameUp: {
+                    required: true,
+                    minlength: 5
+                },
+                priceUp: {
+                    required: true,
+                    number: true,
+                    min: 10
+                }
+            },
+            messages: {
+                nameUp: {
+                    required: "Product name is required.",
+                    minlength: "Product name must be more than 4 letters"
+                },
+                priceUp: {
+                    required: "Product price is required.",
+                    name: "Please fill only number",
+                    min: "Minimum price is 10$",
+                }
+            },
+            errorLabelContainer: "#modalUpdateProduct .modal-alert-danger",
+            errorPlacement: function (error) {
+                error.appendTo("#modalUpdateProduct .modal-alert-danger");
+            },
+            showErrors: function () {
+                if (this.numberOfInvalids() > 0) {
+                    $("#modalUpdateProduct .modal-alert-danger").removeClass("hidden").addClass("show");
+                } else {
+                    $("#modalUpdateProduct .modal-alert-danger").removeClass("show").addClass("hidden").empty();
+                    $("#frmUpdateProduct input.error").removeClass("error");
+                }
+                this.defaultShowErrors();
+            },
+            submitHandler: () => {
+                page.commands.updateProduct();
             }
         })
 

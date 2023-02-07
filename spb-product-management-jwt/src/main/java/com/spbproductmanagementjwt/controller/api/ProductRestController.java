@@ -1,5 +1,6 @@
 package com.spbproductmanagementjwt.controller.api;
 
+import com.spbproductmanagementjwt.exception.DataInputException;
 import com.spbproductmanagementjwt.model.Product;
 import com.spbproductmanagementjwt.model.ProductMedia;
 import com.spbproductmanagementjwt.model.dto.ProductCreateDTO;
@@ -16,8 +17,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.DataFormatException;
 
 @RestController
 @RequestMapping("/api/products")
@@ -94,10 +97,17 @@ public class ProductRestController {
 
     @PatchMapping("/{id}")
     private ResponseEntity<?> updateProduct(@PathVariable("id") Long id,@Validated @RequestBody ProductDTO productDTO, BindingResult br) {
+        System.out.println(productDTO.toString());
         new ProductDTO().validate(productDTO, br);
 
         if (br.hasErrors()) {
             return appUtils.mapErrorToResponse(br);
+        }
+
+        BigDecimal price = BigDecimal.valueOf(Long.parseLong(productDTO.getPrice()));
+
+        if (price.compareTo(BigDecimal.TEN) < 0) {
+            throw new DataInputException("Price must be larger than 10$!");
         }
 
         productOptional = productService.findById(id);
@@ -139,6 +149,11 @@ public class ProductRestController {
 
         if (br.hasErrors()) {
             return appUtils.mapErrorToResponse(br);
+        }
+        BigDecimal price = BigDecimal.valueOf(Long.parseLong(productCreateDTO.getPrice()));
+
+        if (price.compareTo(BigDecimal.TEN) < 0) {
+            throw new DataInputException("Price must be larger than 10$!");
         }
 
         if (file == null) {
