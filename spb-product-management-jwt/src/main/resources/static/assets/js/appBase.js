@@ -1,6 +1,9 @@
 class AppBase {
     static DOMAIN = location.origin;
 
+    static API_CITY = this.DOMAIN  + "/api/cities";
+    static API_DELETE_CITY = this.API_CITY + "/delete";
+
     static API_PRODUCT = this.DOMAIN  + "/api/products";
     static API_SUSPENDED_PRODUCT = this.API_PRODUCT + "/suspendedProducts"
 

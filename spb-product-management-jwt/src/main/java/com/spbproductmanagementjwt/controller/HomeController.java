@@ -2,10 +2,10 @@ package com.spbproductmanagementjwt.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class HomeController {
+
 
     @GetMapping({"", "/homepage"})
     private String showHomePage() {
@@ -45,5 +45,10 @@ public class HomeController {
     @GetMapping("/suspended-customers")
     private String showSuspendedCustomers() {
         return "customer/suspendedCustomer";
+    }
+
+    @GetMapping("/access-denied")
+    public String getAccessDenied() {
+        return "/error/403";
     }
 }
