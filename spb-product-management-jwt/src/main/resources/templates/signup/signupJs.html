@@ -43,6 +43,18 @@
 
         page.elements.frmSignup = $("#frmSignup");
 
+
+        page.initializeControlEvent = () => {
+
+            $('#btnLogout').on('click', () => {
+                location.href = '/logout';
+            })
+        }
+
+        $(() => {
+            page.initializeControlEvent();
+        })
+
         page.commands.signup = () => {
             let userDTO = {
                 username: page.elements.usernameSup.val(),
@@ -72,25 +84,15 @@
                 })
         }
 
-        page.initializeControlEvent = () => {
-            $('#btnLogout').on('click', () => {
-                location.href = '/logout';
-            })
-        }
-
-        $(() => {
-            page.initializeControlEvent();
-        })
-
         page.elements.frmSignup.validate({
             submitHandler: () => {
                 page.commands.signup();
             }
         });
 
-        page.elements.btnSignup.on("click", () => {
-            page.elements.frmSignup.trigger("submit");
-        })
+        // page.elements.btnSignup.on("click", () => {
+        //     page.elements.frmSignup.trigger("submit");
+        // })
 
     </script>
 

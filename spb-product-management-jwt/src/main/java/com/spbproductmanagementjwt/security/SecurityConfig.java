@@ -95,9 +95,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/login")
                 .deleteCookies("JWT")
                 .invalidateHttpSession(true)
-                .and()
-                .exceptionHandling()
-                .accessDeniedPage("/homepage/homepage.html")
         ;
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
