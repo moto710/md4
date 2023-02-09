@@ -9,17 +9,17 @@ public class HomeController {
 
     @GetMapping({"", "/homepage"})
     private String showHomePage() {
-        return "/homepage/homepage";
+        return "homepage/homepage";
     }
 
     @GetMapping("/login")
     private String showLoginPage() {
-        return "/login/login";
+        return "login/login";
     }
 
     @GetMapping("/signup")
     private String showSignupPage() {
-        return "/signup/signup";
+        return "signup/signup";
     }
 
     @GetMapping("/shop")

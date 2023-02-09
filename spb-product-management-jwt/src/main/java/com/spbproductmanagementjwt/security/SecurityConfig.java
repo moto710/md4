@@ -66,7 +66,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/auth/login",
                         "/api/auth/signup",
                         "/login",
-                        "/logout"
+                        "/logout",
+                        "/signup"
                 ).permitAll()
                 .antMatchers("/suspended-products", "/suspended-customers").hasAnyAuthority("ADMIN")
 //                .antMatchers("/products").hasAnyAuthority("USER")

@@ -58,8 +58,6 @@ public class AuthAPI {
             return appUtils.mapErrorToResponse(br);
         }
 
-//        Long roleId = userDTO.getRole().getId();
-
         Optional<Role> optRole = roleService.findById(2L);
 
         if (!optRole.isPresent()) {
