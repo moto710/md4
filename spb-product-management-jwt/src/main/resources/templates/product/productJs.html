@@ -128,8 +128,15 @@
 
                 page.dialogs.elements.modalCreateProduct.modal('hide');
 
-            }).fail((err) => {
-                console.log(err)
+            }).fail((errs) => {
+                let containerErr = document.getElementById("modal-alert-danger")
+                containerErr.style.display = "block";
+                for (let err in errs.responseJSON){
+                    let errUpper = err.charAt(0).toUpperCase() + err.slice(1)
+                    let alert = `<label id="product${errUpper}-error" class="error" for="product${errUpper}">${errs.responseJSON[err]}</label>`
+                    containerErr.insertAdjacentHTML("beforeend", alert);
+                }
+                // console.log(err.responseJSON.name)
                 AppBase.errorAlert("Add product fail!");
             }).always(function () {
                 page.elements.loader.addClass("hide");
