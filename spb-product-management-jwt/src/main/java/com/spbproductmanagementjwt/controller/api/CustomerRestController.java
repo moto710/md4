@@ -21,11 +21,9 @@ import java.util.*;
 @RequestMapping("/api/customers")
 public class CustomerRestController {
 
-    @Autowired
-    private ICustomerService customerService;
+    private final ICustomerService customerService;
 
-    @Autowired
-    private AppUtils appUtils;
+    private final AppUtils appUtils;
 
     private Customer customer;
 
@@ -36,6 +34,12 @@ public class CustomerRestController {
     private Optional<Customer> customerOptional;
 
     private List<CustomerDTO> customerDTOList;
+
+    @Autowired
+    public CustomerRestController(ICustomerService customerService, AppUtils appUtils) {
+        this.customerService = customerService;
+        this.appUtils = appUtils;
+    }
 
     @GetMapping
     private ResponseEntity<List<CustomerDTO>> getALlCustomers() {

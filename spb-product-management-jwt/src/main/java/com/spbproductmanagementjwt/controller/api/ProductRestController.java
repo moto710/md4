@@ -20,20 +20,16 @@ import org.springframework.web.multipart.MultipartFile;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.zip.DataFormatException;
 
 @RestController
 @RequestMapping("/api/products")
 public class ProductRestController {
 
-    @Autowired
-    private AppUtils appUtils;
+    private final AppUtils appUtils;
 
-    @Autowired
-    private IProductService productService;
+    private final IProductService productService;
 
-    @Autowired
-    private IProductMediaService productMediaService;
+    private final IProductMediaService productMediaService;
 
     private Product product;
 
@@ -42,6 +38,13 @@ public class ProductRestController {
     private Optional<Product> productOptional;
 
     private ProductMedia productMedia;
+
+    @Autowired
+    public ProductRestController(AppUtils appUtils, IProductService productService, IProductMediaService productMediaService) {
+        this.appUtils = appUtils;
+        this.productService = productService;
+        this.productMediaService = productMediaService;
+    }
 
     @GetMapping("/{id}")
     private ResponseEntity<?> findById(@PathVariable("id") Long id) {

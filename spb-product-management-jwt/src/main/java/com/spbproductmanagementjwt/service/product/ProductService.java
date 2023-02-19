@@ -23,19 +23,23 @@ import java.util.Optional;
 @Transactional
 public class ProductService implements IProductService {
 
-    @Autowired
-    private IProductRepository productRepository;
+    private final IProductRepository productRepository;
 
-    @Autowired
-    private IProductMediaRepository productMediaRepository;
+    private final IProductMediaRepository productMediaRepository;
 
-    @Autowired
-    private UploadUtils uploadUtils;
+    private final UploadUtils uploadUtils;
 
-    @Autowired
-    private IUploadService uploadService;
+    private final IUploadService uploadService;
 
     private Product product;
+
+    @Autowired
+    public ProductService(IProductRepository productRepository, IProductMediaRepository productMediaRepository, UploadUtils uploadUtils, IUploadService uploadService) {
+        this.productRepository = productRepository;
+        this.productMediaRepository = productMediaRepository;
+        this.uploadUtils = uploadUtils;
+        this.uploadService = uploadService;
+    }
 
     @Override
     public List<Product> findAll() {

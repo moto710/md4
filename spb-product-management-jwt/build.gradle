@@ -19,6 +19,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -37,15 +38,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
-
-    implementation group: 'org.thymeleaf', name: 'thymeleaf-spring5', version: '3.0.15.RELEASE'
-    implementation group: 'nz.net.ultraq.thymeleaf', name: 'thymeleaf-layout-dialect', version: '2.5.3'
-    implementation group: 'org.hibernate', name: 'hibernate-core', version: '5.6.10.Final'
-    implementation group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.6.7.Final'
-    implementation group: 'org.hibernate.validator', name: 'hibernate-validator', version: '8.0.0.Final'
-
-    implementation group: 'com.github.darrachequesne', name: 'spring-data-jpa-datatables', version: '5.1.0'
-
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.5'
 }
 
 tasks.named('test') {

@@ -17,8 +17,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/transfers")
 public class TransferRestController {
 
+    private final ITransferService transferService;
+
     @Autowired
-    private ITransferService transferService;
+    public TransferRestController(ITransferService transferService) {
+        this.transferService = transferService;
+    }
 
     @GetMapping
     private ResponseEntity<List<TransferDTO>> transferHistory() {

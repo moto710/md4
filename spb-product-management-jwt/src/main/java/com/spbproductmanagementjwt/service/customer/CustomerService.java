@@ -17,20 +17,25 @@ import java.util.Optional;
 @Transactional
 public class CustomerService implements ICustomerService {
 
-    @Autowired
-    private ILocationRegionRepository locationRegionRepository;
+    private final ILocationRegionRepository locationRegionRepository;
+
+    private final ICustomerRepository customerRepository;
+
+    private final IDepositRepository depositRepository;
+
+    private final ITransferRepository transferRepository;
+
+    private final IWithdrawRepository withdrawRepository;
+
 
     @Autowired
-    private ICustomerRepository customerRepository;
-
-    @Autowired
-    private IDepositRepository depositRepository;
-
-    @Autowired
-    private ITransferRepository transferRepository;
-
-    @Autowired
-    private IWithdrawRepository withdrawRepository;
+    public CustomerService(ILocationRegionRepository locationRegionRepository, ICustomerRepository customerRepository, IDepositRepository depositRepository, ITransferRepository transferRepository, IWithdrawRepository withdrawRepository) {
+        this.locationRegionRepository = locationRegionRepository;
+        this.customerRepository = customerRepository;
+        this.depositRepository = depositRepository;
+        this.transferRepository = transferRepository;
+        this.withdrawRepository = withdrawRepository;
+    }
 
 
     @Override
