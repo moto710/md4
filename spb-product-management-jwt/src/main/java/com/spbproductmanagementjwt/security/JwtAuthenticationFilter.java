@@ -1,7 +1,7 @@
 package com.spbproductmanagementjwt.security;
 
-import com.spbproductmanagementjwt.service.jwt.JwtService;
-import com.spbproductmanagementjwt.service.user.IUserService;
+import com.spbproductmanagementjwt.jwt.JwtService;
+import com.spbproductmanagementjwt.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

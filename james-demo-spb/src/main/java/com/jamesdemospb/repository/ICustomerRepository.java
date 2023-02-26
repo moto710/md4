@@ -1,4 +1,9 @@
 package com.jamesdemospb.repository;
 
-public interface ICustomerRepository {
+import com.jamesdemospb.model.Customer;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ICustomerRepository extends JpaRepository<Customer, Long> {
 }

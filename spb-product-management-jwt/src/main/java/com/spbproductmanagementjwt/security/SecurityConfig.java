@@ -1,6 +1,6 @@
 package com.spbproductmanagementjwt.security;
 
-import com.spbproductmanagementjwt.service.user.IUserService;
+import com.spbproductmanagementjwt.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -2,8 +2,8 @@ package com.spbproductmanagementjwt.utils;
 
 import com.cloudinary.utils.ObjectUtils;
 import com.spbproductmanagementjwt.exception.DataInputException;
-import com.spbproductmanagementjwt.model.Product;
-import com.spbproductmanagementjwt.model.ProductMedia;
+import com.spbproductmanagementjwt.product.Product;
+import com.spbproductmanagementjwt.productmedia.ProductMedia;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

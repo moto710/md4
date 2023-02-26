@@ -1,13 +1,13 @@
 package com.spbproductmanagementjwt.controller.api;
 
 import com.spbproductmanagementjwt.exception.DataInputException;
-import com.spbproductmanagementjwt.model.Product;
-import com.spbproductmanagementjwt.model.ProductMedia;
-import com.spbproductmanagementjwt.model.dto.ProductCreateDTO;
-import com.spbproductmanagementjwt.model.dto.ProductDTO;
-import com.spbproductmanagementjwt.model.dto.ProductResponseDTO;
-import com.spbproductmanagementjwt.service.product.IProductService;
-import com.spbproductmanagementjwt.service.productmedia.IProductMediaService;
+import com.spbproductmanagementjwt.product.Product;
+import com.spbproductmanagementjwt.productmedia.ProductMedia;
+import com.spbproductmanagementjwt.product.ProductCreateDTO;
+import com.spbproductmanagementjwt.product.ProductDTO;
+import com.spbproductmanagementjwt.product.ProductResponseDTO;
+import com.spbproductmanagementjwt.product.IProductService;
+import com.spbproductmanagementjwt.productmedia.IProductMediaService;
 import com.spbproductmanagementjwt.utils.AppUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

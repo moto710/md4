@@ -1,11 +1,19 @@
 package com.spbproductmanagementjwt.controller.api;
 
+import com.spbproductmanagementjwt.customer.Customer;
+import com.spbproductmanagementjwt.customer.CustomerCreateDTO;
+import com.spbproductmanagementjwt.customer.CustomerDTO;
+import com.spbproductmanagementjwt.deposit.Deposit;
+import com.spbproductmanagementjwt.deposit.DepositCreateDTO;
 import com.spbproductmanagementjwt.exception.CheckWithdrawBalance;
 import com.spbproductmanagementjwt.exception.DataInputException;
-import com.spbproductmanagementjwt.model.*;
-import com.spbproductmanagementjwt.model.dto.*;
-import com.spbproductmanagementjwt.service.customer.ICustomerService;
+import com.spbproductmanagementjwt.locationregion.LocationRegion;
+import com.spbproductmanagementjwt.customer.ICustomerService;
+import com.spbproductmanagementjwt.transfer.Transfer;
+import com.spbproductmanagementjwt.transfer.TransferCreateDTO;
 import com.spbproductmanagementjwt.utils.AppUtils;
+import com.spbproductmanagementjwt.withdraw.Withdraw;
+import com.spbproductmanagementjwt.withdraw.WithdrawCreateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
