@@ -1,6 +1,6 @@
 package com.spbproductmanagementjwt.cart;
 
-import com.spbproductmanagementjwt.cartdetail.CartDetail;
+//import com.spbproductmanagementjwt.cartdetail.CartDetail;
 import com.spbproductmanagementjwt.product.Product;
 import com.spbproductmanagementjwt.service.IGeneralService;
 
@@ -13,7 +13,7 @@ public interface ICartService extends IGeneralService<Cart> {
 
     void updateCartNotExistProduct(Cart cart, Product product, String username);
 
-    void updateCartExistProduct(Cart cart, CartDetail cartDetail, Product product, String username);
+//    void updateCartExistProduct(Cart cart, CartDetail cartDetail, Product product, String username);
 
     Optional<Cart> findByCreatedBy(String createdBy);
 
@@ -21,5 +21,5 @@ public interface ICartService extends IGeneralService<Cart> {
 
     void addCartDetail(Cart cart, Product product, Long quantity);
 
-    void updateCartDetail(CartDetail cartDetail, Long quantity);
+//    void updateCartDetail(CartDetail cartDetail, Long quantity);
 }

@@ -1,7 +1,6 @@
 package com.spbproductmanagementjwt.user;
 
 import com.spbproductmanagementjwt.role.RoleDTO;
-import com.spbproductmanagementjwt.user.User;
 import lombok.*;
 import lombok.experimental.Accessors;
 

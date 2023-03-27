@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface IProductRepository extends JpaRepository<Product, Long> {
 
     Optional<Product> findByIdAndDeletedIsTrue(Long id);
-    @Query("SELECT NEW com.spbproductmanagementjwt.model.dto.ProductResponseDTO (" +
+    @Query("SELECT NEW com.spbproductmanagementjwt.product.ProductResponseDTO (" +
                 "pm.product.id, " +
                 "pm.product.name, " +
                 "pm.product.price, " +
@@ -26,7 +26,7 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
     )
     List<ProductResponseDTO> findAllProductResponseDTOByDeleteIsFalse();
 
-    @Query("SELECT NEW com.spbproductmanagementjwt.model.dto.ProductResponseDTO (" +
+    @Query("SELECT NEW com.spbproductmanagementjwt.product.ProductResponseDTO (" +
             "pm.product.id, " +
             "pm.product.name, " +
             "pm.product.price, " +
@@ -53,7 +53,7 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
     )
     void reactivate(@Param("productId") Long productId);
 
-    @Query("SELECT NEW com.spbproductmanagementjwt.model.dto.ProductResponseDTO (" +
+    @Query("SELECT NEW com.spbproductmanagementjwt.product.ProductResponseDTO (" +
             "pm.product.id, " +
             "pm.product.name, " +
             "pm.product.price, " +

@@ -1,8 +1,5 @@
 package com.spbproductmanagementjwt.transfer;
 
-import com.spbproductmanagementjwt.transfer.ITransferService;
-import com.spbproductmanagementjwt.transfer.Transfer;
-import com.spbproductmanagementjwt.transfer.ITransferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +8,13 @@ import java.util.Optional;
 
 @Service
 public class TransferService implements ITransferService {
+
+    private final ITransferRepository transferRepository;
+
     @Autowired
-    private ITransferRepository transferRepository;
+    public TransferService(ITransferRepository transferRepository) {
+        this.transferRepository = transferRepository;
+    }
 
     @Override
     public List<Transfer> findAll() {

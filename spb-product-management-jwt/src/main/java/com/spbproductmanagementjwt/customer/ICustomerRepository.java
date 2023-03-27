@@ -58,7 +58,7 @@ public interface ICustomerRepository extends JpaRepository<Customer, Long> {
     )
     void reactivate(@Param("customerId") Long customerId);
 
-    @Query("SELECT NEW com.spbproductmanagementjwt.model.dto.CustomerDTO (" +
+    @Query("SELECT NEW com.spbproductmanagementjwt.customer.CustomerDTO (" +
             "c.id, " +
             "c.fullName, " +
             "c.email, " +
@@ -72,7 +72,7 @@ public interface ICustomerRepository extends JpaRepository<Customer, Long> {
     )
     List<CustomerDTO> findAllCustomerDTOByDeletedIsFalse();
 
-    @Query("SELECT NEW com.spbproductmanagementjwt.model.dto.CustomerDTO (" +
+    @Query("SELECT NEW com.spbproductmanagementjwt.customer.CustomerDTO (" +
             "c.id, " +
             "c.fullName, " +
             "c.email, " +
@@ -102,7 +102,7 @@ public interface ICustomerRepository extends JpaRepository<Customer, Long> {
     void increaseBalance(@Param("idCustomer") Long idCustomer,
                          @Param("transactionAmount") BigDecimal transactionAmount);
 
-    @Query("SELECT NEW com.spbproductmanagementjwt.model.dto.CustomerDTO (c.id, " +
+    @Query("SELECT NEW com.spbproductmanagementjwt.customer.CustomerDTO (c.id, " +
             "c.fullName, " +
             "c.email, " +
             "c.phone, " +
@@ -115,7 +115,7 @@ public interface ICustomerRepository extends JpaRepository<Customer, Long> {
     )
     Optional<CustomerDTO> findCustomerDTOByIdAndDeletedIsFalse(@Param("id") Long id);
 
-    @Query("SELECT NEW com.spbproductmanagementjwt.model.dto.CustomerDTO (" +
+    @Query("SELECT NEW com.spbproductmanagementjwt.customer.CustomerDTO (" +
             "c.id, " +
             "c.fullName, " +
             "c.email, " +

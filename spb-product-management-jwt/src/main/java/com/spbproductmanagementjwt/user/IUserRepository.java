@@ -17,7 +17,7 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 
     Boolean existsByUsername(String username);
 
-    @Query("SELECT NEW com.spbproductmanagementjwt.model.dto.UserDTO (" +
+    @Query("SELECT NEW com.spbproductmanagementjwt.user.UserDTO (" +
                 "u.id, " +
                 "u.username" +
             ") " +

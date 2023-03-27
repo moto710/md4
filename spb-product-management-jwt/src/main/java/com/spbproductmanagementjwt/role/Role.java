@@ -24,4 +24,10 @@ public class Role {
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private ERole name;
+
+    public RoleDTO toRoleDTO() {
+        return new RoleDTO()
+                .setId(id)
+                .setCode(code);
+    }
 }
